@@ -31,8 +31,8 @@
 *.bat
 
 # Examples 
-ex_c*
-ex_fpc*
+ex_c
+ex_fpc
 
 # Debug files
 *.dSYM/
