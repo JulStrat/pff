@@ -1,5 +1,15 @@
 PetitFS test.
 pf_mount() - 0
+pf_opendir() - 0
+pf_readdir() - 0
+00README.TXT
+pf_readdir() - 0
+LICENSE.TXT
+pf_readdir() - 0
+RASPI
+pf_opendir() - 0
+pf_readdir() - 0
+EX_PFF~1.C
 pf_open("00README.TXT") - 0
 Petit FatFs Module Source Files R0.03a               (C)ChaN, 2019
 

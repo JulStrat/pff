@@ -30,6 +30,10 @@
 
 *.bat
 
+# Examples 
+ex_c*
+ex_fpc*
+
 # Debug files
 *.dSYM/
 *.dbg
@@ -44,7 +48,7 @@
 *.lps
 *.ppu
 *.pds
-source/fpc/
+
 lib/
 backup/
 

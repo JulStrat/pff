@@ -10,6 +10,7 @@
 #include <unistd.h>
 
 static int GDH;
+extern char *SD_DEV;
 
 /*-----------------------------------------------------------------------*/
 /* Initialize Disk Drive                                                 */
@@ -20,7 +21,7 @@ DSTATUS disk_initialize (void)
 	DSTATUS stat;
 
 	// Put your code here
-	GDH = open("/home/pi/SD.img", O_RDONLY);
+	GDH = open(SD_DEV, O_RDONLY);
 	if (GDH == -1)
 	    stat = STA_NOINIT;
 	else
