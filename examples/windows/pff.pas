@@ -43,24 +43,19 @@ uses disk_io;
 const
   PF_DEFINED = 8088; (* Revision ID *)
 
-(*
-  File status flag (FATFS.flag)
-*)
+(*  File status flag (FATFS.flag)  *)
   FA_OPENED = $01;
   FA_WPRT = $02;
   FA__WIP = $40;
 
-(*
-  File attribute bits for directory entry
-*)
-
-  AM_RDO = $01;  (* Read only *)
-  AM_HID = $02;  (* Hidden *)
-  AM_SYS = $04;  (* System *)
-  AM_VOL = $08;  (* Volume label *)
-  AM_LFN = $0F;  (* LFN entry *)
-  AM_DIR = $10;  (* Directory *)
-  AM_ARC = $20;  (* Archive *)
+(*  File attribute bits for directory entry  *)
+  AM_RDO = $01;   (* Read only *)
+  AM_HID = $02;   (* Hidden *)
+  AM_SYS = $04;   (* System *)
+  AM_VOL = $08;   (* Volume label *)
+  AM_LFN = $0F;   (* LFN entry *)
+  AM_DIR = $10;   (* Directory *)
+  AM_ARC = $20;   (* Archive *)
   AM_MASK = $3F;  (* Mask of defined bits *)
 
   _FS_32ONLY = 0;
@@ -144,20 +139,20 @@ type
   PFATFS = ^FATFS;
 
   FATFS = record
-    fs_type: byte; (* FAT sub type *)
-    flag: byte; (* File status flags *)
-    csize: byte; (* Number of sectors per cluster *)
+    fs_type: byte;        (* FAT sub type *)
+    flag: byte;           (* File status flags *)
+    csize: byte;          (* Number of sectors per cluster *)
     pad1: byte;
-    n_rootdir: word; (* Number of root directory entries (0 on FAT32) *)
-    n_fatent: CLUST; (* Number of FAT entries (= number of clusters + 2) *)
-    fatbase: DWORD; (* FAT start sector *)
-    dirbase: DWORD; (* Root directory start sector (Cluster# on FAT32) *)
-    database: DWORD; (* Data start sector *)
-    fptr: DWORD; (* File R/W pointer *)
-    fsize: DWORD; (* File size *)
-    org_clust: CLUST; (* File start cluster *)
-    curr_clust: CLUST; (* File current cluster *)
-    dsect: DWORD; (* File current data sector *)
+    n_rootdir: word;      (* Number of root directory entries (0 on FAT32) *)
+    n_fatent: CLUST;      (* Number of FAT entries (= number of clusters + 2) *)
+    fatbase: DWORD;       (* FAT start sector *)
+    dirbase: DWORD;       (* Root directory start sector (Cluster# on FAT32) *)
+    database: DWORD;      (* Data start sector *)
+    fptr: DWORD;          (* File R/W pointer *)
+    fsize: DWORD;         (* File size *)
+    org_clust: CLUST;     (* File start cluster *)
+    curr_clust: CLUST;    (* File current cluster *)
+    dsect: DWORD;         (* File current data sector *)
   end;
 
   (* Directory object structure *)
@@ -175,14 +170,14 @@ type
   PFILINFO = ^FILINFO;
 
   FILINFO = record
-    fsize: DWORD; (* File size *)
-    fdate: word; (* Last modified date *)
-    ftime: word; (* Last modified time *)
-    fattrib: byte; (* Attribute *)
-    fname: array [0..Pred(13)] of char; (* File name *)
+    fsize: DWORD;                        (* File size *)
+    fdate: word;                         (* Last modified date *)
+    ftime: word;                         (* Last modified time *)
+    fattrib: byte;                       (* Attribute *)
+    fname: array [0..Pred(13)] of char;  (* File name *)
   end;
 
-  (* File function return code (FRESULT) *)
+  (* File function return code *)
   FRESULT = (
     FR_OK = 0,
     FR_DISK_ERR,
@@ -199,6 +194,8 @@ type
   Mount/Unmount a logical Drive
 
   @param(fs Pointer to new file system object)
+
+  @returns(FRESULT)
 }
 function pf_mount(fs: pFATFS): FRESULT;
 
@@ -206,6 +203,8 @@ function pf_mount(fs: pFATFS): FRESULT;
   Open or Create a file
 
   @param(path Pointer to the file name)
+
+  @returns(FRESULT)
 }
 function pf_open(path: PChar): FRESULT;
 
@@ -216,6 +215,8 @@ function pf_open(path: PChar): FRESULT;
   @param(buff Pointer to the read buffer (nil: Forward data to the stream))
   @param(btr Number of bytes to read)
   @param(br Pointer to number of bytes read)
+
+  @returns(FRESULT)
 }
 function pf_read(buff: Pointer; btr: UINT; br: pUINT): FRESULT;
 {$endif}
@@ -227,6 +228,8 @@ function pf_read(buff: Pointer; btr: UINT; br: pUINT): FRESULT;
   @param(buff Pointer to the data to be written)
   @param(btw Number of bytes to write (0:Finalize the current write operation))
   @param(bw Pointer to number of bytes written)
+
+  @returns(FRESULT)
 }
 function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 {$endif}
@@ -235,6 +238,8 @@ function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 {
   Move file pointer of the open file
   @param(ofs File pointer from top of file)
+
+  @returns(FRESULT)
 }
 function pf_lseek(ofs: DWORD): FRESULT;
 {$endif}
@@ -245,14 +250,18 @@ function pf_lseek(ofs: DWORD): FRESULT;
 
   param(dj Pointer to directory object to create)
   param(path Pointer to the directory path)
+
+  @returns(FRESULT)
 }
 function pf_opendir(dj: pDIR; path: PChar): FRESULT;
 
 {
   Read a directory item from the open directory
 
-  param(dj Pointer to the open directory object)
-  param(fno Pointer to file information to return)
+  @param(dj Pointer to the open directory object)
+  @param(fno Pointer to file information to return)
+
+  @returns(FRESULT)
 }
 function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
 {$endif}
@@ -311,16 +320,13 @@ begin
   Result := (c >= 'a') and (c <= 'z');
 end;
 
-(*
-  Load multi-byte word in the FAT structure
-*)
-(* Load a 2-byte little-endian word *)
+{ Load a 2-byte little-endian word }
 function ld_word(ptr: pBYTE): word;
 begin
   Result := (ptr[1] shl 8) or ptr[0];
 end;
 
-(* Load a 4-byte little-endian word *)
+{ Load a 4-byte little-endian word }
 function ld_dword(ptr: pBYTE): DWORD;
 var
   rv: DWORD;
@@ -508,11 +514,13 @@ begin
   Result := clst;
 end;
 
-(*
+{
   Directory handling - Rewind directory index
-*)
 
-(* Pointer to directory object *)
+  @param(dj Pointer to directory object)
+
+  @reaturns(FRESULT)
+}
 function dir_rewind(dj: pDIR): FRESULT;
 var
   clst: CLUST;
@@ -541,12 +549,13 @@ begin
   Result := FR_OK;
 end;
 
-(*-----------------------------------------------------------------------*)
-(* Directory handling - Move directory index next                        *)
-(*-----------------------------------------------------------------------*)
+{
+  Directory handling - Move directory index next
 
-(* FR_OK:Succeeded, FR_NO_FILE:End of table *)
-(* Pointer to directory object *)
+  @param(dj Pointer to directory object)
+
+  @returns(FRESULT)
+}
 function dir_next(dj: pDIR): FRESULT;
 var
   clst: CLUST;
@@ -664,12 +673,14 @@ begin
   Result := FR_OK;
 end;
 
-(*
+{
   Directory handling - Find an object in the directory
-*)
 
-(* Pointer to the directory object linked to the file name *)
-(* 32-byte working buffer *)
+  @param(dj Pointer to the directory object linked to the file name)
+  @param(dir 32-byte working buffer)
+
+  @returns(FRESULT)
+}
 function dir_find(dj: pDIR; dir: pBYTE): FRESULT;
 var
   res: FRESULT;
@@ -705,13 +716,14 @@ begin
 end;
 
 {$ifdef PF_USE_DIR}
-(*
+{
   Read an object from the directory
-*)
 
-(* Pointer to the directory object to store read object name *)
-(* 32-byte working buffer *)
+  @param(dj Pointer to the directory object to store read object name)
+  @param(dir 32-byte working buffer)
 
+  @returns(FRESULT)
+}
 function dir_read(dj: pDIR; dir: pBYTE): FRESULT;
 var
   res: FRESULT;
@@ -752,18 +764,17 @@ begin
     dj.sect := 0;
   Result := res;
 end;
-
 {$endif}
 
-(*
+{
   Follow a file path
-*)
 
-(* FR_OK(0): successful, !=0: error code *)
-(* Directory object to return last directory and found object *)
-(* 32-byte working buffer *)
-(* Full-path string to find a file or directory *)
+  @param(dj Directory object to return last directory and found object)
+  @param(dir 32-byte working buffer)
+  @param(path Full-path string to find a file or directory)
 
+  @returns(FRESULT)
+}
 function follow_path(dj: pDIR; dir: pBYTE; path: PChar): FRESULT;
 var
   res: FRESULT;
@@ -818,15 +829,14 @@ begin
   Result := res;
 end;
 
-(*-----------------------------------------------------------------------*)
-(* Get file information from directory entry                             *)
-(*-----------------------------------------------------------------------*)
 {$ifdef PF_USE_DIR}
-(* No return code *)
-(* Pointer to the directory object *)
-(* 32-byte working buffer *)
-(* Pointer to store the file information *)
+{
+  Get file information from directory entry
 
+  @param(dj Pointer to the directory object)
+  @param(dir 32-byte working buffer)
+  @param(fno Pointer to store the file information)
+}
 procedure get_fileinfo(dj: pDIR; dir: pBYTE; fno: pFILINFO);
 var
   i: BYTE;
