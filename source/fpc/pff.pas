@@ -1,7 +1,36 @@
+{
+  Petit FatFs - FAT file system module for FPC
+
+  Copyright (C) 2019, ChaN, all right reserved.
+  Copyright (C) 2019, I. Kakoulidis, all right reserved.
+
+  Petit FatFs module is an open source software. Redistribution and use of
+  Petit FatFs in source and binary forms, with or without modification, are
+  permitted provided that the following condition is met:
+
+  1. Redistributions of source code must retain the above copyright notice,
+     this condition and the following disclaimer.
+
+  This software is provided by the copyright holder and contributors "AS IS"
+  and any warranties related to this software are DISCLAIMED.
+  The copyright owner or contributors be NOT LIABLE for any damages caused
+  by use of this software.
+}
+
+{
+  @abstract(Petit FatFs is a sub-set of FatFs module for Tiny 8-bit MicroControllers.
+  It can be incorporated into the Tiny MicroControllers with limited memory
+  even if the RAM size is less than sector size.)
+}
+
 unit pff;
 
 {$mode delphi}
 {$define PF_USE_READ}
+{$define PF_USE_DIR}
+
+{$undef PF_USE_LSEEK}
+{$undef PF_USE_WRITE}
 
 {$define PF_FS_FAT12}
 {$define PF_FS_FAT16}
@@ -17,25 +46,22 @@ const
 (*
   File status flag (FATFS.flag)
 *)
-FA_OPENED =	$01;
-FA_WPRT	  =	$02;
-FA__WIP	  =	$40;
+  FA_OPENED = $01;
+  FA_WPRT = $02;
+  FA__WIP = $40;
 
 (*
   File attribute bits for directory entry
 *)
 
-AM_RDO	= $01;	(* Read only *)
-AM_HID	= $02;	(* Hidden *)
-AM_SYS	= $04;	(* System *)
-AM_VOL	= $08;	(* Volume label *)
-AM_LFN	= $0F;	(* LFN entry *)
-AM_DIR	= $10;	(* Directory *)
-AM_ARC	= $20;	(* Archive *)
-AM_MASK	= $3F;	(* Mask of defined bits *)
-
-
-
+  AM_RDO = $01;  (* Read only *)
+  AM_HID = $02;  (* Hidden *)
+  AM_SYS = $04;  (* System *)
+  AM_VOL = $08;  (* Volume label *)
+  AM_LFN = $0F;  (* LFN entry *)
+  AM_DIR = $10;  (* Directory *)
+  AM_ARC = $20;  (* Archive *)
+  AM_MASK = $3F;  (* Mask of defined bits *)
 
   _FS_32ONLY = 0;
 
@@ -46,7 +72,6 @@ AM_MASK	= $3F;	(* Mask of defined bits *)
   FS_FAT12 = 1;
   FS_FAT16 = 2;
   FS_FAT32 = 3;
-
 
   PF_USE_LCC = 0;
 
@@ -68,8 +93,8 @@ AM_MASK	= $3F;	(* Mask of defined bits *)
   BS_VolID32 = 67;
   BS_VolLab32 = 71;
   BS_FilSysType32 = 82;
-  BS_55AA = 510;  
-  
+  BS_55AA = 510;
+
   BPB_BytsPerSec = 11;
   BPB_SecPerClus = 13;
   BPB_RsvdSecCnt = 14;
@@ -168,28 +193,69 @@ type
     FR_NO_FILESYSTEM);
 
 
-(* Petit FatFs module application interface                     *)
+(* Petit FatFs module application interface *)
 
-(* Mount/Unmount a logical drive *)
+{
+  Mount/Unmount a logical Drive
+
+  @param(fs Pointer to new file system object)
+}
 function pf_mount(fs: pFATFS): FRESULT;
 
-(* Open a file *)
+{
+  Open or Create a file
+
+  @param(path Pointer to the file name)
+}
 function pf_open(path: PChar): FRESULT;
 
-(* Read data from the open file *)
+{$ifdef PF_USE_READ}
+{
+  Read data from the open file
+
+  @param(buff Pointer to the read buffer (nil: Forward data to the stream))
+  @param(btr Number of bytes to read)
+  @param(br Pointer to number of bytes read)
+}
 function pf_read(buff: Pointer; btr: UINT; br: pUINT): FRESULT;
+{$endif}
 
-(* Write data to the open file *)
-//function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
+{$ifdef PF_USE_WRITE}
+{
+  Write data to the open file
 
-(* Move file pointer of the open file *)
-//function pf_lseek(ofs: DWORD): FRESULT;
+  @param(buff Pointer to the data to be written)
+  @param(btw Number of bytes to write (0:Finalize the current write operation))
+  @param(bw Pointer to number of bytes written)
+}
+function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
+{$endif}
 
-(* Open a directory *)
-//function pf_opendir(dj: pDIR; path: PChar): FRESULT;
+{$ifdef PF_USE_LSEEK}
+{
+  Move file pointer of the open file
+  @param(ofs File pointer from top of file)
+}
+function pf_lseek(ofs: DWORD): FRESULT;
+{$endif}
 
-(* Read a directory item from the open directory *)
-//function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
+{$ifdef PF_USE_DIR}
+{
+  Create a directroy Object
+
+  param(dj Pointer to directory object to create)
+  param(path Pointer to the directory path)
+}
+function pf_opendir(dj: pDIR; path: PChar): FRESULT;
+
+{
+  Read a directory item from the open directory
+
+  param(dj Pointer to the open directory object)
+  param(fno Pointer to file information to return)
+}
+function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
+{$endif}
 
 implementation
 
@@ -197,72 +263,61 @@ var
   iFatFS: PFATFS;
 
 {$ifdef PF_USE_LCC && !defined(_EXCVT)}
-
 {$ifdef _DF2S}
-function IsDBCS1(c: integer): boolean; 
+function IsDBCS1(c: integer): boolean;
 begin
-  result:= ((BYTE(c)>=_DF1S) and (BYTE(c)<=_DF1E)) 
-    or ((BYTE(c)>=_DF2S) and (BYTE(c)<=_DF2E));
+  Result := ((BYTE(c) >= _DF1S) and (BYTE(c) <= _DF1E)) or
+    ((BYTE(c) >= _DF2S) and (BYTE(c) <= _DF2E));
 end;
 {$else}
-function IsDBCS1(c: integer): boolean; 
+function IsDBCS1(c: integer): boolean;
 begin
-  result:= (BYTE(c)>=_DF1S) 
-    and (BYTE(c)<=_DF1E);
+  Result := (BYTE(c) >= _DF1S) and (BYTE(c) <= _DF1E);
 end;
 {$endif}
-
 {$ifdef _DS3S}
-function IsDBCS2(c: integer): boolean; 
+function IsDBCS2(c: integer): boolean;
 begin
-  result:= ((BYTE(c)>=_DS1S) and (BYTE(c)<=_DS1E)) 
-    or ((BYTE(c)>=_DS2S) and (BYTE(c)<=_DS2E)) 
-    or((BYTE(c)>=_DS3S) and (BYTE(c)<=_DS3E));
+  Result := ((BYTE(c) >= _DS1S) and (BYTE(c) <= _DS1E)) or
+    ((BYTE(c) >= _DS2S) and (BYTE(c) <= _DS2E)) or ((BYTE(c) >= _DS3S) and (BYTE(c) <= _DS3E));
 end;
 {$else}
-function IsDBCS2(c: integer): boolean; 
+function IsDBCS2(c: integer): boolean;
 begin
-  result:= ((BYTE(c)>=_DS1S) and (BYTE(c)<=_DS1E)) 
-    or ((BYTE(c)>=_DS2S) and (BYTE(c)<=_DS2E));
+  Result := ((BYTE(c) >= _DS1S) and (BYTE(c) <= _DS1E)) or
+    ((BYTE(c) >= _DS2S) and (BYTE(c) <= _DS2E));
 end;
 {$endif}
-
 {$else}
 (* SBCS configuration *)
-function IsDBCS1(c: integer): boolean; 
+function IsDBCS1(c: integer): boolean;
 begin
-  result:= false;
+  Result := False;
 end;
-function IsDBCS2(c: integer): boolean; 
+
+function IsDBCS2(c: integer): boolean;
 begin
-  result:= false;
+  Result := False;
 end;
 {$endif}
-
-
 
 function IsUpper(c: char): boolean;
 begin
-    result := (c>='A') and (c<='Z');
+  Result := (c >= 'A') and (c <= 'Z');
 end;
 
 function IsLower(c: char): boolean;
 begin
-    result := (c>='a') and (c<='z');
+  Result := (c >= 'a') and (c <= 'z');
 end;
 
 (*
   Load multi-byte word in the FAT structure
 *)
-
 (* Load a 2-byte little-endian word *)
 function ld_word(ptr: pBYTE): word;
-var
-  rv: word;
 begin
-  rv := ptr[1];
-  rv := rv shl 8 or ptr[0];
-  Result := rv;
+  Result := (ptr[1] shl 8) or ptr[0];
 end;
 
 (* Load a 4-byte little-endian word *)
@@ -278,37 +333,38 @@ begin
 end;
 
 (* String functions                                                      *)
-
 (* Fill memory block *)
-procedure mem_set(dst: pointer;  val: integer;  cnt: integer);
+procedure mem_set(dst: pointer; val: integer; cnt: integer);
 var
-d: pchar;
+  d: PChar;
 begin
   d := dst;
   while cnt > 0 do
   begin
     d^ := char(val);
-    inc(d);
-    dec(cnt);
+    Inc(d);
+    Dec(cnt);
   end;
 end;
 
 (* Compare memory block *)
-function mem_cmp(dst: pointer;  src: pointer;  cnt: integer): integer; 
+function mem_cmp(dst: pointer; src: pointer; cnt: integer): integer;
 var
-d: pchar; 
-s: pchar; 
-r: integer;
+  d: PChar;
+  s: PChar;
+  r: integer;
 begin
   d := dst;
   s := src;
-  r := 0; 
+  r := 0;
   while (cnt > 0) and (r = 0) do
   begin
     r := Ord(d^) - Ord(s^);
-    inc(d); inc(s); dec(cnt);
-  end;  
-  result:= r; 
+    Inc(d);
+    Inc(s);
+    Dec(cnt);
+  end;
+  Result := r;
 end;
 
 (*-----------------------------------------------------------------------*)
@@ -317,64 +373,72 @@ end;
 
 (* 1:IO error, Else:Cluster status *)
 (* Cluster# to get the link information *)
-function get_fat(clst: CLUST): CLUST; 
+function get_fat(clst: CLUST): CLUST;
 var
-buf: array [0..Pred(4)] of BYTE; 
-fs: pFATFS;
- 
+  buf: array [0..Pred(4)] of BYTE;
+  fs: pFATFS;
+
 {$ifdef PF_FS_FAT12}
-wc: UINT; 
-bc: UINT; 
-ofs: UINT; 
+  wc: UINT;
+  bc: UINT;
+  ofs: UINT;
 {$endif}
 
 begin
-  fs:=iFatFs; 
+  fs := iFatFs;
 
   (* Range check *)
-  if (clst<2) or (clst>=fs.n_fatent) then Exit(1);
+  if (clst < 2) or (clst >= fs.n_fatent) then
+    Exit(1);
 
   case fs.fs_type of
     {$ifdef  PF_FS_FAT12}
     FS_FAT12:
     begin
 
-        bc:= UINT(clst); 
-        bc:= bc + (bc div 2); 
-        ofs:= bc mod 512; 
-        bc:= bc div (512); 
-        if ofs<>511 then
-          if disk_readp(@buf,fs.fatbase+bc,ofs,2) <> RES_OK then Exit(1)
+      bc := UINT(clst);
+      bc := bc + (bc div 2);
+      ofs := bc mod 512;
+      bc := bc div (512);
+      if ofs <> 511 then
+        if disk_readp(@buf, fs.fatbase + bc, ofs, 2) <> RES_OK then
+          Exit(1)
         else
-        begin 
-          if disk_readp(@buf,fs.fatbase+bc,511,1) <> RES_OK then Exit(1);
-          if disk_readp(@buf+1,fs.fatbase+bc+1,0,1) <> RES_OK then Exit(1);
+        begin
+          if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
+            Exit(1);
+          if disk_readp(@buf + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
+            Exit(1);
         end;
-        wc:= ld_word(buf); 
-        if (clst and 1) <> 0 then Exit(wc shr 4)
-        else Exit(wc and $FFF); 
+      wc := ld_word(buf);
+      if (clst and 1) <> 0 then
+        Exit(wc shr 4)
+      else
+        Exit(wc and $FFF);
     end;
-    {$endif}    
-    
-    {$ifdef PF_FS_FAT16}    
-    FS_FAT16:
-    begin
-      if disk_readp(@buf,fs.fatbase+clst div 256,(UINT(clst) mod 256)*2,2) <> RES_OK then Exit(1);
-      Exit(ld_word(buf)); 
-    end;      
     {$endif}
 
-    {$ifdef PF_FS_FAT32} 
+    {$ifdef PF_FS_FAT16}
+    FS_FAT16:
+    begin
+      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) <> RES_OK then
+        Exit(1);
+      Exit(ld_word(buf));
+    end;
+    {$endif}
+
+    {$ifdef PF_FS_FAT32}
     FS_FAT32:
     begin
-      if disk_readp(@buf,fs.fatbase+clst div 128,(UINT(clst) mod 128)*4,4) <> RES_OK then Exit(1);
-      Exit(ld_dword(buf) and $0FFFFFFF); 
+      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) <> RES_OK then
+        Exit(1);
+      Exit(ld_dword(buf) and $0FFFFFFF);
     end;
-    {$endif}    
+    {$endif}
   end;
 
-  (* An error occured at the disk I/O layer *)  
-  result:= 1; 
+  (* An error occured at the disk I/O layer *)
+  Result := 1;
 
 end;
 
@@ -416,32 +480,32 @@ end;
 
 function clust2sect(clst: CLUST): DWORD;
 var
-fs: pFATFS;
+  fs: pFATFS;
 begin
-  fs:=iFatFs;
-  clst:= clst - 2;
-  if clst>=(fs.n_fatent-2) then
+  fs := iFatFs;
+  clst := clst - 2;
+  if clst >= (fs.n_fatent - 2) then
     (* Invalid cluster# *)
-    result:= 0
+    Result := 0
   else
-    result:= DWORD(clst*fs.csize+fs.database);
+    Result := DWORD(clst * fs.csize + fs.database);
 end;
 
 (* Pointer to directory entry *)
 function get_clust(dir: pBYTE): CLUST;
 var
-fs: pFATFS;
-clst: CLUST;
+  fs: pFATFS;
+  clst: CLUST;
 begin
-  fs:=iFatFs;
-  clst:=0;
-  if (_FS_32ONLY <> 0) or ((PF_FS_FAT32 <> 0) and (fs.fs_type=FS_FAT32)) then
+  fs := iFatFs;
+  clst := 0;
+  if (_FS_32ONLY <> 0) or ((PF_FS_FAT32 <> 0) and (fs.fs_type = FS_FAT32)) then
   begin
-    clst:= ld_word(dir+DIR_FstClusHI);
-    clst:= clst shl 16;
+    clst := ld_word(dir + DIR_FstClusHI);
+    clst := clst shl 16;
   end;
-  clst:= clst or (ld_word(dir+DIR_FstClusLO));
-  result:= clst;
+  clst := clst or (ld_word(dir + DIR_FstClusLO));
+  Result := clst;
 end;
 
 (*
@@ -451,28 +515,30 @@ end;
 (* Pointer to directory object *)
 function dir_rewind(dj: pDIR): FRESULT;
 var
-clst: CLUST;
-fs: pFATFS;
+  clst: CLUST;
+  fs: pFATFS;
 begin
-  fs:=iFatFs;
-  dj.index:= 0;
-  clst:= dj.sclust;
+  fs := iFatFs;
+  dj.index := 0;
+  clst := dj.sclust;
   (* Check start cluster range *)
-  if (clst=1) or (clst>=fs.n_fatent) then Exit(FR_DISK_ERR);
+  if (clst = 1) or (clst >= fs.n_fatent) then
+    Exit(FR_DISK_ERR);
 
-  if (PF_FS_FAT32 <> 0) and (0=clst) and ((_FS_32ONLY <> 0) or (fs.fs_type=FS_FAT32)) then
+  if (PF_FS_FAT32 <> 0) and (0 = clst) and ((_FS_32ONLY <> 0) or
+    (fs.fs_type = FS_FAT32)) then
     (* Replace cluster# 0 with root cluster# if in FAT32 *)
-    clst:= CLUST(fs.dirbase);
+    clst := CLUST(fs.dirbase);
 
   (* Current cluster *)
-  dj.clust:= clst;
+  dj.clust := clst;
   (* Current sector *)
-  if (_FS_32ONLY <> 0) or (clst <>0) then
-     dj.sect:=clust2sect(clst)
+  if (_FS_32ONLY <> 0) or (clst <> 0) then
+    dj.sect := clust2sect(clst)
   else
-     dj.sect:= fs.dirbase;
+    dj.sect := fs.dirbase;
   (* Seek succeeded *)
-  result:= FR_OK;
+  Result := FR_OK;
 end;
 
 (*-----------------------------------------------------------------------*)
@@ -483,111 +549,119 @@ end;
 (* Pointer to directory object *)
 function dir_next(dj: pDIR): FRESULT;
 var
-clst: CLUST;
-i: WORD;
-fs: pFATFS;
+  clst: CLUST;
+  i: WORD;
+  fs: pFATFS;
 begin
-  fs:=iFatFs;
-  i:= dj.index+1;
-  if (0=i) or (0=dj.sect) then Exit(FR_NO_FILE);
-    (* Report EOT when index has reached 65535 *)
+  fs := iFatFs;
+  i := dj.index + 1;
+  if (0 = i) or (0 = dj.sect) then
+    Exit(FR_NO_FILE);
+  (* Report EOT when index has reached 65535 *)
   if 0 = (i mod 16) then
   begin
     (* Sector changed? *)
-    inc(dj.sect); (* Next sector *)
+    Inc(dj.sect); (* Next sector *)
 
-    if dj.clust=0 then
+    if dj.clust = 0 then
       (* Static table *)
-      if i>=fs.n_rootdir then Exit(FR_NO_FILE)
-        (* Report EOT when end of table *)
-    else
+      if i >= fs.n_rootdir then
+        Exit(FR_NO_FILE)
+      (* Report EOT when end of table *)
+      else
       (* Dynamic table *)
-      if ((i div 16) and (fs.csize-1))=0 then
+      if ((i div 16) and (fs.csize - 1)) = 0 then
       begin
         (* Cluster changed? *)
-        clst:= get_fat(dj.clust); (* Get next cluster *)
-        if clst<=1 then Exit(FR_DISK_ERR);
-        if clst>=fs.n_fatent then Exit(FR_NO_FILE);
-          (* Report EOT when it reached end of dynamic table *)
-        dj.clust:= clst;
-        dj.sect:= clust2sect(clst);
+        clst := get_fat(dj.clust); (* Get next cluster *)
+        if clst <= 1 then
+          Exit(FR_DISK_ERR);
+        if clst >= fs.n_fatent then
+          Exit(FR_NO_FILE);
+        (* Report EOT when it reached end of dynamic table *)
+        dj.clust := clst;
+        dj.sect := clust2sect(clst);
         (* Initialize data for new cluster *)
       end;
   end;
-  dj.index:= i;
-  result:= FR_OK;
+  dj.index := i;
+  Result := FR_OK;
 end;
 
-
 (* Pointer to the directory object *)
-
 function create_name(dj: pDIR; var path: PChar): FRESULT;
 var
-p: PBYTE;
+  p: PBYTE;
 {$ifdef PF_USE_LCC}
 {$ifdef _EXCVT}
-cvt: array [0..] of BYTE = _EXCVT; 
+  cvt: array [0..127] of BYTE = _EXCVT;
 {$endif}
 {$endif}
-c: BYTE;
-d: BYTE;
-ni: BYTE; 
-si: BYTE; 
-i: BYTE; 
-sfn: pBYTE; 
+  c: BYTE;
+  d: BYTE;
+  ni: BYTE;
+  si: BYTE;
+  i: BYTE;
+  sfn: pBYTE;
 begin
- (* Create file name in directory form *)
-  sfn:= dj.fn; 
-  mem_set(sfn, ord(' '), 11);
-  si:= 0;
-  i:=0; 
-  ni:= 8; 
-  p:= PBYTE(path);
-  while true do
-  begin 
-    c:= p[si]; inc(si);
-    if (c<=Ord(' ')) or (c=Ord('/')) then 
-      (* Break on end of segment *)    
+  (* Create file name in directory form *)
+  sfn := dj.fn;
+  mem_set(sfn, Ord(' '), 11);
+  si := 0;
+  i := 0;
+  ni := 8;
+  p := PBYTE(path);
+  while True do
+  begin
+    c := p[si];
+    Inc(si);
+    if (c <= Ord(' ')) or (c = Ord('/')) then
+      (* Break on end of segment *)
       break;
 
-    if (c=Ord('.'))or(i>=ni) then
-    begin 
-      if (ni<>8)or(c<>Ord('.')) then break;
-      i:= 8; 
-      ni:= 11; 
+    if (c = Ord('.')) or (i >= ni) then
+    begin
+      if (ni <> 8) or (c <> Ord('.')) then
+        break;
+      i := 8;
+      ni := 11;
       continue;
     end;
     {$ifdef PF_USE_LCC}{$ifdef _EXCVT}
-    if c>=$80 then
-      (* To upper extended char (SBCS) *)    
-      c:= cvt[c-$80];
+    if c >= $80 then
+      (* To upper extended char (SBCS) *)
+      c := cvt[c - $80];
     {$endif}
     {$endif}
-    
-    (* DBC 1st byte? *)    
-    if IsDBCS1(c) and (i<ni-1) then
-    begin 
-      (* Get 2nd byte *)    
-      d := p[si];  inc(si);
-      sfn[i] := c; inc(i);
-      sfn[i] := d; inc(i);  
+
+    (* DBC 1st byte? *)
+    if IsDBCS1(c) and (i < ni - 1) then
+    begin
+      (* Get 2nd byte *)
+      d := p[si];
+      Inc(si);
+      sfn[i] := c;
+      Inc(i);
+      sfn[i] := d;
+      Inc(i);
     end
     else
-    begin 
+    begin
       (* Single byte code *)
       if (PF_USE_LCC <> 0) and IsLower(Char(c)) then
-        c:= c - $20; 
-      (* toupper *)        
-      sfn[i]:= c; inc(i);  
+        c := c - $20;
+      (* toupper *)
+      sfn[i] := c;
+      Inc(i);
     end;
   end;
-  
-  path := @p[si];
-  
-  (* Set last segment flag if end of path *)
-  sfn[11]:= Integer(c<=Ord(' '));
 
-  result:= FR_OK; 
+  path := @p[si];
+
+  (* Set last segment flag if end of path *)
+  sfn[11] := Integer(c <= Ord(' '));
+
+  Result := FR_OK;
 end;
 
 (*
@@ -596,35 +670,38 @@ end;
 
 (* Pointer to the directory object linked to the file name *)
 (* 32-byte working buffer *)
-function dir_find(dj: pDIR;  dir: pBYTE): FRESULT; 
+function dir_find(dj: pDIR; dir: pBYTE): FRESULT;
 var
-res: FRESULT; 
-c: BYTE; 
+  res: FRESULT;
+  c: BYTE;
 begin
   res := dir_rewind(dj); (* Rewind directory object *)
-  if res <> FR_OK then Exit(res);
+  if res <> FR_OK then
+    Exit(res);
 
   repeat
-  begin 
-    (* Read an entry *)  
-    if disk_readp(dir,dj.sect,(dj.index mod 16)*32,32) <> RES_OK then Exit(FRESULT.FR_DISK_ERR);
-    (* First character *)
-    c:= dir[DIR_Name];
-    if c=0 then
-    begin 
-      (* Reached to end of table *)    
-      res:= FR_NO_FILE; 
-      break;
-    end;
+    begin
+      (* Read an entry *)
+      if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> RES_OK then
+        Exit(FRESULT.FR_DISK_ERR);
+      (* First character *)
+      c := dir[DIR_Name];
+      if c = 0 then
+      begin
+        (* Reached to end of table *)
+        res := FR_NO_FILE;
+        break;
+      end;
 
-    (* Is it a valid entry? *)
-    if (0=(dir[DIR_Attr] and AM_VOL)) and (0=mem_cmp(dir,dj.fn,11)) then break;
-    (* Next entry *)    
-    res:= dir_next(dj); 
-  end
-  until not (res=FR_OK);
-  
-  result:= res; 
+      (* Is it a valid entry? *)
+      if (0 = (dir[DIR_Attr] and AM_VOL)) and (0 = mem_cmp(dir, dj.fn, 11)) then
+        break;
+      (* Next entry *)
+      res := dir_next(dj);
+    end
+  until not (res = FR_OK);
+
+  Result := res;
 end;
 
 {$ifdef PF_USE_DIR}
@@ -635,37 +712,47 @@ end;
 (* Pointer to the directory object to store read object name *)
 (* 32-byte working buffer *)
 
-function dir_read(dj: pDIR;  dir: pBYTE): FRESULT; 
+function dir_read(dj: pDIR; dir: pBYTE): FRESULT;
 var
-res: FRESULT; 
-a: BYTE; 
-c: BYTE; 
+  res: FRESULT;
+  a: BYTE;
+  c: BYTE;
 begin
-  res:= FR_NO_FILE; 
+  res := FR_NO_FILE;
   while dj.sect <> 0 do
-  begin 
-   (* Read an entry *)  
-    res:= disk_readp(dir,dj.sect,(dj.index mod 16)*32,32)
-    if res<>FR_OK then break; 
-    c:= dir[DIR_Name]; 
-    if c=0 then
-    begin 
-     (* Reached to end of table *)    
-      res:= FR_NO_FILE; 
+  begin
+    (* Read an entry *)
+    if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> DRESULT.RES_OK then
+    begin
+      res := FR_DISK_ERR;
+      break;
+    end
+    else
+      res := FR_OK;
+
+    c := dir[DIR_Name];
+    if c = 0 then
+    begin
+      (* Reached to end of table *)
+      res := FR_NO_FILE;
       break;
     end;
-    a:= dir[DIR_Attr] and AM_MASK; 
+    a := dir[DIR_Attr] and AM_MASK;
 
-    (* Is it a valid entry? *)    
-    if (c<>$E5) and (c<>'.') and (0=(a and AM_VOL)) then break;
+    (* Is it a valid entry? *)
+    if (c <> $E5) and (c <> Ord('.')) and (0 = (a and AM_VOL)) then
+      break;
     (* Next entry *)
-    res:= dir_next(dj); 
-    if res<>FR_OK then break;
+    res := dir_next(dj);
+    if res <> FR_OK then
+      break;
   end;
-  
-  if res<>FR_OK then dj.sect:= 0; 
-  result:= res; 
+
+  if res <> FR_OK then
+    dj.sect := 0;
+  Result := res;
 end;
+
 {$endif}
 
 (*
@@ -677,63 +764,113 @@ end;
 (* 32-byte working buffer *)
 (* Full-path string to find a file or directory *)
 
-function follow_path(dj: pDIR;  dir: pBYTE;  path: pchar): FRESULT;
+function follow_path(dj: pDIR; dir: pBYTE; path: PChar): FRESULT;
 var
-res: FRESULT;
+  res: FRESULT;
 begin
   (* Strip leading spaces *)
-  while path^=' ' do
-    inc(path);
+  while path^ = ' ' do
+    Inc(path);
 
   (* Strip heading separator if exist *)
-  if path^='/' then inc(path);
+  if path^ = '/' then
+    Inc(path);
 
   (* Set start directory (always root dir) *)
-  dj.sclust:= 0;
+  dj.sclust := 0;
 
-  if path^<' ' then
+  if path^ < ' ' then
   begin
     (* Null path means the root directory *)
-    res:= dir_rewind(dj);
-    dir[0]:= 0;
+    res := dir_rewind(dj);
+    dir[0] := 0;
   end
   else
   begin
     (* Follow path *)
-    while true do
+    while True do
     begin
       (* Get a segment *)
-      res:= create_name(dj, path);
-      if res<>FR_OK then break;
+      res := create_name(dj, path);
+      if res <> FR_OK then
+        break;
       (* Find it *)
-      res:= dir_find(dj, dir);
-      if res<>FR_OK then
+      res := dir_find(dj, dir);
+      if res <> FR_OK then
         (* Could not find the object *)
         break;
 
-      if dj.fn[11]<>0 then
+      if dj.fn[11] <> 0 then
         (* Last segment match. Function completed. *)
         break;
 
       if (dir[DIR_Attr] = 0) and (AM_DIR <> 0) then
       begin
         (* Cannot follow path because it is a file *)
-        res:= FR_NO_FILE;
+        res := FR_NO_FILE;
         break;
       end;
       (* Follow next *)
-      dj.sclust:= get_clust(dir);
+      dj.sclust := get_clust(dir);
     end;
   end;
 
-  result:= res;
+  Result := res;
 end;
 
+(*-----------------------------------------------------------------------*)
+(* Get file information from directory entry                             *)
+(*-----------------------------------------------------------------------*)
+{$ifdef PF_USE_DIR}
+(* No return code *)
+(* Pointer to the directory object *)
+(* 32-byte working buffer *)
+(* Pointer to store the file information *)
 
-(*
- Mount/Unmount a Locical Drive
-*)
-(* Pointer to new file system object *)
+procedure get_fileinfo(dj: pDIR; dir: pBYTE; fno: pFILINFO);
+var
+  i: BYTE;
+  c: BYTE;
+  p: PChar;
+begin
+  p := fno.fname;
+  if dj.sect <> 0 then
+  begin
+    for i := 0 to Pred(8) do
+    begin
+      (* Copy file name body *)
+      c := dir[i];
+      if c = Ord(' ') then
+        break;
+      if c = $05 then
+        c := $E5;
+      p^ := Char(c);
+      Inc(p);
+    end;
+    if dir[8] <> Ord(' ') then
+    begin
+      (* Copy file name extension *)
+      p^ := '.';
+      Inc(p);
+      for i := 8 to Pred(11) do
+      begin
+        c := dir[i];
+        if c = Ord(' ') then
+          break;
+        p^ := Char(c);
+        Inc(p);
+      end;
+    end;
+    fno.fattrib := dir[DIR_Attr];
+    fno.fsize := ld_dword(dir + DIR_FileSize);
+    fno.fdate := ld_word(dir + DIR_WrtDate);
+    fno.ftime := ld_word(dir + DIR_WrtTime);
+  end;
+  p^ := Char(0);
+end;
+
+{$endif}
+
 function pf_mount(fs: pFATFS): FRESULT;
 var
   fmt: byte;
@@ -753,7 +890,7 @@ begin
   (* Check sector 0 as an SFD format *)
   fmt := check_fs(@buf, bsect);
 
-WriteLn(fmt);
+  WriteLn(fmt);
   (* Not an FAT boot record, it may be FDISK format *)
   if fmt = 1 then
   begin
@@ -832,16 +969,136 @@ WriteLn(fmt);
   Result := FR_OK;
 end;
 
-(*
-  Open or Create a File
-*)
-(* Pointer to the file name *)
-function pf_open(path: pchar): FRESULT;
+function pf_open(path: PChar): FRESULT;
 var
-res: FRESULT;
-dj: DIR;
-sp: array [0..Pred(12)] of BYTE;
-dir: array [0..Pred(32)] of BYTE;
+  res: FRESULT;
+  dj: DIR;
+  sp: array [0..Pred(12)] of BYTE;
+  dir: array [0..Pred(32)] of BYTE;
+  fs: pFATFS;
+begin
+  fs := iFatFs;
+
+  (* Check file system *)
+  if fs = nil then
+    Exit(FR_NOT_ENABLED);
+
+  fs.flag := 0;
+  dj.fn := sp;
+  (* Follow the file path *)
+  res := follow_path(@dj, dir, path);
+
+  (* Follow failed *)
+  if res <> FR_OK then
+    Exit(res);
+
+  (* It is a directory *)
+  if (dir[0] = 0) or ((dir[DIR_Attr] and AM_DIR) <> 0) then
+    Exit(FR_NO_FILE);
+
+  (* File start cluster *)
+  fs.org_clust := get_clust(dir);
+  (* File size *)
+  fs.fsize := ld_dword(@dir + DIR_FileSize);
+  (* File pointer *)
+  fs.fptr := 0;
+  fs.flag := FA_OPENED;
+
+  Result := FR_OK;
+end;
+
+function pf_read(buff: pointer; btr: UINT; br: pUINT): FRESULT;
+var
+  dr: DRESULT;
+  clst: CLUST;
+  sect: DWORD;
+  remain: DWORD;
+  rcnt: UINT;
+  cs: BYTE;
+  rbuff: pBYTE;
+  fs: pFATFS;
+begin
+  rbuff := buff;
+  fs := iFatFs;
+
+  br^ := 0;
+  (* Check file system *)
+  if nil = fs then
+    Exit(FR_NOT_ENABLED);
+
+  (* Check if opened *)
+  if 0 = (fs.flag and FA_OPENED) then
+    Exit(FR_NOT_OPENED);
+
+  remain := fs.fsize - fs.fptr;
+  if btr > remain then
+    (* Truncate btr by remaining bytes *)
+    btr := UINT(remain);
+
+  (* Repeat until all data transferred *)
+  while btr <> 0 do
+  begin
+    (* On the sector boundary? *)
+    if (fs.fptr mod 512) = 0 then
+    begin
+      (* Sector offset in the cluster *)
+      cs := BYTE((fs.fptr div 512) and (fs.csize - 1));
+      (* On the cluster boundary? *)
+      if 0 = cs then
+      begin
+        (* On the top of the file? *)
+        if fs.fptr = 0 then
+          clst := fs.org_clust
+        else
+          clst := get_fat(fs.curr_clust);
+        if clst <= 1 then
+        begin
+          fs.flag := 0;
+          Exit(FR_DISK_ERR);
+        end;
+
+        (* Update current cluster *)
+        fs.curr_clust := clst;
+      end;
+      (* Get current sector *)
+      sect := clust2sect(fs.curr_clust);
+      if 0 = sect then
+      begin
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.dsect := sect + cs;
+    end;
+    (* Get partial sector data from sector buffer *)
+    rcnt := 512 - UINT(fs.fptr mod 512);
+    if rcnt > btr then
+      rcnt := btr;
+    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
+    if dr <> RES_OK then
+    begin
+      fs.flag := 0;
+      Exit(FR_DISK_ERR);
+    end;
+    (* Advances file read pointer *)
+    fs.fptr := fs.fptr + (rcnt);
+    (* Update read counter *)
+    btr := btr - rcnt;
+    br^ += rcnt;
+    (* Advances the data pointer if destination is memory *)
+    if rbuff <> nil then
+      rbuff := rbuff + rcnt;
+
+  end;
+  Result := FR_OK;
+end;
+
+{$ifdef PF_USE_LSEEK}
+function pf_lseek(ofs: DWORD): FRESULT;
+var
+clst: CLUST;
+bcs: DWORD;
+sect: DWORD;
+ifptr: DWORD;
 fs: pFATFS;
 begin
   fs:=iFatFs;
@@ -849,124 +1106,243 @@ begin
   (* Check file system *)
   if fs = nil then Exit(FR_NOT_ENABLED);
 
-  fs.flag:= 0;
-  dj.fn:= sp;
-  (* Follow the file path *)
-  res:= follow_path(@dj,dir,path);
+  (* Check if opened *)
+  if (fs.flag and FA_OPENED) = 0 then Exit(FR_NOT_OPENED);
 
-  (* Follow failed *)
-  if res<>FR_OK then Exit(res);
-
-  (* It is a directory *)
-  if (dir[0] = 0) or ((dir[DIR_Attr] and AM_DIR) <> 0) then
-     Exit(FR_NO_FILE);
-
-  (* File start cluster *)
-  fs.org_clust:= get_clust(dir);
-  (* File size *)
-  fs.fsize:= ld_dword(@dir+DIR_FileSize);
-  (* File pointer *)
+  if ofs>fs.fsize then
+    (* Clip offset with the file size *)
+    ofs:= fs.fsize;
+  ifptr:= fs.fptr;
   fs.fptr:= 0;
-  fs.flag:= FA_OPENED;
+  if ofs>0 then
+  begin
+    (* Cluster size (byte) *)
+    bcs:= DWORD(fs.csize)*512;
+    if (ifptr>0) and (((ofs-1) div bcs) >= ((ifptr-1) div bcs)) then
+    begin
+      (* When seek to same or following cluster, *)
+      (* start from the current cluster *)
+      fs.fptr:= (ifptr-1) and (not (bcs-1));
+      ofs:= ofs - fs.fptr;
+      clst:= fs.curr_clust;
+    end
+    else
+    begin
+      (* When seek to back cluster, *)
+      (* start from the first cluster *)
+      clst:= fs.org_clust;
+      fs.curr_clust:= clst;
+    end;
+    while ofs>bcs do
+    begin
+      (* Cluster following loop *)
+      (* Follow cluster chain *)
+      clst:= get_fat(clst);
+      if (clst<=1) or (clst>=fs.n_fatent) then
+      begin
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.curr_clust:= clst;
+      fs.fptr:= fs.fptr + bcs;
+      ofs:= ofs - bcs;
+    end;
+    fs.fptr:= fs.fptr + ofs;
+    (* Current sector *)
+    sect:= clust2sect(clst);
+    if sect = 0 then
+    begin
+      fs.flag := 0;
+      Exit(FR_DISK_ERR);
+    end;
+    fs.dsect:= sect+((fs.fptr div 512) and (fs.csize-1));
+  end;
+  result:= FR_OK;
+end;
+{$endif}
+
+{$ifdef PF_USE_WRITE}
+function pf_write(buff: pinteger;  btw: UINT;  bw: pUINT): FRESULT;
+const
+p: pBYTE = buff;
+var
+clst: CLUST;
+sect: DWORD;
+remain: DWORD;
+cs: BYTE;
+wcnt: UINT;
+fs: pFATFS;
+begin
+  fs:=iFatFs;
+  (* Check file system *)
+  if fs = nil then Exit(FR_NOT_ENABLED);
+
+  bw^:=0;
+  (* Check if opened *)
+  if (fs.flag and FA_OPENED) = 0 then Exit(FR_NOT_OPENED);
+
+  if btw = 0 then
+  begin
+    (* Finalize request *)
+    if (fs.flag and FA__WIP) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
+    begin
+      fs.flag := 0;
+      Exit(FR_DISK_ERR);
+    end;
+    fs.flag:= fs.flag and (not FA__WIP);
+    Exit(FR_OK);
+  end
+  else
+    (* Write data request *)
+    if (fs.flag and FA__WIP) = 0 then
+      (* Round-down fptr to the sector boundary *)
+      fs.fptr:= fs.fptr and $FFFFFE00;
+
+  remain:= fs.fsize-fs.fptr;
+  if btw>remain then
+    btw:= UINT(remain); (* Truncate btw by remaining bytes *)
+
+  while btw <> 0 do
+  begin
+    (* Repeat until all data transferred *)
+    if UINT(fs.fptr) mod 512 = 0 then
+    begin
+      (* On the sector boundary? *)
+      cs:= (BYTE(fs.fptr) div 512) and (fs.csize-1 <> 0); (* Sector offset in the cluster *)
+      if cs = 0 then
+      begin
+        (* On the cluster boundary? *)
+        if fs.fptr=0 then
+          (* On the top of the file? *)
+          clst:= fs.org_clust
+        else
+          clst:= get_fat(fs.curr_clust);
+        if clst<=1 then
+        begin
+          fs.flag := 0;
+          Exit(FR_DISK_ERR);
+        end;
+        fs.curr_clust:= clst;
+        (* Update current cluster *)
+      end;
+      sect:= clust2sect(fs.curr_clust); (* Get current sector *)
+      if sect = 0 then
+      begin
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.dsect:= sect+cs;
+      if disk_writep(0,fs.dsect) <> DRESULT.RES_OK then
+      begin
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.flag:= fs.flag or FA__WIP;
+      (* Initiate a sector write operation *)
+    end;
+    wcnt:= 512-(UINT(fs.fptr) mod 512); (* Number of bytes to write to the sector *)
+    if wcnt>btw then wcnt:= btw;
+    if disk_writep(p,wcnt) then
+    begin
+      fs.flag := 0;
+      Exit(FR_DISK_ERR);
+    end;
+    fs.fptr:= fs.fptr + wcnt;
+    p:= p + wcnt;
+    btw:= btw - wcnt;
+    bw^+=wcnt;
+    (* Send data to the sector *)
+    (* Update pointers and counters *)
+    if UINT(fs.fptr) mod 512 = 0 then
+    begin
+      if disk_writep(0,0) <> DRESULT.RES_OK then
+      begin
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.flag:= fs.flag and ( not FA__WIP);
+      (* Finalize the currtent secter write operation *)
+    end;
+  end;
 
   result:= FR_OK;
 end;
+{$endif}
 
-(*-----------------------------------------------------------------------*)
-(* Read File                                                             *)
-(*-----------------------------------------------------------------------*)
-{$ifdef PF_USE_READ}
-
-(* Pointer to the read buffer (NULL:Forward data to the stream)*)
-(* Number of bytes to read *)
-(* Pointer to number of bytes read *)
-
-function pf_read(buff: pointer;  btr: UINT;  br: pUINT): FRESULT;
+{$ifdef PF_USE_DIR}
+function pf_opendir(dj: pDIR; path: PChar): FRESULT;
 var
-dr: DRESULT; 
-clst: CLUST; 
-sect: DWORD; 
-remain: DWORD; 
-rcnt: UINT; 
-cs: BYTE; 
-rbuff: pBYTE;
-fs: pFATFS;
+  res: FRESULT;
+  sp: array [0..Pred(12)] of BYTE;
+  dir: array [0..Pred(32)] of BYTE;
+  fs: pFATFS;
 begin
-  rbuff:=buff; 
-  fs:=iFatFs; 
-  
-  br^:=0; 
-  (* Check file system *)  
-  if nil=fs then
-    Exit(FR_NOT_ENABLED); 
+  fs := iFatFs;
 
-  (* Check if opened *)
-  if 0=(fs.flag and FA_OPENED) then
-    Exit(FR_NOT_OPENED); 
-
-  remain:= fs.fsize-fs.fptr; 
-  if btr>remain then
-(* Truncate btr by remaining bytes *)  
-    btr:= UINT(remain); 
-
-  (* Repeat until all data transferred *)  
-  while btr <> 0 do begin 
-      (* On the sector boundary? *)  
-    if (fs.fptr mod 512)=0 then
-    begin 
-      (* Sector offset in the cluster *)
-      cs:= BYTE((fs.fptr div 512) and (fs.csize-1));
-      (* On the cluster boundary? *)      
-      if 0=cs then
-      begin 
-        (* On the top of the file? *)
-        if fs.fptr=0 then
-          clst:= fs.org_clust
-        else
-          clst:= get_fat(fs.curr_clust); 
-        if clst<=1 then
-        begin
-           fs.flag := 0;
-           Exit(FR_DISK_ERR); 
-        end;   
-
-        (* Update current cluster *)           
-        fs.curr_clust:= clst; 
-      end;
-     (* Get current sector *)      
-      sect:= clust2sect(fs.curr_clust);
-      if 0=sect then
-      begin
-           fs.flag := 0;
-           Exit(FR_DISK_ERR); 
-      end;   
-      fs.dsect:= sect+cs; 
-    end;
-   (* Get partial sector data from sector buffer *)    
-    rcnt:= 512-UINT(fs.fptr mod 512); 
-    if rcnt>btr then
-      rcnt:= btr; 
-    dr:= disk_readp(rbuff,fs.dsect,UINT(fs.fptr) mod 512,rcnt); 
-    if dr<>RES_OK then
+  if fs = nil then
+    (* Check file system *)
+    res := FR_NOT_ENABLED
+  else
+  begin
+    dj.fn := sp;
+    (* Follow the path to the directory *)
+    res := follow_path(dj, dir, path);
+    if res = FR_OK then
     begin
-           fs.flag := 0;
-           Exit(FR_DISK_ERR); 
-    end;   
-    (* Advances file read pointer *)      
-    fs.fptr:= fs.fptr + (rcnt); 
-    (* Update read counter *)    
-    btr:= btr - rcnt;
-    br^+=rcnt; 
-    (* Advances the data pointer if destination is memory *)    
-    if rbuff <> nil then
-      rbuff:= rbuff + rcnt; 
-
+      (* Follow completed *)
+      if dir[0] <> 0 then
+        (* It is not the root dir *)
+        if (dir[DIR_Attr] and AM_DIR) <> 0 then
+          (* The object is a directory *)
+          dj.sclust := get_clust(dir)
+        else
+          (* The object is not a directory *)
+          res := FR_NO_FILE;
+      if res = FR_OK then
+        (* Rewind dir *)
+        res := dir_rewind(dj);
+    end;
   end;
-  result:= FR_OK; 
+  Result := res;
+end;
+
+function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
+var
+  res: FRESULT;
+  sp: array [0..Pred(12)] of BYTE;
+  dir: array [0..Pred(32)] of BYTE;
+  fs: pFATFS;
+begin
+  fs := iFatFs;
+
+  if fs = nil then
+    (* Check file system *)
+    res := FR_NOT_ENABLED
+  else
+  begin
+    dj.fn := sp;
+    if fno = nil then
+      res := dir_rewind(dj)
+    else
+    begin
+      (* Get current directory item *)
+      res := dir_read(dj, dir);
+      if res = FR_NO_FILE then
+        res := FR_OK;
+      if res = FR_OK then
+      begin
+        (* A valid entry is found *)
+        (* Get the object information *)
+        get_fileinfo(dj, dir, fno);
+        (* Increment read index for next *)
+        res := dir_next(dj);
+        if res = FR_NO_FILE then
+          res := FR_OK;
+      end;
+    end;
+  end;
+  Result := res;
 end;
 {$endif}
 
 end.
-
-
-

@@ -1,8 +1,36 @@
+{
+  Petit FatFs - FAT file system module for FPC
+
+  Copyright (C) 2019, ChaN, all right reserved.
+  Copyright (C) 2019, I. Kakoulidis, all right reserved.
+
+  Petit FatFs module is an open source software. Redistribution and use of
+  Petit FatFs in source and binary forms, with or without modification, are
+  permitted provided that the following condition is met:
+
+  1. Redistributions of source code must retain the above copyright notice,
+     this condition and the following disclaimer.
+
+  This software is provided by the copyright holder and contributors "AS IS"
+  and any warranties related to this software are DISCLAIMED.
+  The copyright owner or contributors be NOT LIABLE for any damages caused
+  by use of this software.
+}
+
+{
+  @abstract(Petit FatFs is a sub-set of FatFs module for Tiny 8-bit MicroControllers.
+  It can be incorporated into the Tiny MicroControllers with limited memory
+  even if the RAM size is less than sector size.)
+}
+
 unit pff;
 
 {$mode delphi}
 {$define PF_USE_READ}
 {$define PF_USE_DIR}
+
+{$undef PF_USE_LSEEK}
+{$undef PF_USE_WRITE}
 
 {$define PF_FS_FAT12}
 {$define PF_FS_FAT16}
@@ -165,50 +193,69 @@ type
     FR_NO_FILESYSTEM);
 
 
-(* Petit FatFs module application interface                     *)
+(* Petit FatFs module application interface *)
 
-(*
- Mount/Unmount a Locical Drive
-*)
-(* Pointer to new file system object *)
+{
+  Mount/Unmount a logical Drive
+
+  @param(fs Pointer to new file system object)
+}
 function pf_mount(fs: pFATFS): FRESULT;
 
-(*
-  Open or Create a File
-*)
-(* Pointer to the file name *)
+{
+  Open or Create a file
+
+  @param(path Pointer to the file name)
+}
 function pf_open(path: PChar): FRESULT;
 
-(*
+{$ifdef PF_USE_READ}
+{
   Read data from the open file
-*)
-(* Pointer to the read buffer (NULL:Forward data to the stream)*)
-(* Number of bytes to read *)
-(* Pointer to number of bytes read *)
+
+  @param(buff Pointer to the read buffer (nil: Forward data to the stream))
+  @param(btr Number of bytes to read)
+  @param(br Pointer to number of bytes read)
+}
 function pf_read(buff: Pointer; btr: UINT; br: pUINT): FRESULT;
+{$endif}
 
-(* Write data to the open file *)
-//function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
+{$ifdef PF_USE_WRITE}
+{
+  Write data to the open file
 
-(* Move file pointer of the open file *)
-//function pf_lseek(ofs: DWORD): FRESULT;
+  @param(buff Pointer to the data to be written)
+  @param(btw Number of bytes to write (0:Finalize the current write operation))
+  @param(bw Pointer to number of bytes written)
+}
+function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
+{$endif}
 
-(*
-  Create a Directroy Object
-*)
-(*
-  Pointer to directory object to create
-  Pointer to the directory path
-*)
+{$ifdef PF_USE_LSEEK}
+{
+  Move file pointer of the open file
+  @param(ofs File pointer from top of file)
+}
+function pf_lseek(ofs: DWORD): FRESULT;
+{$endif}
+
+{$ifdef PF_USE_DIR}
+{
+  Create a directroy Object
+
+  param(dj Pointer to directory object to create)
+  param(path Pointer to the directory path)
+}
 function pf_opendir(dj: pDIR; path: PChar): FRESULT;
 
-
-(*
+{
   Read a directory item from the open directory
-*)
-(* Pointer to the open directory object *)
-(* Pointer to file information to return *)
+
+  param(dj Pointer to the open directory object)
+  param(fno Pointer to file information to return)
+}
 function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
+{$endif}
 
 implementation
 
@@ -269,12 +316,8 @@ end;
 *)
 (* Load a 2-byte little-endian word *)
 function ld_word(ptr: pBYTE): word;
-var
-  rv: word;
 begin
-  rv := ptr[1];
-  rv := rv shl 8 or ptr[0];
-  Result := rv;
+  Result := (ptr[1] shl 8) or ptr[0];
 end;
 
 (* Load a 4-byte little-endian word *)
@@ -1048,6 +1091,186 @@ begin
   end;
   Result := FR_OK;
 end;
+
+{$ifdef PF_USE_LSEEK}
+function pf_lseek(ofs: DWORD): FRESULT;
+var
+clst: CLUST;
+bcs: DWORD;
+sect: DWORD;
+ifptr: DWORD;
+fs: pFATFS;
+begin
+  fs:=iFatFs;
+
+  (* Check file system *)
+  if fs = nil then Exit(FR_NOT_ENABLED);
+
+  (* Check if opened *)
+  if (fs.flag and FA_OPENED) = 0 then Exit(FR_NOT_OPENED);
+
+  if ofs>fs.fsize then
+    (* Clip offset with the file size *)
+    ofs:= fs.fsize;
+  ifptr:= fs.fptr;
+  fs.fptr:= 0;
+  if ofs>0 then
+  begin
+    (* Cluster size (byte) *)
+    bcs:= DWORD(fs.csize)*512;
+    if (ifptr>0) and (((ofs-1) div bcs) >= ((ifptr-1) div bcs)) then
+    begin
+      (* When seek to same or following cluster, *)
+      (* start from the current cluster *)
+      fs.fptr:= (ifptr-1) and (not (bcs-1));
+      ofs:= ofs - fs.fptr;
+      clst:= fs.curr_clust;
+    end
+    else
+    begin
+      (* When seek to back cluster, *)
+      (* start from the first cluster *)
+      clst:= fs.org_clust;
+      fs.curr_clust:= clst;
+    end;
+    while ofs>bcs do
+    begin
+      (* Cluster following loop *)
+      (* Follow cluster chain *)
+      clst:= get_fat(clst);
+      if (clst<=1) or (clst>=fs.n_fatent) then
+      begin
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.curr_clust:= clst;
+      fs.fptr:= fs.fptr + bcs;
+      ofs:= ofs - bcs;
+    end;
+    fs.fptr:= fs.fptr + ofs;
+    (* Current sector *)
+    sect:= clust2sect(clst);
+    if sect = 0 then
+    begin
+      fs.flag := 0;
+      Exit(FR_DISK_ERR);
+    end;
+    fs.dsect:= sect+((fs.fptr div 512) and (fs.csize-1));
+  end;
+  result:= FR_OK;
+end;
+{$endif}
+
+{$ifdef PF_USE_WRITE}
+function pf_write(buff: pinteger;  btw: UINT;  bw: pUINT): FRESULT;
+const
+p: pBYTE = buff;
+var
+clst: CLUST;
+sect: DWORD;
+remain: DWORD;
+cs: BYTE;
+wcnt: UINT;
+fs: pFATFS;
+begin
+  fs:=iFatFs;
+  (* Check file system *)
+  if fs = nil then Exit(FR_NOT_ENABLED);
+
+  bw^:=0;
+  (* Check if opened *)
+  if (fs.flag and FA_OPENED) = 0 then Exit(FR_NOT_OPENED);
+
+  if btw = 0 then
+  begin
+    (* Finalize request *)
+    if (fs.flag and FA__WIP) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
+    begin
+      fs.flag := 0;
+      Exit(FR_DISK_ERR);
+    end;
+    fs.flag:= fs.flag and (not FA__WIP);
+    Exit(FR_OK);
+  end
+  else
+    (* Write data request *)
+    if (fs.flag and FA__WIP) = 0 then
+      (* Round-down fptr to the sector boundary *)
+      fs.fptr:= fs.fptr and $FFFFFE00;
+
+  remain:= fs.fsize-fs.fptr;
+  if btw>remain then
+    btw:= UINT(remain); (* Truncate btw by remaining bytes *)
+
+  while btw <> 0 do
+  begin
+    (* Repeat until all data transferred *)
+    if UINT(fs.fptr) mod 512 = 0 then
+    begin
+      (* On the sector boundary? *)
+      cs:= (BYTE(fs.fptr) div 512) and (fs.csize-1 <> 0); (* Sector offset in the cluster *)
+      if cs = 0 then
+      begin
+        (* On the cluster boundary? *)
+        if fs.fptr=0 then
+          (* On the top of the file? *)
+          clst:= fs.org_clust
+        else
+          clst:= get_fat(fs.curr_clust);
+        if clst<=1 then
+        begin
+          fs.flag := 0;
+          Exit(FR_DISK_ERR);
+        end;
+        (* Update current cluster *)
+        fs.curr_clust:= clst;
+      end;
+      (* Get current sector *)
+      sect:= clust2sect(fs.curr_clust);
+      if sect = 0 then
+      begin
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.dsect:= sect+cs;
+      if disk_writep(0,fs.dsect) <> DRESULT.RES_OK then
+      begin
+        (* Initiate a sector write operation *)
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.flag:= fs.flag or FA__WIP;
+    end;
+    (* Number of bytes to write to the sector *)
+    wcnt:= 512-(UINT(fs.fptr) mod 512);
+    if wcnt>btw then wcnt:= btw;
+    if disk_writep(p,wcnt) then
+    begin
+      (* Send data to the sector *)
+      fs.flag := 0;
+      Exit(FR_DISK_ERR);
+    end;
+    (* Update pointers and counters *)
+    fs.fptr:= fs.fptr + wcnt;
+    p:= p + wcnt;
+    btw:= btw - wcnt;
+    bw^+=wcnt;
+
+    if UINT(fs.fptr) mod 512 = 0 then
+    begin
+      if disk_writep(0,0) <> DRESULT.RES_OK then
+      begin
+        (* Finalize the currtent secter write operation *)
+        fs.flag := 0;
+        Exit(FR_DISK_ERR);
+      end;
+      fs.flag:= fs.flag and ( not FA__WIP);
+    end;
+  end;
+
+  result:= FR_OK;
+end;
+{$endif}
 
 {$ifdef PF_USE_DIR}
 function pf_opendir(dj: pDIR; path: PChar): FRESULT;

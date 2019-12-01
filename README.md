@@ -1,4 +1,8 @@
 # Petit FATFS Free Pascal port
+  
+  Petit FatFs is a sub-set of FatFs module for Tiny 8-bit MicroControllers.
+  It can be incorporated into the Tiny MicroControllers with limited memory
+  even if the RAM size is less than sector size.
 
 ## Testing
 
@@ -116,7 +120,9 @@ FatFs license.
 
 ```
 
-## Reading
+## Links
+
+http://elm-chan.org/fsw/ff/00index_p.html
 
 http://ww1.microchip.com/downloads/en/Appnotes/Petit-Fat-File-System-00002799A.pdf
 

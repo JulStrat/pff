@@ -76,6 +76,7 @@ end;
 function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
 var
   res: DRESULT;
+  br: integer;
 begin
   if buff = nil then
   begin
@@ -91,6 +92,7 @@ begin
   else
   begin
     (* Send data to the disk *)
+    BlockWrite(GDH, PBYTE(buff)^, sc, br);
   end;
 
   Result := res;
