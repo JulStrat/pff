@@ -11,8 +11,8 @@
 
 #define	PF_USE_READ		1	/* pf_read() function */
 #define	PF_USE_DIR		1	/* pf_opendir() and pf_readdir() function */
-#define	PF_USE_LSEEK	0	/* pf_lseek() function */
-#define	PF_USE_WRITE	0	/* pf_write() function */
+#define	PF_USE_LSEEK	1	/* pf_lseek() function */
+#define	PF_USE_WRITE	1	/* pf_write() function */
 
 #define PF_FS_FAT12		1	/* FAT12 */
 #define PF_FS_FAT16		1	/* FAT16 */
@@ -25,7 +25,7 @@
 
 #define PF_USE_LCC		1	/* Allow lower case ASCII and non-ASCII chars */
 
-#define	PF_CODE_PAGE	437
+#define	PF_CODE_PAGE	857
 /* The PF_CODE_PAGE specifies the code page to be used on the target system.
 /  SBCS code pages with PF_USE_LCC == 1 requiers a 128 byte of case conversion
 /  table. It might occupy RAM on some platforms, e.g. avr-gcc.

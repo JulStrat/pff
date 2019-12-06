@@ -10,7 +10,7 @@ mkdir /tmp/SD/raspi
 cp ../source/00readme.txt /tmp/SD
 cp ../LICENSE.txt /tmp/SD
 cp raspi/ex_c.c /tmp/SD/raspi
-touch /tmp/SD/rw.txt
-touch /tmp/SD/raspi/rw.txt
+dd if=/dev/zero of=/tmp/SD/rw.txt bs=512 count=3
+dd if=/dev/zero of=/tmp/SD/raspi/rw.txt bs=512 count=4
 umount /tmp/SD
 rmdir /tmp/SD

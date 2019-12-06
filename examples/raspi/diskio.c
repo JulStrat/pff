@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-static int GDH;
+static int GDH = 0;
 extern char *SD_DEV;
 
 /*-----------------------------------------------------------------------*/
@@ -21,7 +21,9 @@ DSTATUS disk_initialize (void)
 	DSTATUS stat;
 
 	// Put your code here
-	GDH = open(SD_DEV, O_RDONLY);
+        if (GDH) close(GDH);
+
+	GDH = open(SD_DEV, O_RDWR);
 	if (GDH == -1)
 	    stat = STA_NOINIT;
 	else
@@ -71,18 +73,21 @@ DRESULT disk_writep (
 
 	if (!buff) {
 		if (sc) {
-
 			// Initiate write process
+			lseek(GDH, 512*sc, SEEK_SET);
 
 		} else {
-
 			// Finalize write process
-
 		}
+		res = 0;
 	} else {
 
 		// Send data to the disk
-
+		if (write(GDH, buff, sc) == sc)
+		    res = 0;
+		else
+		    res = 1;
+                sync();            
 	}
 
 	return res;

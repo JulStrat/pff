@@ -61,7 +61,7 @@ var
 begin
   (* Put your code here *)
 {$ifdef LINUX}
-  GDH := fpopen('../../SD.img', O_RDONLY);
+  GDH := fpopen('../../SD.img', O_RDWR);
   if GDH = -1 then
     stat := STA_NOINIT
   else
@@ -98,15 +98,21 @@ begin
     if sc <> 0 then
     begin
       (* Initiate write process *)
+      fplseek(GDH, sc*512, SEEK_SET);
     end
     else
     begin
       (* Finalize write process *)
     end;
+    res := RES_OK;
   end
   else
   begin
     (* Send data to the disk *)
+    if fpwrite(GDH, PChar(buff), sc) = sc then
+      res := RES_OK
+    else
+      res := RES_ERROR;
   end;
 
   Result := res;

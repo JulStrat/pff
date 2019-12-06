@@ -13,13 +13,27 @@ int main() {
     UINT br;
     
     SD_DEV = "../SD.img";
-    // SD_DEV = "/dev/loop0";
+    //SD_DEV = "/dev/loop0";
     printf("----------------------------------------.\n");
     printf("PetitFS Raspberry Pi test on loop device.\n");
     printf("----------------------------------------.\n");
 
     fr = pf_mount(&fs);  
     printf("pf_mount() - %d\n", fr);
+
+    fr = pf_open("RW.TXT");
+    printf("pf_open(\"RW.TXT\") - %d\n", fr);
+    //fr = pf_lseek(0);
+    fr = pf_write("HELP 4444 5555", 14, &br);
+    printf("pf_write() - %d, %d\n", fr, br);
+    //fr = pf_write("HELP DESK", 9, &br);
+    //printf("pf_write() - %d, %d\n", fr, br);
+
+    //fr = pf_write(0, 0, &br);
+    //printf("pf_write() - %d, %d\n", fr, br);
+
+    printf("\n");
+
 
     fr = pf_opendir(&dr, "");
     printf("pf_opendir("") - %d\n", fr);
@@ -58,6 +72,8 @@ int main() {
 	printf("%s", bf);
     }
     printf("\n");
+
+
 
 //
 //	Raspi SD

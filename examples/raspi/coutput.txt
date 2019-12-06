@@ -1,0 +1,248 @@
+----------------------------------------.
+PetitFS Raspberry Pi test on loop device.
+----------------------------------------.
+pf_mount() - 0
+pf_open("RW.TXT") - 0
+pf_write() - 0, 14
+
+pf_opendir() - 0
+pf_readdir() - 0
+RASPI
+pf_readdir() - 0
+00README.TXT
+pf_readdir() - 0
+LICENSE.TXT
+pf_opendir() - 0
+pf_readdir() - 0
+EX_C.C
+pf_open("00README.TXT") - 0
+Petit FatFs Module Source Files R0.03a               (C)ChaN, 2019
+
+
+FILES
+
+  pff.h      Common include file for Petit FatFs and application module.
+  pff.c      Petit FatFs module.
+  diskio.h   Common include file for Petit FatFs and disk I/O module.
+  diskio.c   Skeleton of low level disk I/O module.
+
+  Low level disk I/O module is not included in this archive because the Petit
+  FatFs module is only a generic file system layer and not depend on any
+  specific storage device. You have to provide a low level disk I/O module that
+  written to control your storage device.
+
+
+
+AGREEMENTS
+
+ Petit FatFs module is an open source software to implement FAT file system to
+ small embedded systems. This is a free software and is opened for education,
+ research and commercial developments under license policy of following trems.
+
+  Copyright (C) 2019, ChaN, all right reserved.
+
+ * The Petit FatFs module is a free software and there is NO WARRANTY.
+ * No restriction on use. You can use, modify and redistribute it for
+   personal, non-profit or commercial use UNDER YOUR RESPONSIBILITY.
+ * Redistributions of source code must retain the above copyright notice.
+
+
+
+REVISION HISTORY
+
+  Jun 15, 2009  R0.01a  First release (Branched from FatFs R0.07b)
+
+  Dec 14, 2009  R0.02   Added multiple code page support.
+                        Added write funciton.
+                        Changed stream read mode interface.
+
+  Dec 07,'2010  R0.02a  Added some configuration options.
+                        Fixed fails to open objects with DBCS character.
+
+  Jun 10, 2014  R0.03   Separated out configuration options to pffconf.h.
+                        Added _USE_LCC option.
+                        Added _FS_FAT16 option.
+
+  Jan 30, 2019  R0.03a  Supported stdint.h for C99 and later.
+                        Removed _WORD_ACCESS option.
+                        Changed prefix of configuration options, _ to PF_.
+                        Added some code pages.
+                        Removed some code pages actually not valid.
+
+
+pf_open("LICENSE.TXT") - 0
+  Petit FatFs - FAT file system module for FPC
+
+  Copyright (C) 2019, ChaN, all right reserved.
+  Copyright (C) 2019, I. Kakoulidis, all right reserved.
+
+  Petit FatFs module is an open source software. Redistribution and use of
+  Petit FatFs in source and binary forms, with or without modification, are
+  permitted provided that the following condition is met:
+
+  1. Redistributions of source code must retain the above copyright notice,
+     this condition and the following disclaimer.
+
+  This software is provided by the copyright holder and contributors "AS IS"
+  and any warranties related to this software are DISCLAIMED.
+  The copyright owner or contributors be NOT LIABLE for any damages caused
+  by use of this software.
+
+----------------------------------------.
+PetitFS Raspberry Pi SD test.
+----------------------------------------.
+pf_mount() - 0
+pf_open("CMDLINE.TXT") - 0
+dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+
+pf_open("CONFIG.TXT") - 0
+# For more options and information see
+# http://rpf.io/configtxt
+# Some settings may impact device functionality. See link above for details
+
+# uncomment if you get no picture on HDMI for a default "safe" mode
+#hdmi_safe=1
+
+# uncomment this if your display has a black border of unused pixels visible
+# and your display can output without overscan
+#disable_overscan=1
+
+# uncomment the following to adjust overscan. Use positive numbers if console
+# goes off screen, and negative if there is too much border
+#overscan_left=16
+#overscan_right=16
+#overscan_top=16
+#overscan_bottom=16
+
+# uncomment to force a console size. By default it will be display's size minus
+# overscan.
+#framebuffer_width=1280
+#framebuffer_height=720
+
+# uncomment if hdmi display is not detected and composite is being output
+#hdmi_force_hotplug=1
+
+# uncomment to force a specific HDMI mode (this will force VGA)
+#hdmi_group=1
+#hdmi_mode=1
+
+# uncomment to force a HDMI mode rather than DVI. This can make audio work in
+# DMT (computer monitor) modes
+#hdmi_drive=2
+
+# uncomment to increase signal to HDMI, if you have interference, blanking, or
+# no display
+#config_hdmi_boost=4
+
+# uncomment for composite PAL
+#sdtv_mode=2
+
+#uncomment to overclock the arm. 700 MHz is the default.
+#arm_freq=800
+
+# Uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
+
+# Uncomment this to enable the lirc-rpi module
+#dtoverlay=lirc-rpi
+
+# Additional overlays and parameters are documented /boot/overlays/README
+
+# Enable audio (loads snd_bcm2835)
+dtparam=audio=on
+gpu_mem=128
+
+pf_open("ISSUE.TXT") - 0
+Raspberry Pi reference 2019-04-08
+Generated using pi-gen, https://github.com/RPi-Distro/pi-gen, e910bf55ac92e27c6e77043e8995bcb5e0a2d742, stage2
+
+PetitFS low case file names test.
+pf_open("cmdline.txt") - 0
+pf_open("config.txt") - 0
+----------------------------------------.
+PetitFS Raspberry Pi Card Reader FAT32 test.
+----------------------------------------.
+pf_mount() - 0
+pf_open("00README.TXT") - 0
+Petit FatFs Module Source Files R0.03a               (C)ChaN, 2019
+
+
+FILES
+
+  pff.h      Common include file for Petit FatFs and application module.
+  pff.c      Petit FatFs module.
+  diskio.h   Common include file for Petit FatFs and disk I/O module.
+  diskio.c   Skeleton of low level disk I/O module.
+
+  Low level disk I/O module is not included in this archive because the Petit
+  FatFs module is only a generic file system layer and not depend on any
+  specific storage device. You have to provide a low level disk I/O module that
+  written to control your storage device.
+
+
+
+AGREEMENTS
+
+ Petit FatFs module is an open source software to implement FAT file system to
+ small embedded systems. This is a free software and is opened for education,
+ research and commercial developments under license policy of following trems.
+
+  Copyright (C) 2019, ChaN, all right reserved.
+
+ * The Petit FatFs module is a free software and there is NO WARRANTY.
+ * No restriction on use. You can use, modify and redistribute it for
+   personal, non-profit or commercial use UNDER YOUR RESPONSIBILITY.
+ * Redistributions of source code must retain the above copyright notice.
+
+
+
+REVISION HISTORY
+
+  Jun 15, 2009  R0.01a  First release (Branched from FatFs R0.07b)
+
+  Dec 14, 2009  R0.02   Added multiple code page support.
+                        Added write funciton.
+                        Changed stream read mode interface.
+
+  Dec 07,'2010  R0.02a  Added some configuration options.
+                        Fixed fails to open objects with DBCS character.
+
+  Jun 10, 2014  R0.03   Separated out configuration options to pffconf.h.
+                        Added _USE_LCC option.
+                        Added _FS_FAT16 option.
+
+  Jan 30, 2019  R0.03a  Supported stdint.h for C99 and later.
+                        Removed _WORD_ACCESS option.
+                        Changed prefix of configuration options, _ to PF_.
+                        Added some code pages.
+                        Removed some code pages actually not valid.
+
+
+pf_open("LICENSE.TXT") - 0
+FatFs License
+
+FatFs and Petit-FatFs have being developped as a personal project of the author, ChaN. It is free from the code anyone else wrote at current release. Following code block shows a copy of the FatFs license document that heading the source files.
+
+/*----------------------------------------------------------------------------/
+/  FatFs - Generic FAT Filesystem Module  Rx.xx                               /
+/-----------------------------------------------------------------------------/
+/
+/ Copyright (C) 20xx, ChaN, all right reserved.
+/
+/ FatFs module is an open source software. Redistribution and use of FatFs in
+/ source and binary forms, with or without modification, are permitted provided
+/ that the following condition is met:
+/
+/ 1. Redistributions of source code must retain the above copyright notice,
+/    this condition and the following disclaimer.
+/
+/ This software is provided by the copyright holder and contributors "AS IS"
+/ and any warranties related to this software are DISCLAIMED.
+/ The copyright owner or contributors be NOT LIABLE for any damages caused
+/ by use of this software.
+/----------------------------------------------------------------------------*/
+
+Therefore FatFs license is one of the BSD-style licenses but there is a significant feature. FatFs is mainly intended for embedded systems. In order to extend the usability for commercial products, the redistributions of FatFs in binary form, such as embedded code, binary library and any forms without source code, does not need to include about FatFs in the documentations. This is equivalent to the 1-clause BSD license. Of course FatFs is compatible with the most of open source software licenses including GNU GPL. When you redistribute the FatFs source code with any changes or create a fork, the license can also be changed to GNU GPL, BSD-style license or any open source software license that not conflict with FatFs license.
+
