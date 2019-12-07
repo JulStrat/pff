@@ -185,82 +185,122 @@ type
     FR_NOT_ENABLED,
     FR_NO_FILESYSTEM);
 
-
 (* Petit FatFs module application interface *)
 
-{
-  Mount/Unmount a logical Drive
+{ Mount/Unmount a logical Drive
+ 
+  The pf_mount() function registers a work area to the Petit FatFs module.
+  The volume is mounted on registration. The volume must be mounted 
+  with this function prior to use any file function and after every media changes.  
 
-  @param(fs Pointer to new file system object)
+  @param(fs Pointer to the work area (file system object) to be registered.)
 
-  @returns(FRESULT)
-}
+  @returns(FRESULT) }
 function pf_mount(fs: pFATFS): FRESULT;
 
-{
-  Open or Create a file
+{ Open a file.
+  The file must be opend prior to use pf_read() and pf_lseek() function.
+  The open file is valid until next open.
 
-  @param(path Pointer to the file name)
+  @param(Pointer to a null-terminated string that specifies the file name to open.)
 
-  @returns(FRESULT)
-}
+  @returns(FRESULT) }
 function pf_open(path: PChar): FRESULT;
 
 {$ifdef PF_USE_READ}
-{
-  Read data from the open file
+{ Read data from the open file.
+  
+  The file read/write pointer in the file system object advances in number of bytes read. 
+  After the function succeeded, *br should be checked to detect end of file. 
+  In case of *br is less than btr, it means the read pointer has reached end of the file during read operation.
+  If a null pointer is given to the buff, the read data bytes are forwarded to the outgoing stream 
+  instead of the memory. 
+  The streaming function depends on each project will be typically built-in the disk_readp() function.  
 
   @param(buff Pointer to the read buffer (nil: Forward data to the stream))
   @param(btr Number of bytes to read)
   @param(br Pointer to number of bytes read)
 
-  @returns(FRESULT)
-}
+  @returns(FRESULT) }
 function pf_read(buff: Pointer; btr: UINT; br: pUINT): FRESULT;
 {$endif}
 
 {$ifdef PF_USE_WRITE}
-{
-  Write data to the open file
+{ Write data to the open file.
+  The write function has some restrictions listed below:
+
+    Cannot create file. Only existing file can be written.
+    Cannot expand file size.
+    Cannot update time stamp of the file.
+    Write operation can start/stop on the sector boundary only.
+    Read-only attribute of the file cannot block write operation.
+
+  File write operation must be done in following sequence.
+
+    pf_lseek(ofs); read/write pointer must be moved to sector bundary 
+	  prior to initiate the write operation, or it will be rounded-down 
+	  to the sector boundary at first write operation.
+    pf_write(buff, btw, &bw); Initiate write operation. Write first data to the file.
+    pf_write(buff, btw, &bw); Write next data. Any other file function cannot be used 
+	  while a write operation is in progress.
+    pf_write(0, 0, &bw); Finalize the current write operation. 
+	  If read/write pointer is not on the sector boundary, 
+	  rest of bytes in the sector will be filled with zero.
+
+  The read/write pointer in the file system object advances in number of bytes written. 
+  After the function succeeded, *bw should be checked to detect end of file. 
+  In case of *bw is less than btw, it means the read/write pointer reached end of file 
+  during the write operation. Once a write operation is initiated, 
+  it must be finalized properly, or the written data can be lost.  
 
   @param(buff Pointer to the data to be written)
   @param(btw Number of bytes to write (0:Finalize the current write operation))
   @param(bw Pointer to number of bytes written)
 
-  @returns(FRESULT)
-}
+  @returns(FRESULT) }
 function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 {$endif}
 
 {$ifdef PF_USE_LSEEK}
-{
-  Move file pointer of the open file
+{ Move file pointer of the open file
+  
+  The pf_lseek() function moves the file read/write pointer of the open file.
+  The ofs can be specified in only origin from top of the file.
+  
   @param(ofs File pointer from top of file)
 
-  @returns(FRESULT)
-}
+  @returns(FRESULT) }
 function pf_lseek(ofs: DWORD): FRESULT;
 {$endif}
 
 {$ifdef PF_USE_DIR}
-{
-  Create a directroy Object
+{$info PF_USE_DIR enabled}
+{ Create a directory Object.
+
+  The pf_opendir() function opens an exsisting directory and 
+  creates the directory object for subsequent calls. 
+  The directory object structure can be discarded at any time without any procedure.  
 
   param(dj Pointer to directory object to create)
   param(path Pointer to the directory path)
 
-  @returns(FRESULT)
-}
+  @returns(FRESULT) }
 function pf_opendir(dj: pDIR; path: PChar): FRESULT;
 
-{
-  Read a directory item from the open directory
+{ Read a directory item from the open directory.
+
+  The pf_readdir() function reads directory entries in sequence. 
+  All items in the directory can be read by calling this function repeatedly.
+  When all directory entries have been read and no item to read, 
+  the function returns a null string into member f_name[] 
+  in the file information structure without error. 
+  When a null pointer is given to the fno, the read index 
+  of the directory object will be rewinded.  
 
   @param(dj Pointer to the open directory object)
   @param(fno Pointer to file information to return)
 
-  @returns(FRESULT)
-}
+  @returns(FRESULT) }
 function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
 {$endif}
 
