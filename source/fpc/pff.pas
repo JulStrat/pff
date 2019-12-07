@@ -26,11 +26,11 @@
 unit pff;
 
 {$mode delphi}
-{$define PF_USE_READ}
-{$define PF_USE_DIR}
+{$undef PF_USE_READ}
+{$undef PF_USE_DIR}
 
 {$undef PF_USE_LSEEK}
-{$undef PF_USE_WRITE}
+{$define PF_USE_WRITE}
 
 {$define PF_FS_FAT12}
 {$define PF_FS_FAT16}
@@ -43,24 +43,19 @@ uses disk_io;
 const
   PF_DEFINED = 8088; (* Revision ID *)
 
-(*
-  File status flag (FATFS.flag)
-*)
+  (*  File status flag (FATFS.flag)  *)
   FA_OPENED = $01;
   FA_WPRT = $02;
   FA__WIP = $40;
 
-(*
-  File attribute bits for directory entry
-*)
-
-  AM_RDO = $01;  (* Read only *)
-  AM_HID = $02;  (* Hidden *)
-  AM_SYS = $04;  (* System *)
-  AM_VOL = $08;  (* Volume label *)
-  AM_LFN = $0F;  (* LFN entry *)
-  AM_DIR = $10;  (* Directory *)
-  AM_ARC = $20;  (* Archive *)
+  (*  File attribute bits for directory entry  *)
+  AM_RDO = $01;   (* Read only *)
+  AM_HID = $02;   (* Hidden *)
+  AM_SYS = $04;   (* System *)
+  AM_VOL = $08;   (* Volume label *)
+  AM_LFN = $0F;   (* LFN entry *)
+  AM_DIR = $10;   (* Directory *)
+  AM_ARC = $20;   (* Archive *)
   AM_MASK = $3F;  (* Mask of defined bits *)
 
   _FS_32ONLY = 0;
@@ -74,6 +69,7 @@ const
   FS_FAT32 = 3;
 
   PF_USE_LCC = 0;
+  PF_CODE_PAGE = 857;
 
 (*
   FatFs refers the members in the FAT structures with byte offset instead
@@ -141,28 +137,25 @@ type
   //{$endif}
 
   (* File system object structure *)
+  FATFS = record
+    fs_type: byte;        (* FAT sub type *)
+    flag: byte;           (* File status flags *)
+    csize: byte;          (* Number of sectors per cluster *)
+    pad1: byte;
+    n_rootdir: word;      (* Number of root directory entries (0 on FAT32) *)
+    n_fatent: CLUST;      (* Number of FAT entries (= number of clusters + 2) *)
+    fatbase: DWORD;       (* FAT start sector *)
+    dirbase: DWORD;       (* Root directory start sector (Cluster# on FAT32) *)
+    database: DWORD;      (* Data start sector *)
+    fptr: DWORD;          (* File R/W pointer *)
+    fsize: DWORD;         (* File size *)
+    org_clust: CLUST;     (* File start cluster *)
+    curr_clust: CLUST;    (* File current cluster *)
+    dsect: DWORD;         (* File current data sector *)
+  end;
   PFATFS = ^FATFS;
 
-  FATFS = record
-    fs_type: byte; (* FAT sub type *)
-    flag: byte; (* File status flags *)
-    csize: byte; (* Number of sectors per cluster *)
-    pad1: byte;
-    n_rootdir: word; (* Number of root directory entries (0 on FAT32) *)
-    n_fatent: CLUST; (* Number of FAT entries (= number of clusters + 2) *)
-    fatbase: DWORD; (* FAT start sector *)
-    dirbase: DWORD; (* Root directory start sector (Cluster# on FAT32) *)
-    database: DWORD; (* Data start sector *)
-    fptr: DWORD; (* File R/W pointer *)
-    fsize: DWORD; (* File size *)
-    org_clust: CLUST; (* File start cluster *)
-    curr_clust: CLUST; (* File current cluster *)
-    dsect: DWORD; (* File current data sector *)
-  end;
-
   (* Directory object structure *)
-  PDIR = ^DIR;
-
   DIR = record
     index: word; (* Current read/write index number *)
     fn: pBYTE; (* Pointer to the SFN (in/out) {file[8],ext[3],status[1]} *)
@@ -170,19 +163,19 @@ type
     clust: CLUST; (* Current cluster *)
     sect: DWORD; (* Current sector *)
   end;
+  PDIR = ^DIR;
 
   (* File status structure *)
+  FILINFO = record
+    fsize: DWORD;                        (* File size *)
+    fdate: word;                         (* Last modified date *)
+    ftime: word;                         (* Last modified time *)
+    fattrib: byte;                       (* Attribute *)
+    fname: array [0..Pred(13)] of char;  (* File name *)
+  end;
   PFILINFO = ^FILINFO;
 
-  FILINFO = record
-    fsize: DWORD; (* File size *)
-    fdate: word; (* Last modified date *)
-    ftime: word; (* Last modified time *)
-    fattrib: byte; (* Attribute *)
-    fname: array [0..Pred(13)] of char; (* File name *)
-  end;
-
-  (* File function return code (FRESULT) *)
+  (* File function return code *)
   FRESULT = (
     FR_OK = 0,
     FR_DISK_ERR,
@@ -199,6 +192,8 @@ type
   Mount/Unmount a logical Drive
 
   @param(fs Pointer to new file system object)
+
+  @returns(FRESULT)
 }
 function pf_mount(fs: pFATFS): FRESULT;
 
@@ -206,6 +201,8 @@ function pf_mount(fs: pFATFS): FRESULT;
   Open or Create a file
 
   @param(path Pointer to the file name)
+
+  @returns(FRESULT)
 }
 function pf_open(path: PChar): FRESULT;
 
@@ -216,6 +213,8 @@ function pf_open(path: PChar): FRESULT;
   @param(buff Pointer to the read buffer (nil: Forward data to the stream))
   @param(btr Number of bytes to read)
   @param(br Pointer to number of bytes read)
+
+  @returns(FRESULT)
 }
 function pf_read(buff: Pointer; btr: UINT; br: pUINT): FRESULT;
 {$endif}
@@ -227,6 +226,8 @@ function pf_read(buff: Pointer; btr: UINT; br: pUINT): FRESULT;
   @param(buff Pointer to the data to be written)
   @param(btw Number of bytes to write (0:Finalize the current write operation))
   @param(bw Pointer to number of bytes written)
+
+  @returns(FRESULT)
 }
 function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 {$endif}
@@ -235,6 +236,8 @@ function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 {
   Move file pointer of the open file
   @param(ofs File pointer from top of file)
+
+  @returns(FRESULT)
 }
 function pf_lseek(ofs: DWORD): FRESULT;
 {$endif}
@@ -245,19 +248,286 @@ function pf_lseek(ofs: DWORD): FRESULT;
 
   param(dj Pointer to directory object to create)
   param(path Pointer to the directory path)
+
+  @returns(FRESULT)
 }
 function pf_opendir(dj: pDIR; path: PChar): FRESULT;
 
 {
   Read a directory item from the open directory
 
-  param(dj Pointer to the open directory object)
-  param(fno Pointer to file information to return)
+  @param(dj Pointer to the open directory object)
+  @param(fno Pointer to file information to return)
+
+  @returns(FRESULT)
 }
 function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
 {$endif}
 
 implementation
+
+{
+ DBCS code ranges and SBCS extend char conversion table
+}
+type
+  _TEXCVT = array [0..127] of byte;
+
+{$if PF_USE_LCC = 0} (* ASCII upper case character only *)
+{$info ASCII upper case character only}
+{$elseif PF_CODE_PAGE = 932} (* Japanese Shift-JIS *)
+{$info Code page - Japanese Shift-JIS}
+const
+  _DF1S = $81; (* DBC 1st byte range 1 start *)
+  _DF1E = $9F; (* DBC 1st byte range 1 end *)
+  _DF2S = $E0; (* DBC 1st byte range 2 start *)
+  _DF2E = $FC; (* DBC 1st byte range 2 end *)
+  _DS1S = $40; (* DBC 2nd byte range 1 start *)
+  _DS1E = $7E; (* DBC 2nd byte range 1 end *)
+  _DS2S = $80; (* DBC 2nd byte range 2 start *)
+  _DS2E = $FC; (* DBC 2nd byte range 2 end *)
+
+{$elseif PF_CODE_PAGE = 936}(* Simplified Chinese GBK *)
+{$info Code page - Simplified Chinese GBK}
+const
+  _DF1S = $81;
+  _DF1E = $FE;
+  _DS1S = $40;
+  _DS1E = $7E;
+  _DS2S = $80;
+  _DS2E = $FE;
+
+{$elseif PF_CODE_PAGE = 949}(* Korean *)
+{$info Code page - Korean}
+const
+  _DF1S = $81;
+  _DF1E = $FE;
+  _DS1S = $41;
+  _DS1E = $5A;
+  _DS2S = $61;
+  _DS2E = $7A;
+  _DS3S = $81;
+  _DS3E = $FE;
+
+{$elseif PF_CODE_PAGE = 950}(* Traditional Chinese Big5 *)
+{$info Code page - Traditional Chinese Big5}
+const
+  _DF1S = $81;
+  _DF1E = $FE;
+  _DS1S = $40;
+  _DS1E = $7E;
+  _DS2S = $A1;
+  _DS2E = $FE;
+
+{$elseif PF_CODE_PAGE = 437}(* U.S. *)
+{$info Code page - U.S.}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $45, $41, $8E, $41, $8F, $80, $45, $45, $45, $49, $49, $49,
+    $8E, $8F, $90, $92, $92, $4F, $99, $4F, $55, $55, $59, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 720}(* Arabic *)
+{$info Code page - Arabic}
+const
+  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
+    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $A0, $A1, $A2, $A3, $A4, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 737}(* Greek *)
+{$info Code page - Greek}
+const
+  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
+    $8E, $8F, $90, $92, $92, $93, $94, $95, $96, $97, $80, $81, $82, $83, $84, $85, $86,
+    $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $AA, $92, $93, $94, $95, $96,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $97, $EA, $EB,
+    $EC, $E4, $ED, $EE, $EF, $F5, $F0, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 771}(* KBL *)
+{$info Code page - KBL}
+const
+  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
+    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DC, $DE, $DE, $90, $91, $92,
+    $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E, $9F, $F0, $F0, $F2, $F2,
+    $F4, $F4, $F6, $F6, $F8, $F8, $FA, $FA, $FC, $FC, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 775}(* Baltic *)
+{$info Code page - Baltic}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $91, $A0, $8E, $95, $8F, $80, $AD, $ED, $8A, $8A, $A1, $8D,
+    $8E, $8F, $90, $92, $92, $E2, $99, $95, $96, $97, $97, $99, $9A, $9D, $9C, $9D, $9E,
+    $9F, $A0, $A1, $E0, $A3, $A3, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $B5, $B6,
+    $B7, $B8, $BD, $BE, $C6, $C7, $A5, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E5, $E5, $E6, $E3, $E8, $E8, $EA, $EA, $EE, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 850}(* Latin 1 *)
+{$info Code page -  Latin 1}
+const
+  _EXCVT: _TEXCVT = ($43, $55, $45, $41, $41, $41, $41, $43, $45, $45, $45, $49, $49, $49,
+    $41, $41, $45, $92, $92, $4F, $4F, $4F, $55, $55, $59, $4F, $55, $4F, $9C, $4F, $9E,
+    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $41, $41, $41, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $41, $41, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D1, $D1,
+    $45, $45, $45, $49, $49, $49, $49, $D9, $DA, $DB, $DC, $DD, $49, $DF, $4F, $E1, $4F,
+    $4F, $4F, $4F, $E6, $E8, $E8, $55, $55, $55, $59, $59, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 852}(* Latin 2 *)
+{$info Code page - Latin 2}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $90, $B6, $8E, $DE, $8F, $80, $9D, $D3, $8A, $8A, $D7, $8D,
+    $8E, $8F, $90, $91, $91, $E2, $99, $95, $95, $97, $97, $99, $9A, $9B, $9B, $9D, $9E,
+    $AC, $B5, $D6, $E0, $E9, $A4, $A4, $A6, $A6, $A8, $A8, $AA, $8D, $AC, $B8, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BD, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C6, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D1, $D1,
+    $D2, $D3, $D2, $D5, $D6, $D7, $B7, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E3, $D5, $E6, $E6, $E8, $E9, $E8, $EB, $ED, $ED, $DD, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $EB, $FC, $FC, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 855}(* Cyrillic *)
+{$info Code page - Cyrillic}
+const
+  _EXCVT: _TEXCVT = ($81, $81, $83, $83, $85, $85, $87, $87, $89, $89, $8B, $8B, $8D, $8D,
+    $8F, $8F, $91, $91, $93, $93, $95, $95, $97, $97, $99, $99, $9B, $9B, $9D, $9D, $9F,
+    $9F, $A1, $A1, $A3, $A3, $A5, $A5, $A7, $A7, $A9, $A9, $AB, $AB, $AD, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B6, $B6, $B8, $B8, $B9, $BA, $BB, $BC, $BE, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C7, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D1, $D1,
+    $D3, $D3, $D5, $D5, $D7, $D7, $DD, $D9, $DA, $DB, $DC, $DD, $E0, $DF, $E0, $E2, $E2,
+    $E4, $E4, $E6, $E6, $E8, $E8, $EA, $EA, $EC, $EC, $EE, $EE, $EF, $F0, $F2, $F2, $F4,
+    $F4, $F6, $F6, $F8, $F8, $FA, $FA, $FC, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 857}(* Turkish *)
+{$info Code page - Turkish}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $90, $B6, $8E, $B7, $8F, $80, $D2, $D3, $D4, $D8, $D7, $98,
+    $8E, $8F, $90, $92, $92, $E2, $99, $E3, $EA, $EB, $98, $99, $9A, $9D, $9C, $9D, $9E, $9E,
+    $B5, $D6, $E0, $E9, $A5, $A5, $A6, $A6, $A8, $A9, $AA, $AB, $AC, $21, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF,
+    $C0, $C1, $C2, $C3, $C4, $C5, $C7, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF,
+    $D0, $D1, $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF,
+    $E0, $E1, $E2, $E3, $E5, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $DE, $59, $EE, $EF,
+    $F0, $F1, $F2, $F3, $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 860}(* Portuguese *)
+{$info Code page - Portuguese}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $90, $8F, $8E, $91, $86, $80, $89, $89, $92, $8B, $8C, $98,
+    $8E, $8F, $90, $91, $92, $8C, $99, $A9, $96, $9D, $98, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $86, $8B, $9F, $96, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 861}(* Icelandic *)
+{$info Code page - Icelandic}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $90, $41, $8E, $41, $8F, $80, $45, $45, $45, $8B, $8B, $8D,
+    $8E, $8F, $90, $92, $92, $4F, $99, $8D, $55, $97, $97, $99, $9A, $9D, $9C, $9D, $9E,
+    $9F, $A4, $A5, $A6, $A7, $A4, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 862}(* Hebrew *)
+{$info Code page - Hebrew}
+const
+  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
+    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 863}(* Canadian French *)
+{$info Code page - Canadian French}
+const
+  _EXCVT: _TEXCVT = ($43, $55, $45, $41, $41, $41, $86, $43, $45, $45, $45, $49, $49, $8D,
+    $41, $8F, $45, $45, $45, $4F, $45, $49, $55, $55, $98, $4F, $55, $9B, $9C, $55, $55,
+    $9F, $A0, $A1, $4F, $55, $A4, $A5, $A6, $A7, $49, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 864}(* Arabic *)
+{$info Code page - Arabic}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $45, $41, $8E, $41, $8F, $80, $45, $45, $45, $49, $49, $49,
+    $8E, $8F, $90, $92, $92, $4F, $99, $4F, $55, $55, $59, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 865}(* Nordic *)
+{$info Code page - Nordic}
+const
+  _EXCVT: _TEXCVT = ($80, $9A, $90, $41, $8E, $41, $8F, $80, $45, $45, $45, $49, $49, $49,
+    $8E, $8F, $90, $92, $92, $4F, $99, $4F, $55, $55, $59, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
+    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
+    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 866}(* Russian *)
+{$info Code page - Russian}
+const
+  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
+    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
+    $9F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $90, $91, $92,
+    $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E, $9F, $F0, $F0, $F2, $F2,
+    $F4, $F4, $F6, $F6, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
+
+{$elseif PF_CODE_PAGE = 869}(* Greek 2 *)
+{$info Code page - Greek 2}
+const
+  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
+    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $86, $9C, $8D, $8F,
+    $90, $91, $90, $92, $95, $A4, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
+    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
+    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
+    $D2, $D3, $D4, $D5, $A4, $A5, $A6, $D9, $DA, $DB, $DC, $A7, $A8, $DF, $A9, $AA, $AC,
+    $AD, $B5, $B6, $B7, $B8, $BD, $BE, $C6, $C7, $CF, $CF, $D0, $EF, $F0, $F1, $D1, $D2,
+    $D3, $F5, $D4, $F7, $F8, $F9, $D5, $96, $95, $98, $FE, $FF);
+
+{$else}
+{$error Unknown code page.}
+{$endif}
+
+{$MACRO ON}
+{$define ABORT_DISK_ERR := begin fs.flag := 0; Exit(FR_DISK_ERR); end}
 
 var
   iFatFS: PFATFS;
@@ -266,27 +536,32 @@ var
 {$ifdef _DF2S}
 function IsDBCS1(c: integer): boolean;
 begin
-  Result := ((BYTE(c) >= _DF1S) and (BYTE(c) <= _DF1E)) or
-    ((BYTE(c) >= _DF2S) and (BYTE(c) <= _DF2E));
+  Result := ((byte(c) >= _DF1S) and (byte(c) <= _DF1E)) or
+    ((byte(c) >= _DF2S) and (byte(c) <= _DF2E));
 end;
+
 {$else}
 function IsDBCS1(c: integer): boolean;
 begin
-  Result := (BYTE(c) >= _DF1S) and (BYTE(c) <= _DF1E);
+  Result := (byte(c) >= _DF1S) and (byte(c) <= _DF1E);
 end;
+
 {$endif}
 {$ifdef _DS3S}
 function IsDBCS2(c: integer): boolean;
 begin
-  Result := ((BYTE(c) >= _DS1S) and (BYTE(c) <= _DS1E)) or
-    ((BYTE(c) >= _DS2S) and (BYTE(c) <= _DS2E)) or ((BYTE(c) >= _DS3S) and (BYTE(c) <= _DS3E));
+  Result := ((byte(c) >= _DS1S) and (byte(c) <= _DS1E)) or
+    ((byte(c) >= _DS2S) and (byte(c) <= _DS2E)) or
+    ((byte(c) >= _DS3S) and (byte(c) <= _DS3E));
 end;
+
 {$else}
 function IsDBCS2(c: integer): boolean;
 begin
-  Result := ((BYTE(c) >= _DS1S) and (BYTE(c) <= _DS1E)) or
-    ((BYTE(c) >= _DS2S) and (BYTE(c) <= _DS2E));
+  Result := ((byte(c) >= _DS1S) and (byte(c) <= _DS1E)) or
+    ((byte(c) >= _DS2S) and (byte(c) <= _DS2E));
 end;
+
 {$endif}
 {$else}
 (* SBCS configuration *)
@@ -299,6 +574,7 @@ function IsDBCS2(c: integer): boolean;
 begin
   Result := False;
 end;
+
 {$endif}
 
 function IsUpper(c: char): boolean;
@@ -311,16 +587,19 @@ begin
   Result := (c >= 'a') and (c <= 'z');
 end;
 
-(*
-  Load multi-byte word in the FAT structure
-*)
-(* Load a 2-byte little-endian word *)
+{ Load a 2-byte little-endian word }
 function ld_word(ptr: pBYTE): word;
 begin
+{$IFDEF ENDIAN_LITTLE}
+{$info ENDIAN_LITTLE}
+  Result := PWord(ptr)^;
+{$ELSE}
+{$info NOT ENDIAN_LITTLE}
   Result := (ptr[1] shl 8) or ptr[0];
+{$ENDIF}
 end;
 
-(* Load a 4-byte little-endian word *)
+{ Load a 4-byte little-endian word }
 function ld_dword(ptr: pBYTE): DWORD;
 var
   rv: DWORD;
@@ -375,7 +654,7 @@ end;
 (* Cluster# to get the link information *)
 function get_fat(clst: CLUST): CLUST;
 var
-  buf: array [0..Pred(4)] of BYTE;
+  buf: array [0..Pred(4)] of byte;
   fs: pFATFS;
 
 {$ifdef PF_FS_FAT12}
@@ -407,7 +686,7 @@ begin
         begin
           if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
             Exit(1);
-          if disk_readp(@buf + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
+          if disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
             Exit(1);
         end;
       wc := ld_word(buf);
@@ -421,7 +700,8 @@ begin
     {$ifdef PF_FS_FAT16}
     FS_FAT16:
     begin
-      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) <> RES_OK then
+      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) <>
+        RES_OK then
         Exit(1);
       Exit(ld_word(buf));
     end;
@@ -430,7 +710,8 @@ begin
     {$ifdef PF_FS_FAT32}
     FS_FAT32:
     begin
-      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) <> RES_OK then
+      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) <>
+        RES_OK then
         Exit(1);
       Exit(ld_dword(buf) and $0FFFFFFF);
     end;
@@ -454,7 +735,6 @@ begin
   if disk_readp(buf, sect, 510, 2) <> RES_OK then
     Exit(3);
   (* Check record signature *)
-  WriteLn('ld_word: ', Lo(ld_word(buf)), ' - ', Hi(ld_word(buf)));
   if ld_word(buf) <> $AA55 then
     Exit(2);
 
@@ -508,11 +788,13 @@ begin
   Result := clst;
 end;
 
-(*
+{
   Directory handling - Rewind directory index
-*)
 
-(* Pointer to directory object *)
+  @param(dj Pointer to directory object)
+
+  @reaturns(FRESULT)
+}
 function dir_rewind(dj: pDIR): FRESULT;
 var
   clst: CLUST;
@@ -541,16 +823,17 @@ begin
   Result := FR_OK;
 end;
 
-(*-----------------------------------------------------------------------*)
-(* Directory handling - Move directory index next                        *)
-(*-----------------------------------------------------------------------*)
+{
+  Directory handling - Move directory index next
 
-(* FR_OK:Succeeded, FR_NO_FILE:End of table *)
-(* Pointer to directory object *)
+  @param(dj Pointer to directory object)
+
+  @returns(FRESULT)
+}
 function dir_next(dj: pDIR): FRESULT;
 var
   clst: CLUST;
-  i: WORD;
+  i: word;
   fs: pFATFS;
 begin
   fs := iFatFs;
@@ -594,14 +877,14 @@ var
   p: PBYTE;
 {$ifdef PF_USE_LCC}
 {$ifdef _EXCVT}
-  cvt: array [0..127] of BYTE = _EXCVT;
+  cvt: array [0..127] of byte = _EXCVT;
 {$endif}
 {$endif}
-  c: BYTE;
-  d: BYTE;
-  ni: BYTE;
-  si: BYTE;
-  i: BYTE;
+  c: byte;
+  d: byte;
+  ni: byte;
+  si: byte;
+  i: byte;
   sfn: pBYTE;
 begin
   (* Create file name in directory form *)
@@ -648,7 +931,7 @@ begin
     else
     begin
       (* Single byte code *)
-      if (PF_USE_LCC <> 0) and IsLower(Char(c)) then
+      if (PF_USE_LCC <> 0) and IsLower(char(c)) then
         c := c - $20;
       (* toupper *)
       sfn[i] := c;
@@ -659,21 +942,23 @@ begin
   path := @p[si];
 
   (* Set last segment flag if end of path *)
-  sfn[11] := Integer(c <= Ord(' '));
+  sfn[11] := integer(c <= Ord(' '));
 
   Result := FR_OK;
 end;
 
-(*
+{
   Directory handling - Find an object in the directory
-*)
 
-(* Pointer to the directory object linked to the file name *)
-(* 32-byte working buffer *)
+  @param(dj Pointer to the directory object linked to the file name)
+  @param(dir 32-byte working buffer)
+
+  @returns(FRESULT)
+}
 function dir_find(dj: pDIR; dir: pBYTE): FRESULT;
 var
   res: FRESULT;
-  c: BYTE;
+  c: byte;
 begin
   res := dir_rewind(dj); (* Rewind directory object *)
   if res <> FR_OK then
@@ -705,18 +990,19 @@ begin
 end;
 
 {$ifdef PF_USE_DIR}
-(*
+{
   Read an object from the directory
-*)
 
-(* Pointer to the directory object to store read object name *)
-(* 32-byte working buffer *)
+  @param(dj Pointer to the directory object to store read object name)
+  @param(dir 32-byte working buffer)
 
+  @returns(FRESULT)
+}
 function dir_read(dj: pDIR; dir: pBYTE): FRESULT;
 var
   res: FRESULT;
-  a: BYTE;
-  c: BYTE;
+  a: byte;
+  c: byte;
 begin
   res := FR_NO_FILE;
   while dj.sect <> 0 do
@@ -755,15 +1041,15 @@ end;
 
 {$endif}
 
-(*
+{
   Follow a file path
-*)
 
-(* FR_OK(0): successful, !=0: error code *)
-(* Directory object to return last directory and found object *)
-(* 32-byte working buffer *)
-(* Full-path string to find a file or directory *)
+  @param(dj Directory object to return last directory and found object)
+  @param(dir 32-byte working buffer)
+  @param(path Full-path string to find a file or directory)
 
+  @returns(FRESULT)
+}
 function follow_path(dj: pDIR; dir: pBYTE; path: PChar): FRESULT;
 var
   res: FRESULT;
@@ -818,19 +1104,18 @@ begin
   Result := res;
 end;
 
-(*-----------------------------------------------------------------------*)
-(* Get file information from directory entry                             *)
-(*-----------------------------------------------------------------------*)
 {$ifdef PF_USE_DIR}
-(* No return code *)
-(* Pointer to the directory object *)
-(* 32-byte working buffer *)
-(* Pointer to store the file information *)
+{
+  Get file information from directory entry
 
+  @param(dj Pointer to the directory object)
+  @param(dir 32-byte working buffer)
+  @param(fno Pointer to store the file information)
+}
 procedure get_fileinfo(dj: pDIR; dir: pBYTE; fno: pFILINFO);
 var
-  i: BYTE;
-  c: BYTE;
+  i: byte;
+  c: byte;
   p: PChar;
 begin
   p := fno.fname;
@@ -844,7 +1129,7 @@ begin
         break;
       if c = $05 then
         c := $E5;
-      p^ := Char(c);
+      p^ := char(c);
       Inc(p);
     end;
     if dir[8] <> Ord(' ') then
@@ -857,7 +1142,7 @@ begin
         c := dir[i];
         if c = Ord(' ') then
           break;
-        p^ := Char(c);
+        p^ := char(c);
         Inc(p);
       end;
     end;
@@ -866,7 +1151,7 @@ begin
     fno.fdate := ld_word(dir + DIR_WrtDate);
     fno.ftime := ld_word(dir + DIR_WrtTime);
   end;
-  p^ := Char(0);
+  p^ := char(0);
 end;
 
 {$endif}
@@ -889,8 +1174,6 @@ begin
   bsect := 0;
   (* Check sector 0 as an SFD format *)
   fmt := check_fs(@buf, bsect);
-
-  WriteLn(fmt);
   (* Not an FAT boot record, it may be FDISK format *)
   if fmt = 1 then
   begin
@@ -919,26 +1202,26 @@ begin
   if disk_readp(@buf, bsect, 13, sizeof(buf)) <> RES_OK then
     Exit(FR_DISK_ERR);
 
-  fsize := ld_word(@buf + BPB_FATSz16 - 13); (* Number of sectors per FAT *)
+  fsize := ld_word(PByte(@buf) + BPB_FATSz16 - 13); (* Number of sectors per FAT *)
   if fsize = 0 then
-    fsize := ld_dword(@buf + BPB_FATSz32 - 13);
+    fsize := ld_dword(PByte(@buf) + BPB_FATSz32 - 13);
 
   (* Number of sectors in FAT area *)
   fsize := fsize * (buf[BPB_NumFATs - 13]);
   (* FAT start sector (lba) *)
-  fs.fatbase := bsect + ld_word(@buf + BPB_RsvdSecCnt - 13);
+  fs.fatbase := bsect + ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13);
   (* Number of sectors per cluster *)
   fs.csize := buf[BPB_SecPerClus - 13];
   (* Nmuber of root directory entries *)
-  fs.n_rootdir := ld_word(@buf + BPB_RootEntCnt - 13);
+  fs.n_rootdir := ld_word(PByte(@buf) + BPB_RootEntCnt - 13);
   (* Number of sectors on the file system *)
-  tsect := ld_word(@buf + BPB_TotSec16 - 13);
+  tsect := ld_word(PByte(@buf) + BPB_TotSec16 - 13);
 
   if tsect = 0 then
-    tsect := ld_dword(@buf + BPB_TotSec32 - 13);
+    tsect := ld_dword(PByte(@buf) + BPB_TotSec32 - 13);
 
   (* Last cluster# + 1 *)
-  mclst := (tsect - ld_word(@buf + BPB_RsvdSecCnt - 13) - fsize -
+  mclst := (tsect - ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13) - fsize -
     fs.n_rootdir div 16) div fs.csize + 2;
   fs.n_fatent := CLUST(mclst);
 
@@ -957,7 +1240,7 @@ begin
   fs.fs_type := fmt;
   if (_FS_32ONLY <> 0) or ((PF_FS_FAT32 <> 0) and (fmt = FS_FAT32)) then
     (* Root directory start cluster *)
-    fs.dirbase := ld_dword(@buf + (BPB_RootClus - 13))
+    fs.dirbase := ld_dword(PByte(@buf) + (BPB_RootClus - 13))
   else
     (* Root directory start sector (lba) *)
     fs.dirbase := fs.fatbase + fsize;
@@ -973,8 +1256,8 @@ function pf_open(path: PChar): FRESULT;
 var
   res: FRESULT;
   dj: DIR;
-  sp: array [0..Pred(12)] of BYTE;
-  dir: array [0..Pred(32)] of BYTE;
+  sp: array [0..Pred(12)] of byte;
+  dir: array [0..Pred(32)] of byte;
   fs: pFATFS;
 begin
   fs := iFatFs;
@@ -999,11 +1282,10 @@ begin
   (* File start cluster *)
   fs.org_clust := get_clust(dir);
   (* File size *)
-  fs.fsize := ld_dword(@dir + DIR_FileSize);
+  fs.fsize := ld_dword(PByte(@dir) + DIR_FileSize);
   (* File pointer *)
   fs.fptr := 0;
   fs.flag := FA_OPENED;
-
   Result := FR_OK;
 end;
 
@@ -1014,7 +1296,7 @@ var
   sect: DWORD;
   remain: DWORD;
   rcnt: UINT;
-  cs: BYTE;
+  cs: byte;
   rbuff: pBYTE;
   fs: pFATFS;
 begin
@@ -1027,7 +1309,7 @@ begin
     Exit(FR_NOT_ENABLED);
 
   (* Check if opened *)
-  if 0 = (fs.flag and FA_OPENED) then
+  if (fs.flag and FA_OPENED) = 0 then
     Exit(FR_NOT_OPENED);
 
   remain := fs.fsize - fs.fptr;
@@ -1042,9 +1324,9 @@ begin
     if (fs.fptr mod 512) = 0 then
     begin
       (* Sector offset in the cluster *)
-      cs := BYTE((fs.fptr div 512) and (fs.csize - 1));
+      cs := byte((fs.fptr div 512) and (fs.csize - 1));
       (* On the cluster boundary? *)
-      if 0 = cs then
+      if cs = 0 then
       begin
         (* On the top of the file? *)
         if fs.fptr = 0 then
@@ -1052,21 +1334,14 @@ begin
         else
           clst := get_fat(fs.curr_clust);
         if clst <= 1 then
-        begin
-          fs.flag := 0;
-          Exit(FR_DISK_ERR);
-        end;
-
+          ABORT_DISK_ERR;
         (* Update current cluster *)
         fs.curr_clust := clst;
       end;
       (* Get current sector *)
       sect := clust2sect(fs.curr_clust);
       if 0 = sect then
-      begin
-        fs.flag := 0;
-        Exit(FR_DISK_ERR);
-      end;
+        ABORT_DISK_ERR;
       fs.dsect := sect + cs;
     end;
     (* Get partial sector data from sector buffer *)
@@ -1075,19 +1350,15 @@ begin
       rcnt := btr;
     dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
     if dr <> RES_OK then
-    begin
-      fs.flag := 0;
-      Exit(FR_DISK_ERR);
-    end;
+      ABORT_DISK_ERR;
     (* Advances file read pointer *)
-    fs.fptr := fs.fptr + (rcnt);
+    fs.fptr := fs.fptr + rcnt;
     (* Update read counter *)
     btr := btr - rcnt;
-    br^ += rcnt;
+    br^ := br^ + rcnt;
     (* Advances the data pointer if destination is memory *)
     if rbuff <> nil then
       rbuff := rbuff + rcnt;
-
   end;
   Result := FR_OK;
 end;
@@ -1095,112 +1366,108 @@ end;
 {$ifdef PF_USE_LSEEK}
 function pf_lseek(ofs: DWORD): FRESULT;
 var
-clst: CLUST;
-bcs: DWORD;
-sect: DWORD;
-ifptr: DWORD;
-fs: pFATFS;
+  clst: CLUST;
+  bcs: DWORD;
+  sect: DWORD;
+  ifptr: DWORD;
+  fs: pFATFS;
 begin
-  fs:=iFatFs;
+  fs := iFatFs;
 
   (* Check file system *)
-  if fs = nil then Exit(FR_NOT_ENABLED);
+  if fs = nil then
+    Exit(FR_NOT_ENABLED);
 
   (* Check if opened *)
-  if (fs.flag and FA_OPENED) = 0 then Exit(FR_NOT_OPENED);
+  if (fs.flag and FA_OPENED) = 0 then
+    Exit(FR_NOT_OPENED);
 
-  if ofs>fs.fsize then
+  if ofs > fs.fsize then
     (* Clip offset with the file size *)
-    ofs:= fs.fsize;
-  ifptr:= fs.fptr;
-  fs.fptr:= 0;
-  if ofs>0 then
+    ofs := fs.fsize;
+  ifptr := fs.fptr;
+  fs.fptr := 0;
+  if ofs > 0 then
   begin
     (* Cluster size (byte) *)
-    bcs:= DWORD(fs.csize)*512;
-    if (ifptr>0) and (((ofs-1) div bcs) >= ((ifptr-1) div bcs)) then
+    bcs := DWORD(fs.csize) * 512;
+    if (ifptr > 0) and (((ofs - 1) div bcs) >= ((ifptr - 1) div bcs)) then
     begin
       (* When seek to same or following cluster, *)
       (* start from the current cluster *)
-      fs.fptr:= (ifptr-1) and (not (bcs-1));
-      ofs:= ofs - fs.fptr;
-      clst:= fs.curr_clust;
+      fs.fptr := (ifptr - 1) and (not (bcs - 1));
+      ofs := ofs - fs.fptr;
+      clst := fs.curr_clust;
     end
     else
     begin
       (* When seek to back cluster, *)
       (* start from the first cluster *)
-      clst:= fs.org_clust;
-      fs.curr_clust:= clst;
+      clst := fs.org_clust;
+      fs.curr_clust := clst;
     end;
-    while ofs>bcs do
+    while ofs > bcs do
     begin
       (* Cluster following loop *)
       (* Follow cluster chain *)
-      clst:= get_fat(clst);
-      if (clst<=1) or (clst>=fs.n_fatent) then
-      begin
-        fs.flag := 0;
-        Exit(FR_DISK_ERR);
-      end;
-      fs.curr_clust:= clst;
-      fs.fptr:= fs.fptr + bcs;
-      ofs:= ofs - bcs;
+      clst := get_fat(clst);
+      if (clst <= 1) or (clst >= fs.n_fatent) then
+        ABORT_DISK_ERR;
+      fs.curr_clust := clst;
+      fs.fptr := fs.fptr + bcs;
+      ofs := ofs - bcs;
     end;
-    fs.fptr:= fs.fptr + ofs;
+    fs.fptr := fs.fptr + ofs;
     (* Current sector *)
-    sect:= clust2sect(clst);
+    sect := clust2sect(clst);
     if sect = 0 then
-    begin
-      fs.flag := 0;
-      Exit(FR_DISK_ERR);
-    end;
-    fs.dsect:= sect+((fs.fptr div 512) and (fs.csize-1));
+      ABORT_DISK_ERR;
+    fs.dsect := sect + ((fs.fptr div 512) and (fs.csize - 1));
   end;
-  result:= FR_OK;
+  Result := FR_OK;
 end;
+
 {$endif}
 
 {$ifdef PF_USE_WRITE}
-function pf_write(buff: pinteger;  btw: UINT;  bw: pUINT): FRESULT;
-const
-p: pBYTE = buff;
+function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 var
-clst: CLUST;
-sect: DWORD;
-remain: DWORD;
-cs: BYTE;
-wcnt: UINT;
-fs: pFATFS;
+  p: pBYTE;
+  clst: CLUST;
+  sect: DWORD;
+  remain: DWORD;
+  cs: byte;
+  wcnt: UINT;
+  fs: pFATFS;
 begin
-  fs:=iFatFs;
+  p := buff;
+  fs := iFatFs;
   (* Check file system *)
-  if fs = nil then Exit(FR_NOT_ENABLED);
+  if fs = nil then
+    Exit(FR_NOT_ENABLED);
 
-  bw^:=0;
+  bw^ := 0;
   (* Check if opened *)
-  if (fs.flag and FA_OPENED) = 0 then Exit(FR_NOT_OPENED);
+  if (fs.flag and FA_OPENED) = 0 then
+    Exit(FR_NOT_OPENED);
 
   if btw = 0 then
   begin
     (* Finalize request *)
-    if (fs.flag and FA__WIP) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
-    begin
-      fs.flag := 0;
-      Exit(FR_DISK_ERR);
-    end;
-    fs.flag:= fs.flag and (not FA__WIP);
+    if ((fs.flag and FA__WIP) <> 0) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
+      ABORT_DISK_ERR;
+    fs.flag := fs.flag and (not FA__WIP);
     Exit(FR_OK);
   end
   else
-    (* Write data request *)
-    if (fs.flag and FA__WIP) = 0 then
-      (* Round-down fptr to the sector boundary *)
-      fs.fptr:= fs.fptr and $FFFFFE00;
+  (* Write data request *)
+  if (fs.flag and FA__WIP) = 0 then
+    (* Round-down fptr to the sector boundary *)
+    fs.fptr := fs.fptr and $FFFFFE00;
 
-  remain:= fs.fsize-fs.fptr;
-  if btw>remain then
-    btw:= UINT(remain); (* Truncate btw by remaining bytes *)
+  remain := fs.fsize - fs.fptr;
+  if btw > remain then
+    btw := UINT(remain); (* Truncate btw by remaining bytes *)
 
   while btw <> 0 do
   begin
@@ -1208,73 +1475,66 @@ begin
     if UINT(fs.fptr) mod 512 = 0 then
     begin
       (* On the sector boundary? *)
-      cs:= (BYTE(fs.fptr) div 512) and (fs.csize-1 <> 0); (* Sector offset in the cluster *)
+      cs := byte((fs.fptr div 512) and (fs.csize - 1)); (* Sector offset in the cluster *)
       if cs = 0 then
       begin
         (* On the cluster boundary? *)
-        if fs.fptr=0 then
+        if fs.fptr = 0 then
           (* On the top of the file? *)
-          clst:= fs.org_clust
+          clst := fs.org_clust
         else
-          clst:= get_fat(fs.curr_clust);
-        if clst<=1 then
-        begin
-          fs.flag := 0;
-          Exit(FR_DISK_ERR);
-        end;
-        fs.curr_clust:= clst;
+          clst := get_fat(fs.curr_clust);
+        if clst <= 1 then
+          ABORT_DISK_ERR;
         (* Update current cluster *)
+        fs.curr_clust := clst;
       end;
-      sect:= clust2sect(fs.curr_clust); (* Get current sector *)
+      (* Get current sector *)
+      sect := clust2sect(fs.curr_clust);
       if sect = 0 then
-      begin
-        fs.flag := 0;
-        Exit(FR_DISK_ERR);
-      end;
-      fs.dsect:= sect+cs;
-      if disk_writep(0,fs.dsect) <> DRESULT.RES_OK then
-      begin
-        fs.flag := 0;
-        Exit(FR_DISK_ERR);
-      end;
-      fs.flag:= fs.flag or FA__WIP;
+        ABORT_DISK_ERR;
+      fs.dsect := sect + cs;
+
       (* Initiate a sector write operation *)
+      if disk_writep(nil, fs.dsect) <> DRESULT.RES_OK then
+        ABORT_DISK_ERR;
+      fs.flag := fs.flag or FA__WIP;
     end;
-    wcnt:= 512-(UINT(fs.fptr) mod 512); (* Number of bytes to write to the sector *)
-    if wcnt>btw then wcnt:= btw;
-    if disk_writep(p,wcnt) then
-    begin
-      fs.flag := 0;
-      Exit(FR_DISK_ERR);
-    end;
-    fs.fptr:= fs.fptr + wcnt;
-    p:= p + wcnt;
-    btw:= btw - wcnt;
-    bw^+=wcnt;
+    (* Number of bytes to write to the sector *)
+    wcnt := 512 - (UINT(fs.fptr) mod 512);
+    if wcnt > btw then
+      wcnt := btw;
+
     (* Send data to the sector *)
+    if disk_writep(p, wcnt) <> DRESULT.RES_OK then
+      ABORT_DISK_ERR;
+
     (* Update pointers and counters *)
+    fs.fptr := fs.fptr + wcnt;
+    p := p + wcnt;
+    btw := btw - wcnt;
+    bw^ := bw^ + wcnt;
+
     if UINT(fs.fptr) mod 512 = 0 then
     begin
-      if disk_writep(0,0) <> DRESULT.RES_OK then
-      begin
-        fs.flag := 0;
-        Exit(FR_DISK_ERR);
-      end;
-      fs.flag:= fs.flag and ( not FA__WIP);
-      (* Finalize the currtent secter write operation *)
+      (* Finalize the current sector write operation *)
+      if disk_writep(nil, 0) <> DRESULT.RES_OK then
+        ABORT_DISK_ERR;
+      fs.flag := fs.flag and (not FA__WIP);
     end;
   end;
 
-  result:= FR_OK;
+  Result := FR_OK;
 end;
+
 {$endif}
 
 {$ifdef PF_USE_DIR}
 function pf_opendir(dj: pDIR; path: PChar): FRESULT;
 var
   res: FRESULT;
-  sp: array [0..Pred(12)] of BYTE;
-  dir: array [0..Pred(32)] of BYTE;
+  sp: array [0..Pred(12)] of byte;
+  dir: array [0..Pred(32)] of byte;
   fs: pFATFS;
 begin
   fs := iFatFs;
@@ -1309,8 +1569,8 @@ end;
 function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
 var
   res: FRESULT;
-  sp: array [0..Pred(12)] of BYTE;
-  dir: array [0..Pred(32)] of BYTE;
+  sp: array [0..Pred(12)] of byte;
+  dir: array [0..Pred(32)] of byte;
   fs: pFATFS;
 begin
   fs := iFatFs;
@@ -1343,6 +1603,7 @@ begin
   end;
   Result := res;
 end;
+
 {$endif}
 
 end.

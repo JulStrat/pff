@@ -6,11 +6,6 @@ unit disk_io;
 *)
 interface
 
-{$ifdef LINUX}
-uses baseunix;
-
-{$endif}
-
 const
   STA_NOINIT = $01;  (* Drive not initialized  *)
   STA_NODISK = $02;  (* No medium in the drive *)
@@ -49,43 +44,24 @@ function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
 
 implementation
 
-{$ifdef LINUX}
-var
-  GDH: integer;
-
-{$endif}
-
 function disk_initialize(): DSTATUS;
 var
   stat: DSTATUS;
 begin
   (* Put your code here *)
-{$ifdef LINUX}
-  GDH := fpopen('../../SD.img', O_RDONLY);
-  if GDH = -1 then
-    stat := STA_NOINIT
-  else
-    stat := 0;
-{$endif}
+  stat := STA_NOINIT;
+
   Result := stat;
 end;
 
 function disk_readp(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): DRESULT;
 var
   res: DRESULT;
-{$ifdef LINUX}
-  br: integer;
-{$endif}
+
 begin
   (* Put your code here *)
-{$ifdef LINUX}
-  fplseek(GDH, sector*512+offset, SEEK_SET);
-  br := fpread(GDH, buff, Count);
-  if br <> -1 then
-    res := RES_OK
-  else
-    res := RES_ERROR;
-{$endif}
+  res := RES_NOTRDY;
+
   Result := res;
 end;
 
@@ -93,6 +69,7 @@ function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
 var
   res: DRESULT;
 begin
+  res := RES_NOTRDY;
   if buff = nil then
   begin
     if sc <> 0 then
