@@ -1,5 +1,4 @@
-{
-  Petit FatFs - FAT file system module for FPC
+{ Petit FatFs - FAT file system module for FPC
 
   Copyright (C) 2019, ChaN, all right reserved.
   Copyright (C) 2019, I. Kakoulidis, all right reserved.
@@ -14,14 +13,11 @@
   This software is provided by the copyright holder and contributors "AS IS"
   and any warranties related to this software are DISCLAIMED.
   The copyright owner or contributors be NOT LIABLE for any damages caused
-  by use of this software.
-}
+  by use of this software.}
 
-{
-  @abstract(Petit FatFs is a sub-set of FatFs module for Tiny 8-bit MicroControllers.
+{ @abstract(Petit FatFs is a sub-set of FatFs module for Tiny 8-bit MicroControllers.
   It can be incorporated into the Tiny MicroControllers with limited memory
-  even if the RAM size is less than sector size.)
-}
+  even if the RAM size is less than sector size.)}
 
 unit pff;
 
@@ -35,6 +31,8 @@ unit pff;
 {$define PF_FS_FAT12}
 {$define PF_FS_FAT16}
 {$define PF_FS_FAT32}
+
+{$undef PF_USE_LCC}
 
 interface
 
@@ -69,6 +67,9 @@ const
   FS_FAT32 = 3;
 
   PF_USE_LCC = 1;
+{$ifdef PF_USE_LCC}
+{$info PF_USE_LCC}
+{$endif}
   PF_CODE_PAGE = 857;
 
 (*
@@ -138,40 +139,63 @@ type
 
   (* File system object structure *)
   FATFS = record
-    fs_type: byte;        (* FAT sub type *)
-    flag: byte;           (* File status flags *)
-    csize: byte;          (* Number of sectors per cluster *)
+    (* FAT sub type *)
+    fs_type: byte;
+    (* File status flags *)
+    flag: byte;
+    (* Number of sectors per cluster *)
+    csize: byte;
     pad1: byte;
-    n_rootdir: word;      (* Number of root directory entries (0 on FAT32) *)
-    n_fatent: CLUST;      (* Number of FAT entries (= number of clusters + 2) *)
-    fatbase: DWORD;       (* FAT start sector *)
-    dirbase: DWORD;       (* Root directory start sector (Cluster# on FAT32) *)
-    database: DWORD;      (* Data start sector *)
-    fptr: DWORD;          (* File R/W pointer *)
-    fsize: DWORD;         (* File size *)
-    org_clust: CLUST;     (* File start cluster *)
-    curr_clust: CLUST;    (* File current cluster *)
-    dsect: DWORD;         (* File current data sector *)
+    (* Number of root directory entries (0 on FAT32) *)
+    n_rootdir: word;
+    (* Number of FAT entries (= number of clusters + 2) *)
+    n_fatent: CLUST;
+    (* FAT start sector *)
+    fatbase: DWORD;
+    (* Root directory start sector (Cluster# on FAT32) *)
+    dirbase: DWORD;
+    (* Data start sector *)
+    database: DWORD;
+    (* File R/W pointer *)
+    fptr: DWORD;
+    (* File size *)
+    fsize: DWORD;
+    (* File start cluster *)
+    org_clust: CLUST;
+    (* File current cluster *)
+    curr_clust: CLUST;
+    (* File current data sector *)
+    dsect: DWORD;
   end;
   PFATFS = ^FATFS;
 
   (* Directory object structure *)
   DIR = record
-    index: word; (* Current read/write index number *)
-    fn: pBYTE; (* Pointer to the SFN (in/out) {file[8],ext[3],status[1]} *)
-    sclust: CLUST; (* Table start cluster (0:Static table) *)
-    clust: CLUST; (* Current cluster *)
-    sect: DWORD; (* Current sector *)
+    (* Current read/write index number *)
+    index: word;
+    (* Pointer to the SFN (in/out) {file[8],ext[3],status[1]} *)
+    fn: pBYTE;
+    (* Table start cluster (0:Static table) *)
+    sclust: CLUST;
+    (* Current cluster *)
+    clust: CLUST;
+    (* Current sector *)
+    sect: DWORD;
   end;
   PDIR = ^DIR;
 
   (* File status structure *)
   FILINFO = record
-    fsize: DWORD;                        (* File size *)
-    fdate: word;                         (* Last modified date *)
-    ftime: word;                         (* Last modified time *)
-    fattrib: byte;                       (* Attribute *)
-    fname: array [0..Pred(13)] of char;  (* File name *)
+    (* File size *)
+    fsize: DWORD;
+    (* Last modified date *)
+    fdate: word;
+    (* Last modified time *)
+    ftime: word;
+    (* Attribute *)
+    fattrib: byte;
+    (* File name *)
+    fname: array [0..Pred(13)] of char;
   end;
   PFILINFO = ^FILINFO;
 
@@ -281,11 +305,11 @@ function pf_lseek(ofs: DWORD): FRESULT;
   creates the directory object for subsequent calls. 
   The directory object structure can be discarded at any time without any procedure.  
 
-  param(dj Pointer to directory object to create)
-  param(path Pointer to the directory path)
+  param(dj Directory object)
+  param(path Directory path)
 
   @returns(FRESULT) }
-function pf_opendir(dj: pDIR; path: PChar): FRESULT;
+function pf_opendir(var dj: DIR; path: PChar): FRESULT;
 
 { Read a directory item from the open directory.
 
@@ -297,11 +321,11 @@ function pf_opendir(dj: pDIR; path: PChar): FRESULT;
   When a null pointer is given to the fno, the read index 
   of the directory object will be rewinded.  
 
-  @param(dj Pointer to the open directory object)
+  @param(dj Open directory object)
   @param(fno Pointer to file information to return)
 
   @returns(FRESULT) }
-function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
+function pf_readdir(var dj: DIR; fno: PFILINFO): FRESULT;
 {$endif}
 
 implementation
@@ -312,9 +336,8 @@ implementation
 type
   _TEXCVT = array [0..127] of byte;
 
-{$if PF_USE_LCC = 0} (* ASCII upper case character only *)
-{$info ASCII upper case character only}
-{$elseif PF_CODE_PAGE = 932} (* Japanese Shift-JIS *)
+{$ifdef PF_USE_LCC}
+{$if PF_CODE_PAGE = 932} (* Japanese Shift-JIS *)
 {$info Code page - Japanese Shift-JIS}
 const
   _DF1S = $81; (* DBC 1st byte range 1 start *)
@@ -565,6 +588,7 @@ const
 {$else}
 {$error Unknown code page.}
 {$endif}
+{$endif}
 
 {$MACRO ON}
 {$define ABORT_DISK_ERR := begin fs.flag := 0; Exit(FR_DISK_ERR); end}
@@ -572,14 +596,13 @@ const
 var
   iFatFS: PFATFS;
 
-{$ifdef PF_USE_LCC && !defined(_EXCVT)}
+{$ifdef PF_USE_LCC}
 {$ifdef _DF2S}
 function IsDBCS1(c: integer): boolean;
 begin
   Result := ((byte(c) >= _DF1S) and (byte(c) <= _DF1E)) or
     ((byte(c) >= _DF2S) and (byte(c) <= _DF2E));
 end;
-
 {$else}
 function IsDBCS1(c: integer): boolean;
 begin
@@ -639,16 +662,18 @@ begin
 {$ENDIF}
 end;
 
-{ Load a 4-byte little-endian word }
+{ Load a 4-byte little-endian double word }
 function ld_dword(ptr: pBYTE): DWORD;
-var
-  rv: DWORD;
 begin
-  rv := ptr[3];
-  rv := rv shl 8 or ptr[2];
-  rv := rv shl 8 or ptr[1];
-  rv := rv shl 8 or ptr[0];
-  Result := rv;
+  {$IFDEF ENDIAN_LITTLE}
+  {$info ENDIAN_LITTLE}
+    Result := PDWord(ptr)^;
+  {$ELSE}
+  {$info NOT ENDIAN_LITTLE}
+    Result := (ptr[3] shl 8) or ptr[2];
+    Result := (Result shl 8) or ptr[1];
+    Result := (Result shl 8) or ptr[0];
+  {$ENDIF}
 end;
 
 (* String functions                                                      *)
@@ -835,7 +860,7 @@ end;
 
   @reaturns(FRESULT)
 }
-function dir_rewind(dj: pDIR): FRESULT;
+function dir_rewind(var dj: DIR): FRESULT;
 var
   clst: CLUST;
   fs: pFATFS;
@@ -870,7 +895,7 @@ end;
 
   @returns(FRESULT)
 }
-function dir_next(dj: pDIR): FRESULT;
+function dir_next(var dj: DIR): FRESULT;
 var
   clst: CLUST;
   i: word;
@@ -912,14 +937,16 @@ begin
 end;
 
 (* Pointer to the directory object *)
-function create_name(dj: pDIR; var path: PChar): FRESULT;
+function create_name(var dj: DIR; var path: PChar): FRESULT;
 var
   p: PBYTE;
+(*
 {$ifdef PF_USE_LCC}
 {$ifdef _EXCVT}
   cvt: array [0..127] of byte = _EXCVT;
 {$endif}
 {$endif}
+*)
   c: byte;
   d: byte;
   ni: byte;
@@ -950,11 +977,10 @@ begin
       ni := 11;
       continue;
     end;
-    {$ifdef PF_USE_LCC}{$ifdef _EXCVT}
+    {$if PF_USE_LCC = 1 and defined(_EXCVT)}
     if c >= $80 then
       (* To upper extended char (SBCS) *)
-      c := cvt[c - $80];
-    {$endif}
+      c := _EXCVT[c - $80];
     {$endif}
 
     (* DBC 1st byte? *)
@@ -995,7 +1021,7 @@ end;
 
   @returns(FRESULT)
 }
-function dir_find(dj: pDIR; dir: pBYTE): FRESULT;
+function dir_find(var dj: DIR; dir: pBYTE): FRESULT;
 var
   res: FRESULT;
   c: byte;
@@ -1038,7 +1064,7 @@ end;
 
   @returns(FRESULT)
 }
-function dir_read(dj: pDIR; dir: pBYTE): FRESULT;
+function dir_read(var dj: DIR; dir: pBYTE): FRESULT;
 var
   res: FRESULT;
   a: byte;
@@ -1090,7 +1116,7 @@ end;
 
   @returns(FRESULT)
 }
-function follow_path(dj: pDIR; dir: pBYTE; path: PChar): FRESULT;
+function follow_path(var dj: DIR; dir: pBYTE; path: PChar): FRESULT;
 var
   res: FRESULT;
 begin
@@ -1152,7 +1178,7 @@ end;
   @param(dir 32-byte working buffer)
   @param(fno Pointer to store the file information)
 }
-procedure get_fileinfo(dj: pDIR; dir: pBYTE; fno: pFILINFO);
+procedure get_fileinfo(var dj: DIR; dir: pBYTE; fno: pFILINFO);
 var
   i: byte;
   c: byte;
@@ -1309,7 +1335,7 @@ begin
   fs.flag := 0;
   dj.fn := sp;
   (* Follow the file path *)
-  res := follow_path(@dj, dir, path);
+  res := follow_path(dj, dir, path);
 
   (* Follow failed *)
   if res <> FR_OK then
@@ -1570,7 +1596,7 @@ end;
 {$endif}
 
 {$ifdef PF_USE_DIR}
-function pf_opendir(dj: pDIR; path: PChar): FRESULT;
+function pf_opendir(var dj: DIR; path: PChar): FRESULT;
 var
   res: FRESULT;
   sp: array [0..Pred(12)] of byte;
@@ -1579,8 +1605,8 @@ var
 begin
   fs := iFatFs;
 
+  (* Check file system *)
   if fs = nil then
-    (* Check file system *)
     res := FR_NOT_ENABLED
   else
   begin
@@ -1606,7 +1632,7 @@ begin
   Result := res;
 end;
 
-function pf_readdir(dj: pDIR; fno: pFILINFO): FRESULT;
+function pf_readdir(var dj: DIR; fno: PFILINFO): FRESULT;
 var
   res: FRESULT;
   sp: array [0..Pred(12)] of byte;
@@ -1615,8 +1641,8 @@ var
 begin
   fs := iFatFs;
 
+  (* Check file system *)
   if fs = nil then
-    (* Check file system *)
     res := FR_NOT_ENABLED
   else
   begin
@@ -1643,7 +1669,6 @@ begin
   end;
   Result := res;
 end;
-
 {$endif}
 
 end.

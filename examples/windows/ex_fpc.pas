@@ -17,20 +17,20 @@ begin
   fr := pf_mount(@fs);
   WriteLn('pf_mount() - ', fr);
 
-  fr := pf_opendir(@dr, '');
+  fr := pf_opendir(dr, '');
   WriteLn('pf_opendir("") - ', fr);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_opendir(@dr, 'RASPI');
+  fr := pf_opendir(dr, 'RASPI');
   WriteLn('pf_opendir("RASPI") - ', fr);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
 
