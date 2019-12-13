@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>pff - PetitFS Free Pascal Port: All Functions and Procedures</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.15.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>pff - PetitFS Free Pascal Port</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="allitems">All Functions and Procedures</h1>
+<table class="itemstable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemunit">Unit</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="disk_io.html#disk_initialize">disk_initialize</a></td>
+<td class="itemunit"><a class="bold" href="disk_io.html">disk_io</a></td>
+<td class="itemdesc"><p>Initialize Disk Drive</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="disk_io.html#disk_readp">disk_readp</a></td>
+<td class="itemunit"><a class="bold" href="disk_io.html">disk_io</a></td>
+<td class="itemdesc"><p>Read Partial Sector
+
+<p>   </p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="disk_io.html#disk_writep">disk_writep</a></td>
+<td class="itemunit"><a class="bold" href="disk_io.html">disk_io</a></td>
+<td class="itemdesc"><p>Write Partial Sector
+
+<p> </p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="pff.html#pf_lseek">pf_lseek</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Move file pointer of the open file
+
+<p>The pf_lseek() function moves the file read/write pointer of the open file. The ofs can be specified in only origin from top of the file.
+
+<p>
+
+<p></p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="pff.html#pf_mount">pf_mount</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Mount/Unmount a logical Drive
+
+<p>The pf_mount() function registers a work area to the Petit FatFs module. The volume is mounted on registration. The volume must be mounted with this function prior to use any file function and after every media changes.
+
+<p>
+
+<p></p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="pff.html#pf_open">pf_open</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Opens an existing file
+
+<p>The file must be opend prior to use <a class="normal" href="pff.html#pf_read">pf_read</a> and <a class="normal" href="pff.html#pf_lseek">pf_lseek</a> function. The open file is valid until next open.
+
+<p>
+
+<p></p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="pff.html#pf_opendir">pf_opendir</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Create a directory Object.
+
+<p>The pf_opendir() function opens an exsisting directory and creates the directory object for subsequent calls. The directory object structure can be discarded at any time without any procedure.
+
+<p> 
+
+<p></p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="pff.html#pf_read">pf_read</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Read data from the open file.
+
+<p>The file read/write pointer in the file system object advances in number of bytes read. After the function succeeded, <code>br</code> should be checked to detect end of file. In case of <code>br</code> is less than <code>btr</code>, it means the read pointer has reached end of the file during read operation. If a null pointer is given to the buff, the read data bytes are forwarded to the outgoing stream instead of the memory. The streaming function depends on each project will be typically built-in the <a class="normal" href="disk_io.html#disk_readp">disk_readp</a> function.
+
+<p>  
+
+<p></p></td>
+</tr>
+<tr class="list">
+<td class="itemname"><a class="bold" href="pff.html#pf_readdir">pf_readdir</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Read a directory item from the open directory.
+
+<p>The pf_readdir() function reads directory entries in sequence. All items in the directory can be read by calling this function repeatedly. When all directory entries have been read and no item to read, the function returns a null string into member f_name[] in the file information structure without error. When a null pointer is given to the fno, the read index of the directory object will be rewinded.
+
+<p> 
+
+<p></p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="pff.html#pf_write">pf_write</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Write data to the open file. The write function has some restrictions listed below:
+
+<p>Cannot create file. Only existing file can be written. Cannot expand file size. Cannot update time stamp of the file. Write operation can start/stop on the sector boundary only. Read-only attribute of the file cannot block write operation.
+
+<p>The read/write pointer in the file system object advances in number of bytes written. After the function succeeded, <code>bw</code> should be checked to detect end of file. In case of <code>bw</code> is less than <code>btw</code>, it means the read/write pointer reached end of file during the write operation. Once a write operation is initiated, it must be finalized properly, or the written data can be lost.
+
+<p>  
+
+<p></p></td>
+</tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a  href="https://github.com/pasdoc/pasdoc/wiki">PasDoc 0.15.0</a>. </em>
+</span>
+</td></tr></table></body></html>

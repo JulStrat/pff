@@ -29,6 +29,7 @@
           </SearchPaths>
           <Parsing>
             <SyntaxOptions>
+              <CStyleOperator Value="False"/>
               <IncludeAssertionCode Value="True"/>
             </SyntaxOptions>
           </Parsing>
@@ -49,6 +50,21 @@
               <UseExternalDbgSyms Value="True"/>
             </Debugging>
           </Linking>
+          <Other>
+            <Verbosity>
+              <ShoLineNum Value="True"/>
+              <ShowAll Value="True"/>
+              <ShowDebugInfo Value="True"/>
+              <ShowUsedFiles Value="True"/>
+              <ShowTriedFiles Value="True"/>
+              <ShowCompProc Value="True"/>
+              <ShowCond Value="True"/>
+              <ShowExecInfo Value="True"/>
+              <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
+              <ShowHintsForSenderNotUsed Value="True"/>
+            </Verbosity>
+            <CustomOptions Value="-vi"/>
+          </Other>
         </CompilerOptions>
       </Item2>
       <Item3 Name="Release">

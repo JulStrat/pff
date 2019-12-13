@@ -44,31 +44,18 @@ function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
 
 implementation
 
-var
-  GDH: file;
-
 function disk_initialize(): DSTATUS;
 var
   stat: DSTATUS;
 begin
   (* Put your code here *)
-  Assign(GDH, '../SD.img');
-  Reset(GDH, 1);
-  Result := 0;
 end;
 
 function disk_readp(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): DRESULT;
 var
   res: DRESULT;
-  br: integer;
 begin
   (* Put your code here *)
-  Seek(GDH, sector*512+offset);
-  BlockRead(GDH, PBYTE(buff)^, Count, br);
-  if br > 0 then
-    res := RES_OK
-  else
-    res := RES_ERROR;
 
   Result := res;
 end;
@@ -76,7 +63,6 @@ end;
 function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
 var
   res: DRESULT;
-  br: integer;
 begin
   if buff = nil then
   begin
@@ -92,7 +78,6 @@ begin
   else
   begin
     (* Send data to the disk *)
-    BlockWrite(GDH, PBYTE(buff)^, sc, br);
   end;
 
   Result := res;

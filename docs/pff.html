@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>pff - PetitFS Free Pascal Port: pff</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.15.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>pff - PetitFS Free Pascal Port</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit pff</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section">Uses</div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section"><a class="section" href="#PasDoc-Types">Types</a></div><div class="one_section"><a class="section" href="#PasDoc-Constants">Constants</a></div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p>
+Petit FatFs is a sub-set of FatFs module for Tiny 8-bit MicroControllers. It can be incorporated into the Tiny MicroControllers with limited memory even if the RAM size is less than sector size.</p>
+<span id="PasDoc-Uses"></span><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Record&nbsp;<a class="bold" href="pff.FATFS.html"><code>FATFS</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Record&nbsp;<a class="bold" href="pff.DIR.html"><code>DIR</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Record&nbsp;<a class="bold" href="pff.FILINFO.html"><code>FILINFO</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_mount">pf_mount</a></b>(var fs: <a  href="pff.FATFS.html">FATFS</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_open">pf_open</a></b>(path: PChar): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_read">pf_read</a></b>(buff: Pointer; btr: <a  href="pff.html#UINT">UINT</a>; var br: <a  href="pff.html#UINT">UINT</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_write">pf_write</a></b>(buff: Pointer; btw: <a  href="pff.html#UINT">UINT</a>; bw: <a  href="pff.html#PUINT">pUINT</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_lseek">pf_lseek</a></b>(ofs: DWORD): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_opendir">pf_opendir</a></b>(var dj: <a  href="pff.DIR.html">DIR</a>; path: PChar): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_readdir">pf_readdir</a></b>(var dj: <a  href="pff.DIR.html">DIR</a>; fno: <a  href="pff.html#PFILINFO">PFILINFO</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#PWCHAR">PWCHAR</a></b> = &circ;<a  href="pff.html#WCHAR">WCHAR</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#WCHAR">WCHAR</a></b> = word;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#PUINT">PUINT</a></b> = &circ;<a  href="pff.html#UINT">UINT</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#UINT">UINT</a></b> = DWORD;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#CLUST">CLUST</a></b> = DWORD;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#PFATFS">PFATFS</a></b> = &circ;<a  href="pff.FATFS.html">FATFS</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#PDIR">PDIR</a></b> = &circ;<a  href="pff.DIR.html">DIR</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#PFILINFO">PFILINFO</a></b> = &circ;<a  href="pff.FILINFO.html">FILINFO</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#FRESULT">FRESULT</a></b> = (...);</code></td>
+</tr>
+</table>
+<span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#PF_DEFINED">PF_DEFINED</a></b> = 8088;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#PF_FS_FAT12">PF_FS_FAT12</a></b> = True;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#PF_FS_FAT16">PF_FS_FAT16</a></b> = True;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#PF_FS_FAT32">PF_FS_FAT32</a></b> = True;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#PF_USE_LCC">PF_USE_LCC</a></b> = True;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#PF_CODE_PAGE">PF_CODE_PAGE</a></b> = 857;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#FA_OPENED">FA_OPENED</a></b> = $01;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#FA_WPRT">FA_WPRT</a></b> = $02;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#FA__WIP">FA__WIP</a></b> = $40;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#AM_RDO">AM_RDO</a></b> = $01;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#AM_HID">AM_HID</a></b> = $02;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#AM_SYS">AM_SYS</a></b> = $04;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#AM_VOL">AM_VOL</a></b> = $08;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#AM_LFN">AM_LFN</a></b> = $0F;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#AM_DIR">AM_DIR</a></b> = $10;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#AM_ARC">AM_ARC</a></b> = $20;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#AM_MASK">AM_MASK</a></b> = $3F;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#FS_FAT12">FS_FAT12</a></b> = 1;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#FS_FAT16">FS_FAT16</a></b> = 2;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#FS_FAT32">FS_FAT32</a></b> = 3;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BS_OEMName">BS_OEMName</a></b> = 3;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BS_DrvNum">BS_DrvNum</a></b> = 36;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BS_BootSig">BS_BootSig</a></b> = 38;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BS_VolID">BS_VolID</a></b> = 39;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BS_VolLab">BS_VolLab</a></b> = 43;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BS_FilSysType">BS_FilSysType</a></b> = 54;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BS_DrvNum32">BS_DrvNum32</a></b> = 64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BS_BootSig32">BS_BootSig32</a></b> = 66;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BS_VolID32">BS_VolID32</a></b> = 67;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BS_VolLab32">BS_VolLab32</a></b> = 71;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BS_FilSysType32">BS_FilSysType32</a></b> = 82;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BS_55AA">BS_55AA</a></b> = 510;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_BytsPerSec">BPB_BytsPerSec</a></b> = 11;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_SecPerClus">BPB_SecPerClus</a></b> = 13;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_RsvdSecCnt">BPB_RsvdSecCnt</a></b> = 14;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_NumFATs">BPB_NumFATs</a></b> = 16;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_RootEntCnt">BPB_RootEntCnt</a></b> = 17;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_TotSec16">BPB_TotSec16</a></b> = 19;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_Media">BPB_Media</a></b> = 21;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_FATSz16">BPB_FATSz16</a></b> = 22;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_SecPerTrk">BPB_SecPerTrk</a></b> = 24;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_NumHeads">BPB_NumHeads</a></b> = 26;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_HiddSec">BPB_HiddSec</a></b> = 28;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_TotSec32">BPB_TotSec32</a></b> = 32;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_FATSz32">BPB_FATSz32</a></b> = 36;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_ExtFlags">BPB_ExtFlags</a></b> = 40;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_FSVer">BPB_FSVer</a></b> = 42;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_RootClus">BPB_RootClus</a></b> = 44;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_FSInfo">BPB_FSInfo</a></b> = 48;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#BPB_BkBootSec">BPB_BkBootSec</a></b> = 50;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#MBR_Table">MBR_Table</a></b> = 446;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_Name">DIR_Name</a></b> = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_Attr">DIR_Attr</a></b> = 11;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_NTres">DIR_NTres</a></b> = 12;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_CrtTime">DIR_CrtTime</a></b> = 14;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_CrtDate">DIR_CrtDate</a></b> = 16;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_FstClusHI">DIR_FstClusHI</a></b> = 20;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_WrtTime">DIR_WrtTime</a></b> = 22;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_WrtDate">DIR_WrtDate</a></b> = 24;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_FstClusLO">DIR_FstClusLO</a></b> = 26;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><b><a  href="pff.html#DIR_FileSize">DIR_FileSize</a></b> = 28;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_mount"></span><code>function <b>pf_mount</b>(var fs: <a  href="pff.FATFS.html">FATFS</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Mount/Unmount a logical Drive
+
+<p>The pf_mount() function registers a work area to the Petit FatFs module. The volume is mounted on registration. The volume must be mounted with this function prior to use any file function and after every media changes.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>fs</dt>
+<dd>Pointer to the work area (file system object) to be registered.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><a class="normal" href="pff.html#FR_OK">FR_OK</a> The function succeeded.
+
+<p><a class="normal" href="pff.html#FR_NOT_READY">FR_NOT_READY</a> The storage device could not be initialized due to a hard error or no medium.
+
+<p><a class="normal" href="pff.html#FR_DISK_ERR">FR_DISK_ERR</a> An error occured in the disk read function.
+
+<p><a class="normal" href="pff.html#FR_NO_FILESYSTEM">FR_NO_FILESYSTEM</a> There is no valid FAT partition on the drive.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_open"></span><code>function <b>pf_open</b>(path: PChar): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Opens an existing file
+
+<p>The file must be opend prior to use <a class="normal" href="pff.html#pf_read">pf_read</a> and <a class="normal" href="pff.html#pf_lseek">pf_lseek</a> function. The open file is valid until next open.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>path</dt>
+<dd>Pointer to a null-terminated string that specifies the file name to open.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><a class="normal" href="pff.html#FR_OK">FR_OK</a> The function succeeded.
+
+<p><a class="normal" href="pff.html#FR_NO_FILE">FR_NO_FILE</a> Could not find the file or path.
+
+<p><a class="normal" href="pff.html#FR_DISK_ERR">FR_DISK_ERR</a> The function failed due to a hard error in the disk function, a wrong FAT structure or an internal error.
+
+<p><a class="normal" href="pff.html#FR_NOT_ENABLED">FR_NOT_ENABLED</a> The volume has not been mounted.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_read"></span><code>function <b>pf_read</b>(buff: Pointer; btr: <a  href="pff.html#UINT">UINT</a>; var br: <a  href="pff.html#UINT">UINT</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Read data from the open file.
+
+<p>The file read/write pointer in the file system object advances in number of bytes read. After the function succeeded, <code>br</code> should be checked to detect end of file. In case of <code>br</code> is less than <code>btr</code>, it means the read pointer has reached end of the file during read operation. If a null pointer is given to the buff, the read data bytes are forwarded to the outgoing stream instead of the memory. The streaming function depends on each project will be typically built-in the <a class="normal" href="disk_io.html#disk_readp">disk_readp</a> function.
+
+<p>  
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>buff</dt>
+<dd>Pointer to the read buffer (nil: Forward data to the stream)</dd>
+<dt>btr</dt>
+<dd>Number of bytes to read</dd>
+<dt>br</dt>
+<dd>Pointer to number of bytes read</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">FRESULT</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_write"></span><code>function <b>pf_write</b>(buff: Pointer; btw: <a  href="pff.html#UINT">UINT</a>; bw: <a  href="pff.html#PUINT">pUINT</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Write data to the open file. The write function has some restrictions listed below:
+
+<p>Cannot create file. Only existing file can be written. Cannot expand file size. Cannot update time stamp of the file. Write operation can start/stop on the sector boundary only. Read-only attribute of the file cannot block write operation.
+
+<p>The read/write pointer in the file system object advances in number of bytes written. After the function succeeded, <code>bw</code> should be checked to detect end of file. In case of <code>bw</code> is less than <code>btw</code>, it means the read/write pointer reached end of file during the write operation. Once a write operation is initiated, it must be finalized properly, or the written data can be lost.
+
+<p>  
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>buff</dt>
+<dd>Pointer to the data to be written</dd>
+<dt>btw</dt>
+<dd>Number of bytes to write (0:Finalize the current write operation)</dd>
+<dt>bw</dt>
+<dd>Pointer to number of bytes written</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">FRESULT</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_lseek"></span><code>function <b>pf_lseek</b>(ofs: DWORD): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Move file pointer of the open file
+
+<p>The pf_lseek() function moves the file read/write pointer of the open file. The ofs can be specified in only origin from top of the file.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>ofs</dt>
+<dd>File pointer from top of file</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">FRESULT</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_opendir"></span><code>function <b>pf_opendir</b>(var dj: <a  href="pff.DIR.html">DIR</a>; path: PChar): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Create a directory Object.
+
+<p>The pf_opendir() function opens an exsisting directory and creates the directory object for subsequent calls. The directory object structure can be discarded at any time without any procedure.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>dj</dt>
+<dd>Directory object</dd>
+<dt>path</dt>
+<dd>Directory path</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">FRESULT</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_readdir"></span><code>function <b>pf_readdir</b>(var dj: <a  href="pff.DIR.html">DIR</a>; fno: <a  href="pff.html#PFILINFO">PFILINFO</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Read a directory item from the open directory.
+
+<p>The pf_readdir() function reads directory entries in sequence. All items in the directory can be read by calling this function repeatedly. When all directory entries have been read and no item to read, the function returns a null string into member f_name[] in the file information structure without error. When a null pointer is given to the fno, the read index of the directory object will be rewinded.
+
+<p> 
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>dj</dt>
+<dd>Open directory object</dd>
+<dt>fno</dt>
+<dd>Pointer to file information to return</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">FRESULT</p></td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PWCHAR"></span><code><b>PWCHAR</b> = &circ;<a  href="pff.html#WCHAR">WCHAR</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="WCHAR"></span><code><b>WCHAR</b> = word;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PUINT"></span><code><b>PUINT</b> = &circ;<a  href="pff.html#UINT">UINT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UINT"></span><code><b>UINT</b> = DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CLUST"></span><code><b>CLUST</b> = DWORD;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PFATFS"></span><code><b>PFATFS</b> = &circ;<a  href="pff.FATFS.html">FATFS</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PDIR"></span><code><b>PDIR</b> = &circ;<a  href="pff.DIR.html">DIR</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PFILINFO"></span><code><b>PFILINFO</b> = &circ;<a  href="pff.FILINFO.html">FILINFO</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FRESULT"></span><code><b>FRESULT</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+File function return code</p>
+<h6 class="description_section">Values</h6>
+<ul>
+<li>
+<span id="FR_OK">FR_OK = 0</span></li>
+<li>
+<span id="FR_DISK_ERR">FR_DISK_ERR</span></li>
+<li>
+<span id="FR_NOT_READY">FR_NOT_READY</span></li>
+<li>
+<span id="FR_NO_FILE">FR_NO_FILE</span></li>
+<li>
+<span id="FR_NOT_OPENED">FR_NOT_OPENED</span></li>
+<li>
+<span id="FR_NOT_ENABLED">FR_NOT_ENABLED</span></li>
+<li>
+<span id="FR_NO_FILESYSTEM">FR_NO_FILESYSTEM</span></li>
+</ul>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PF_DEFINED"></span><code><b>PF_DEFINED</b> = 8088;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PF_FS_FAT12"></span><code><b>PF_FS_FAT12</b> = True;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Revision ID</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PF_FS_FAT16"></span><code><b>PF_FS_FAT16</b> = True;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PF_FS_FAT32"></span><code><b>PF_FS_FAT32</b> = True;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PF_USE_LCC"></span><code><b>PF_USE_LCC</b> = True;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PF_CODE_PAGE"></span><code><b>PF_CODE_PAGE</b> = 857;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FA_OPENED"></span><code><b>FA_OPENED</b> = $01;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+File status flag (FATFS.flag)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FA_WPRT"></span><code><b>FA_WPRT</b> = $02;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FA__WIP"></span><code><b>FA__WIP</b> = $40;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_RDO"></span><code><b>AM_RDO</b> = $01;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Read only</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_HID"></span><code><b>AM_HID</b> = $02;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Hidden</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_SYS"></span><code><b>AM_SYS</b> = $04;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+System</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_VOL"></span><code><b>AM_VOL</b> = $08;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Volume label</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_LFN"></span><code><b>AM_LFN</b> = $0F;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+LFN entry</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_DIR"></span><code><b>AM_DIR</b> = $10;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Directory</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_ARC"></span><code><b>AM_ARC</b> = $20;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Archive</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AM_MASK"></span><code><b>AM_MASK</b> = $3F;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Mask of defined bits</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FS_FAT12"></span><code><b>FS_FAT12</b> = 1;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FS_FAT16"></span><code><b>FS_FAT16</b> = 2;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FS_FAT32"></span><code><b>FS_FAT32</b> = 3;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_OEMName"></span><code><b>BS_OEMName</b> = 3;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_DrvNum"></span><code><b>BS_DrvNum</b> = 36;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_BootSig"></span><code><b>BS_BootSig</b> = 38;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_VolID"></span><code><b>BS_VolID</b> = 39;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_VolLab"></span><code><b>BS_VolLab</b> = 43;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_FilSysType"></span><code><b>BS_FilSysType</b> = 54;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_DrvNum32"></span><code><b>BS_DrvNum32</b> = 64;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_BootSig32"></span><code><b>BS_BootSig32</b> = 66;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_VolID32"></span><code><b>BS_VolID32</b> = 67;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_VolLab32"></span><code><b>BS_VolLab32</b> = 71;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_FilSysType32"></span><code><b>BS_FilSysType32</b> = 82;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BS_55AA"></span><code><b>BS_55AA</b> = 510;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_BytsPerSec"></span><code><b>BPB_BytsPerSec</b> = 11;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_SecPerClus"></span><code><b>BPB_SecPerClus</b> = 13;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_RsvdSecCnt"></span><code><b>BPB_RsvdSecCnt</b> = 14;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_NumFATs"></span><code><b>BPB_NumFATs</b> = 16;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_RootEntCnt"></span><code><b>BPB_RootEntCnt</b> = 17;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_TotSec16"></span><code><b>BPB_TotSec16</b> = 19;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_Media"></span><code><b>BPB_Media</b> = 21;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_FATSz16"></span><code><b>BPB_FATSz16</b> = 22;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_SecPerTrk"></span><code><b>BPB_SecPerTrk</b> = 24;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_NumHeads"></span><code><b>BPB_NumHeads</b> = 26;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_HiddSec"></span><code><b>BPB_HiddSec</b> = 28;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_TotSec32"></span><code><b>BPB_TotSec32</b> = 32;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_FATSz32"></span><code><b>BPB_FATSz32</b> = 36;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_ExtFlags"></span><code><b>BPB_ExtFlags</b> = 40;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_FSVer"></span><code><b>BPB_FSVer</b> = 42;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_RootClus"></span><code><b>BPB_RootClus</b> = 44;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_FSInfo"></span><code><b>BPB_FSInfo</b> = 48;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BPB_BkBootSec"></span><code><b>BPB_BkBootSec</b> = 50;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MBR_Table"></span><code><b>MBR_Table</b> = 446;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_Name"></span><code><b>DIR_Name</b> = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_Attr"></span><code><b>DIR_Attr</b> = 11;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_NTres"></span><code><b>DIR_NTres</b> = 12;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_CrtTime"></span><code><b>DIR_CrtTime</b> = 14;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_CrtDate"></span><code><b>DIR_CrtDate</b> = 16;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_FstClusHI"></span><code><b>DIR_FstClusHI</b> = 20;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_WrtTime"></span><code><b>DIR_WrtTime</b> = 22;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_WrtDate"></span><code><b>DIR_WrtDate</b> = 24;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_FstClusLO"></span><code><b>DIR_FstClusLO</b> = 26;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DIR_FileSize"></span><code><b>DIR_FileSize</b> = 28;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a  href="https://github.com/pasdoc/pasdoc/wiki">PasDoc 0.15.0</a>. </em>
+</span>
+</td></tr></table></body></html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>pff - PetitFS Free Pascal Port: disk_io</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.15.0">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<table class="container"><tr><td class="navigation">
+<h2>pff - PetitFS Free Pascal Port</h2><p><a href="AllUnits.html" class="navigation">Units</a></p><p><a href="ClassHierarchy.html" class="navigation">Class Hierarchy</a></p><p><a href="AllClasses.html" class="navigation">Classes, Interfaces, Objects and Records</a></p><p><a href="AllTypes.html" class="navigation">Types</a></p><p><a href="AllVariables.html" class="navigation">Variables</a></p><p><a href="AllConstants.html" class="navigation">Constants</a></p><p><a href="AllFunctions.html" class="navigation">Functions and Procedures</a></p><p><a href="AllIdentifiers.html" class="navigation">Identifiers</a></p></td><td class="content">
+<h1 class="unit">Unit disk_io</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section">Uses</div><div class="one_section">Classes, Interfaces, Objects and Records</div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section"><a class="section" href="#PasDoc-Types">Types</a></div><div class="one_section"><a class="section" href="#PasDoc-Constants">Constants</a></div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p>
+Low level disk I/O module skeleton for Petit FatFs (C)ChaN, 2014</p>
+<span id="PasDoc-Uses"></span><h2 class="overview">Overview</h2>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="disk_io.html#disk_initialize">disk_initialize</a></b>(): <a  href="disk_io.html#DSTATUS">DSTATUS</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="disk_io.html#disk_readp">disk_readp</a></b>(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): <a  href="disk_io.html#DRESULT">DRESULT</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <b><a  href="disk_io.html#disk_writep">disk_writep</a></b>(buff: Pointer; sc: DWORD): <a  href="disk_io.html#DRESULT">DRESULT</a>;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="disk_io.html#DSTATUS">DSTATUS</a></b> = byte;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="disk_io.html#DRESULT">DRESULT</a></b> = (...);</code></td>
+</tr>
+</table>
+<span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><b><a  href="disk_io.html#STA_NOINIT">STA_NOINIT</a></b> = $01;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><b><a  href="disk_io.html#STA_NODISK">STA_NODISK</a></b> = $02;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="disk_initialize"></span><code>function <b>disk_initialize</b>(): <a  href="disk_io.html#DSTATUS">DSTATUS</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Initialize Disk Drive</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="disk_readp"></span><code>function <b>disk_readp</b>(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): <a  href="disk_io.html#DRESULT">DRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Read Partial Sector
+
+<p>   </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>buff</dt>
+<dd>Pointer to the destination object</dd>
+<dt>sector</dt>
+<dd>Sector number (LBA)</dd>
+<dt>offset</dt>
+<dd>Offset in the sector</dd>
+<dt>count</dt>
+<dd>Byte count (bit15:destination)</dd>
+</dl>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="disk_writep"></span><code>function <b>disk_writep</b>(buff: Pointer; sc: DWORD): <a  href="disk_io.html#DRESULT">DRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Write Partial Sector
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>buff</dt>
+<dd>Pointer to the data to be written, NULL:Initiate/Finalize write operation</dd>
+<dt>sc</dt>
+<dd>Sector number (LBA) or Number of bytes to send</dd>
+</dl>
+</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DSTATUS"></span><code><b>DSTATUS</b> = byte;</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DRESULT"></span><code><b>DRESULT</b> = (...);</code></td>
+</tr>
+<tr><td colspan="1">
+&nbsp;<h6 class="description_section">Values</h6>
+<ul>
+<li>
+<span id="RES_OK">RES_OK = 0</span>: Function succeeded</li>
+<li>
+<span id="RES_ERROR">RES_ERROR</span>: Disk error</li>
+<li>
+<span id="RES_NOTRDY">RES_NOTRDY</span>: Not ready</li>
+<li>
+<span id="RES_PARERR">RES_PARERR</span>: Invalid parameter</li>
+</ul>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="STA_NOINIT"></span><code><b>STA_NOINIT</b> = $01;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Drive not initialized</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="STA_NODISK"></span><code><b>STA_NODISK</b> = $02;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+No medium in the drive</p>
+</td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a  href="https://github.com/pasdoc/pasdoc/wiki">PasDoc 0.15.0</a>. </em>
+</span>
+</td></tr></table></body></html>

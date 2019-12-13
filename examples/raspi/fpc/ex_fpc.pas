@@ -17,11 +17,12 @@ var
 
 begin
   WriteLn('PetitFS test.');
-  fr := pf_mount(@fs);
+  fr := pf_mount(fs);
   WriteLn('pf_mount() - ', fr);
-
-  fr := pf_open('RW.TXT');
-  WriteLn('pf_open("RW.TXT") - ', fr);
+  WriteLn('FAT - ', fs.fs_type);
+  
+  fr := pf_open('rw.txt');
+  WriteLn('pf_open("rw.txt") - ', fr);
   WriteLn('RW.TXT size - ', fs.fsize);
 
   tstr := 'B';
@@ -38,26 +39,26 @@ begin
   WriteLn('Bytes writed - ', bwc);    
  
   WriteLn('*** Test pf_opendir, pf_readdir ***');
-  fr := pf_opendir(@dr, '');
+  fr := pf_opendir(dr, '');
   WriteLn('pf_opendir("") - ', fr);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_opendir(@dr, 'RASPI');
+  fr := pf_opendir(dr, 'RASPI');
   WriteLn('pf_opendir("RASPI") - ', fr);
-  fr := pf_readdir(@dr, @fi);
+  fr := pf_readdir(dr, @fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
 
   fr := pf_open('00README.TXT');
   WriteLn('pf_open("00README.TXT") - ', fr);
-  while pf_read(@bf, 128, @br) = FR_OK do
+  while pf_read(@bf, 128, br) = FR_OK do
   begin
     if (br = 0) then break;
     bf[br] := #0;
@@ -67,7 +68,7 @@ begin
 
   fr := pf_open('LICENSE.TXT');
   WriteLn('pf_open("LICENSE.TXT") - ', fr);
-  while pf_read(@bf, 128, @br) = FR_OK do
+  while pf_read(@bf, 128, br) = FR_OK do
   begin
     if (br = 0) then break;
     bf[br] := #0;
@@ -76,7 +77,7 @@ begin
 
   fr := pf_lseek(13);
   WriteLn('pf_lseek(13) - ', fr);
-  while pf_read(@bf, 128, @br) = FR_OK do
+  while pf_read(@bf, 128, br) = FR_OK do
   begin
     if (br = 0) then break;
     bf[br] := #0;

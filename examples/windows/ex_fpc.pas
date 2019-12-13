@@ -13,8 +13,9 @@ var
   br: UINT;
 
 begin
+  {$info PetitFS test}
   WriteLn('PetitFS test.');
-  fr := pf_mount(@fs);
+  fr := pf_mount(fs);
   WriteLn('pf_mount() - ', fr);
 
   fr := pf_opendir(dr, '');
