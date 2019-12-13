@@ -13,6 +13,11 @@
   5. Streaming file read.
   6. File write function with some restrictions.
 
+## Built With
+
+* [Lazarus](https://www.lazarus-ide.org/) - The professional Free Pascal RAD IDE.
+* [PasDoc](https://github.com/pasdoc/pasdoc) - Documentation tool for ObjectPascal (Free Pascal, Lazarus, Delphi).
+
 ## Testing
 
 ### RASPI
