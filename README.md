@@ -12,6 +12,49 @@
   4. Single volume and single file.
   5. Streaming file read.
   6. File write function with some restrictions.
+  
+## API documentation
+
+https://julstrat.github.io/pff/
+
+## Usage example
+  
+```
+uses
+  pff;
+
+var
+  fs: FATFS;
+  dr: DIR;
+  fi: FILINFO;
+  bf: array[0..Pred(256)] of char;  
+  fr: FRESULT;
+  br: UINT;  
+
+begin
+  {* Mount ... *)
+  fr := pf_mount(fs);
+
+  (* List root directory *)
+  fr := pf_opendir(dr, '');
+  repeat
+  begin
+    fr := pf_readdir(dr, @fi);
+    WriteLn(fi.fname);
+  end;
+  until fi.fname[0] = Char(#0);
+
+  ...
+  
+  (* Cat text file - 00README.TXT *)
+  fr := pf_open('00README.TXT');
+  while pf_read(@bf, 128, br) = FR_OK do
+  begin
+    if (br = 0) then break;
+    bf[br] := #0;
+    Write(bf);
+  end;
+```
 
 ## Built With
 

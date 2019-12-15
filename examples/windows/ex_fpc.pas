@@ -14,30 +14,31 @@ var
 
 begin
   {$info PetitFS test}
-  WriteLn('PetitFS test.');
+  WriteLn('*** PetitFS test. ***');
   fr := pf_mount(fs);
   WriteLn('pf_mount() - ', fr);
 
   fr := pf_opendir(dr, '');
-  WriteLn('pf_opendir("") - ', fr);
-  fr := pf_readdir(dr, @fi);
-  WriteLn('pf_readdir() - ', fr);
-  WriteLn(fi.fname);
-  fr := pf_readdir(dr, @fi);
-  WriteLn('pf_readdir() - ', fr);
-  WriteLn(fi.fname);
-  fr := pf_readdir(dr, @fi);
-  WriteLn('pf_readdir() - ', fr);
-  WriteLn(fi.fname);
+  WriteLn('List root directory - pf_opendir("") - ', fr);
+
+  repeat
+  begin
+    fr := pf_readdir(dr, @fi);
+    WriteLn(fi.fname);
+  end;
+  until fi.fname[0] = Char(#0);
+
   fr := pf_opendir(dr, 'RASPI');
-  WriteLn('pf_opendir("RASPI") - ', fr);
-  fr := pf_readdir(dr, @fi);
-  WriteLn('pf_readdir() - ', fr);
-  WriteLn(fi.fname);
+  repeat
+  begin
+    fr := pf_readdir(dr, @fi);
+    WriteLn(fi.fname);
+  end;
+  until fi.fname[0] = Char(#0);
 
   fr := pf_open('00README.TXT');
   WriteLn('pf_open("00README.TXT") - ', fr);
-  while pf_read(@bf, 128, @br) = FR_OK do
+  while pf_read(@bf, 128, br) = FR_OK do
   begin
     if (br = 0) then break;
     bf[br] := #0;
@@ -47,7 +48,7 @@ begin
 
   fr := pf_open('LICENSE.TXT');
   WriteLn('pf_open("LICENSE.TXT") - ', fr);
-  while pf_read(@bf, 128, @br) = FR_OK do
+  while pf_read(@bf, 128, br) = FR_OK do
   begin
     if (br = 0) then break;
     bf[br] := #0;
