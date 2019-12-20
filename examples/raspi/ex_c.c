@@ -118,7 +118,7 @@ int main() {
     printf("pf_open(\"config.txt\") - %d\n", fr);
 
 
-    SD_DEV = "/dev/sdb1";
+    SD_DEV = "/dev/sdb";
     printf("----------------------------------------.\n");
     printf("PetitFS Raspberry Pi Card Reader FAT32 test.\n");
     printf("----------------------------------------.\n");

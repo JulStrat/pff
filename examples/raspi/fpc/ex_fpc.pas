@@ -41,18 +41,18 @@ begin
   WriteLn('*** Test pf_opendir, pf_readdir ***');
   fr := pf_opendir(dr, '');
   WriteLn('pf_opendir("") - ', fr);
-  fr := pf_readdir(dr, @fi);
+  fr := pf_readdir(dr, fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_readdir(dr, @fi);
+  fr := pf_readdir(dr, fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
-  fr := pf_readdir(dr, @fi);
+  fr := pf_readdir(dr, fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
   fr := pf_opendir(dr, 'RASPI');
   WriteLn('pf_opendir("RASPI") - ', fr);
-  fr := pf_readdir(dr, @fi);
+  fr := pf_readdir(dr, fi);
   WriteLn('pf_readdir() - ', fr);
   WriteLn(fi.fname);
 

@@ -23,15 +23,26 @@ begin
 
   repeat
   begin
-    fr := pf_readdir(dr, @fi);
+    fr := pf_readdir(dr, fi);
+    WriteLn(fi.fname);
+  end;
+  until fi.fname[0] = Char(#0);
+
+  fr := pf_rewinddir(dr);
+  WriteLn('Rewind directory - pf_rewinddir() - ', fr);
+
+  repeat
+  begin
+    fr := pf_readdir(dr, fi);
     WriteLn(fi.fname);
   end;
   until fi.fname[0] = Char(#0);
 
   fr := pf_opendir(dr, 'RASPI');
+  WriteLn('List RASPI directory - pf_opendir("RASPI") - ', fr);
   repeat
   begin
-    fr := pf_readdir(dr, @fi);
+    fr := pf_readdir(dr, fi);
     WriteLn(fi.fname);
   end;
   until fi.fname[0] = Char(#0);

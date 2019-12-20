@@ -1,6 +1,7 @@
 PetitFS test.
 pf_mount() - FR_OK
-pf_open("RW.TXT") - FR_OK
+FAT - 1
+pf_open("rw.txt") - FR_OK
 RW.TXT size - 1536
 Bytes writed - 1536
 *** Test pf_opendir, pf_readdir ***

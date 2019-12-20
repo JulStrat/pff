@@ -1199,6 +1199,7 @@ begin
   bsect := 0;
   { Check sector 0 as an SFD format }
   fmt := check_fs(@buf, bsect);
+  
   if fmt = 1 then
   begin
     { Not an FAT boot record, it may be FDISK format }
@@ -1227,26 +1228,26 @@ begin
     Exit(FR_DISK_ERR);
 
   { Number of sectors per FAT }
-  fsize := ld_word(PByte(@buf) + BPB_FATSz16 - 13);
+  fsize := ld_word(PByte(@buf) + (BPB_FATSz16 - 13));
   if fsize = 0 then
-    fsize := ld_dword(PByte(@buf) + BPB_FATSz32 - 13);
+    fsize := ld_dword(PByte(@buf) + (BPB_FATSz32 - 13));
 
   { Number of sectors in FAT area }
   fsize := fsize * (buf[BPB_NumFATs - 13]);
   { FAT start sector (lba) }
-  fs.fatbase := bsect + ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13);
+  fs.fatbase := bsect + ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13));
   { Number of sectors per cluster }
   fs.csize := buf[BPB_SecPerClus - 13];
   { Nmuber of root directory entries }
-  fs.n_rootdir := ld_word(PByte(@buf) + BPB_RootEntCnt - 13);
+  fs.n_rootdir := ld_word(PByte(@buf) + (BPB_RootEntCnt - 13));
   { Number of sectors on the file system }
-  tsect := ld_word(PByte(@buf) + BPB_TotSec16 - 13);
+  tsect := ld_word(PByte(@buf) + (BPB_TotSec16 - 13));
 
   if tsect = 0 then
-    tsect := ld_dword(PByte(@buf) + BPB_TotSec32 - 13);
+    tsect := ld_dword(PByte(@buf) + (BPB_TotSec32 - 13));
 
   { Last cluster# + 1 }
-  mclst := (tsect - ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13) - fsize -
+  mclst := (tsect - ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13)) - fsize -
     fs.n_rootdir div 16) div fs.csize + 2;
   fs.n_fatent := CLUST(mclst);
 
@@ -1484,7 +1485,7 @@ begin
     if UINT(fs.fptr) mod 512 = 0 then
     begin
       { On the sector boundary? }
-      cs := Byte((fs.fptr div 512) and (fs.csize - 1)); { Sector offset in the cluster }
+      cs := Byte((fs.fptr div 512) and Byte(fs.csize - 1)); { Sector offset in the cluster }
       if cs = 0 then
       begin
         { On the cluster boundary? }
