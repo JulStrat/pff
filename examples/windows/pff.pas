@@ -720,14 +720,20 @@ begin
     begin
       bc := UINT(clst);
       bc := bc + (bc div 2);
-      ofs := bc mod 512;
-      bc := bc div 512;
-      if ofs <> 511 then
+
+      // ofs := bc mod 512;
+      ofs := bc and (SECTOR_SIZE - 1);
+      // bc := bc div 512;
+      bc := bc shr SECTOR_SIZE_BP;
+      //if ofs <> 511 then
+      // < ?
+      if ofs <> (SECTOR_SIZE - 1) then
         if disk_readp(@buf, fs.fatbase + bc, ofs, 2) <> RES_OK then
           Exit(1)
         else
         begin
-          if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
+          // if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
+          if disk_readp(@buf, fs.fatbase + bc, (SECTOR_SIZE - 1), 1) <> RES_OK then
             Exit(1);
           if disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
             Exit(1);
@@ -1338,10 +1344,12 @@ begin
   while btr <> 0 do
   begin
     { On the sector boundary? }
-    if (fs.fptr mod 512) = 0 then
+    // if (fs.fptr mod 512) = 0 then
+    if (fs.fptr and (SECTOR_SIZE-1)) = 0 then
     begin
       { Sector offset in the cluster }
-      cs := Byte((fs.fptr div 512) and (fs.csize - 1));
+      // cs := Byte((fs.fptr div 512) and (fs.csize - 1));
+      cs := Byte((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
       { On the cluster boundary? }
       if cs = 0 then
       begin
@@ -1362,10 +1370,12 @@ begin
       fs.dsect := sect + cs;
     end;
     { Get partial sector data from sector buffer }
-    rcnt := 512 - UINT(fs.fptr mod 512);
+    // rcnt := 512 - UINT(fs.fptr mod 512);
+    rcnt := SECTOR_SIZE - UINT(fs.fptr and (SECTOR_SIZE-1));
     if rcnt > btr then
       rcnt := btr;
-    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
+    // dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
+    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr and (SECTOR_SIZE-1)), rcnt);
     if dr <> RES_OK then
       ABORT_DISK_ERR;
     { Advances file read pointer }
