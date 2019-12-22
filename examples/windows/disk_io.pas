@@ -1,4 +1,6 @@
-{ Low level disk I/O module skeleton for Petit FatFs (C)ChaN, 2014 }
+{ Low level disk I/O module skeleton for Petit FatFs
+  (C) ChaN, 2014
+  (C) I. Kakoulidis, 2019 }
 
 unit disk_io;
 

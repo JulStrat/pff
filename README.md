@@ -18,7 +18,11 @@
 https://julstrat.github.io/pff/
 
 ## Usage example
-  
+
+On Windows for development and testing 
+I use tiny (50KB) FAT12 file image ```examples/SD.img``` created on RASPI.
+Script - ```examples/mksdimg.sh```.
+
 ```
 uses
   pff;
@@ -64,6 +68,8 @@ begin
 ## Testing
 
 ### Arduino UNO R3
+
+Plan - implement [CDB - D.J. Bernstein](https://cr.yp.to/cdb.html).
 
 Build
 ```
