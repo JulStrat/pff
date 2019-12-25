@@ -69,8 +69,6 @@ begin
 
 ### Arduino UNO R3
 
-Plan - implement [CDB - D.J. Bernstein](https://cr.yp.to/cdb.html).
-
 Build
 ```
 $  ppcrossavr.exe -Tembedded -Cpavr5 -Wpatmega328p -vi -B -O3 pff_ard.pas

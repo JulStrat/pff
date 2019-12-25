@@ -1,6 +1,8 @@
 
-const 
-  PF_DEFINED = 8088; (* Revision ID *)
+const
+  SECTOR_SIZE_BP = 9;                   (* 512 = 2**9 *)
+  SECTOR_SIZE = (1 shl SECTOR_SIZE_BP); (* 512, 1024, ... *)
+  PF_DEFINED = 8088;                    (* Revision ID *)
 
   {$define PF_USE_READ}
   {$define PF_USE_DIR}
@@ -13,4 +15,5 @@ const
 
   PF_USE_LCC = False;
   PF_CODE_PAGE = 857;
+
 
