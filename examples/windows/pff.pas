@@ -1178,15 +1178,18 @@ begin
   if disk_readp(buf, sect, 510, 2) <> RES_OK then
     Exit(3);
   { Check record signature }
-  if ld_word(buf) <> $AA55 then
+  // if ld_word(buf) <> $AA55 then
+  if (buf[0] <> $55) or (buf[1] <> $AA) then
     Exit(2);
   { Check FAT12/16 }
   if (not _FS_32ONLY) and (disk_readp(buf, sect, BS_FilSysType, 2) = RES_OK) then
-    if ld_word(buf) = $4146 then
+    // if ld_word(buf) = $4146 then
+    if (buf[0] <> $46) or (buf[1] <> $41) then
       Exit(0);
   { Check FAT32 }
   if PF_FS_FAT32 and (disk_readp(buf, sect, BS_FilSysType32, 2) = RES_OK) then
-    if ld_word(buf) = $4146 then
+    // if ld_word(buf) = $4146 then
+    if (buf[0] <> $46) or (buf[1] <> $41) then
       Exit(0);
 
   Result := 1;
