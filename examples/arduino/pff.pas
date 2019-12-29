@@ -704,6 +704,7 @@ end;
   @param(clst Cluster# to get the link information)
   @returns(1:IO error, Else:Cluster status) }
 function get_fat(clst: CLUST): CLUST;
+label EXIT_ERR;
 var
   buf: array [0..Pred(4)] of Byte;
   fs: pFATFS;
@@ -728,19 +729,21 @@ begin
       // bc := bc div 512;
       bc := bc shr SECTOR_SIZE_BP;
       //if ofs <> 511 then
-      // < ?
       if ofs <> (SECTOR_SIZE - 1) then
+      begin
         if disk_readp(@buf, fs.fatbase + bc, ofs, 2) <> RES_OK then
-          Exit(1)
-        else
-        begin
-          // if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
-          if disk_readp(@buf, fs.fatbase + bc, (SECTOR_SIZE - 1), 1) <> RES_OK then
-            Exit(1);
-          if disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
-            Exit(1);
-        end;
-      wc := ld_word(buf);
+          goto EXIT_ERR;
+      end
+      else
+      begin
+        // if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
+        if disk_readp(@buf, fs.fatbase + bc, (SECTOR_SIZE - 1), 1) <> RES_OK then
+          goto EXIT_ERR;
+        if disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
+          goto EXIT_ERR;
+      end;
+      // wc := ld_word(buf);
+      wc := (WORD(buf[1]) shl 8) or buf[0];
       if (clst and 1) <> 0 then
         Exit(wc shr 4)
       else
@@ -751,25 +754,30 @@ begin
     {$if PF_FS_FAT16}
     FS_FAT16:
     begin
-      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) <>
+      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) =
         RES_OK then
-        Exit(1);
-      Exit(ld_word(buf));
+        //Exit(ld_word(buf))
+        Exit((WORD(buf[1]) shl 8) or buf[0]);
+      // else
+      //  Exit(1)
     end;
     {$endif}
 
     {$if PF_FS_FAT32}
     FS_FAT32:
     begin
-      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) <>
+      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
         RES_OK then
-        Exit(1);
-      Exit(ld_dword(buf) and $0FFFFFFF);
+        // Exit(ld_dword(buf) and $0FFFFFFF)
+        Exit(((WORD(buf[1]) shl 8) or buf[0]) and $0FFFFFFF);
+      // else
+      //  Exit(1);
     end;
     {$endif}
   end;
 
   { An error occured at the disk I/O layer }
+EXIT_ERR:
   Result := 1;
 
 end;
