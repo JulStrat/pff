@@ -63,7 +63,8 @@
               <ShowHintsForUnusedUnitsInMainSrc Value="True"/>
               <ShowHintsForSenderNotUsed Value="True"/>
             </Verbosity>
-            <CustomOptions Value="-vi"/>
+            <CustomOptions Value="-vi
+-Xm"/>
           </Other>
         </CompilerOptions>
       </Item2>
