@@ -69,12 +69,14 @@ begin
 
 #### Connectar
 
+```
 PIN 4: CS     <---  Arduino DIO 10 PB2 SS
 PIN 5: MOSI   <---  Arduino DIO 11 PB3 MOSI
 PIN 6: SCLK   <---  Arduino DIO 13 PB5 SCK
 PIN 7: MISO   --->  Arduino DIO 12 PB4 MISO
+```
 
-Build
+#### Build
 ```
 $ ppcrossavr.exe -Tembedded -Cpavr5 -Wpatmega328p -vi -aln -B -O3 pff_ard.pas
 Target OS: Embedded
@@ -97,7 +99,7 @@ Linking pff_ard
 2109 lines compiled, 0.4 sec, 8758 bytes code, 539 bytes data
 ```
 
-Upload
+#### Upload
 ```
 $ /E/Arduino/hardware/tools/avr/bin/avrdude.exe -C/E/Arduino/hardware/tools/avr/etc/avrdude.conf -v -patmega328p -carduino -PCOM5 -b115200 -D -Uflash:w:pff_ard.hex:i
 
@@ -171,7 +173,9 @@ avrdude.exe: 10198 bytes of flash verified
 
 avrdude.exe done.  Thank you.
 ```
-Connect putty to COM5 (your Arduino COM port)
+
+#### Connect putty to COM5 (your Arduino COM port)
+
 ```
 *** PetitFS test. ***
 *** List root directory
