@@ -35,19 +35,25 @@ begin
 end;
 
 procedure uart_xputc(b: byte);
+var
+  t: Byte;
 begin
   while UCSR0A and (1 shl UDRE0) = 0 do;
   UDR0 := Ord('$');
+  
   while UCSR0A and (1 shl UDRE0) = 0 do;
-  if b shr 4 < 10 then
-    UDR0 := (b shr 4) + Ord('0')
+  t := b shr 4;
+  if t < 10 then
+    UDR0 := t + Ord('0')
   else
-    UDR0 := (b shr 4) - 10 + Ord('A');
+    UDR0 := t - (10 - Ord('A'));
+	
   while UCSR0A and (1 shl UDRE0) = 0 do;
-  if b and $0F < 10 then
-    UDR0 := (b and $0F) + Ord('0')
+  t := b and $0F;
+  if t < 10 then
+    UDR0 := t + Ord('0')
   else
-    UDR0 := (b and $0F) - 10 + Ord('A');
+    UDR0 := t - (10 - Ord('A'));
 end;
 
 procedure uart_puts(s: PChar);

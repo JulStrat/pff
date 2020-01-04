@@ -65,6 +65,16 @@ begin
     bf[br] := #0;
     Write(bf);
   end;
+
+  fr := pf_open('RASPI/RW.TXT');
+  WriteLn('pf_open("RW.TXT") - ', fr);
+  while pf_read(@bf, 1, br) = FR_OK do
+  begin
+    if (br = 0) then break;
+    bf[br] := #0;
+    Write(bf);
+  end;
+
   WriteLn;
   ReadLn;
 

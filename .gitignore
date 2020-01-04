@@ -6,7 +6,7 @@
 *.bin
 
 # ASM
-*.s
+# *.s
 
 # Precompiled Headers
 *.gch

@@ -6,12 +6,10 @@
 
 ## Features
 
-  1. Small RAM consumption (44 bytes work area + certain stack).
-  2. Small code size (2K - 4K bytes).
-  3. FAT12, FAT16 and FAT32.
-  4. Single volume and single file.
-  5. Streaming file read.
-  6. File write function with some restrictions.
+  1. FAT12, FAT16 and FAT32.
+  2. Single volume and single file.
+  3. Streaming file read.
+  4. File write function with some restrictions.
   
 ## API documentation
 
@@ -69,9 +67,16 @@ begin
 
 ### Arduino UNO R3
 
+#### Connectar
+
+PIN 4: CS     <---  Arduino DIO 10 PB2 SS
+PIN 5: MOSI   <---  Arduino DIO 11 PB3 MOSI
+PIN 6: SCLK   <---  Arduino DIO 13 PB5 SCK
+PIN 7: MISO   --->  Arduino DIO 12 PB4 MISO
+
 Build
 ```
-$  ppcrossavr.exe -Tembedded -Cpavr5 -Wpatmega328p -vi -B -O3 pff_ard.pas
+$ ppcrossavr.exe -Tembedded -Cpavr5 -Wpatmega328p -vi -aln -B -O3 pff_ard.pas
 Target OS: Embedded
 Compiling pff_ard.pas
 Compiling pff.pas
@@ -89,7 +94,7 @@ Assembling pff
 User defined: PetitFS test
 Assembling pff_ard
 Linking pff_ard
-2078 lines compiled, 0.3 sec, 10016 bytes code, 539 bytes data
+2109 lines compiled, 0.4 sec, 8758 bytes code, 539 bytes data
 ```
 
 Upload
@@ -166,7 +171,7 @@ avrdude.exe: 10198 bytes of flash verified
 
 avrdude.exe done.  Thank you.
 ```
-Connect putty to COM5
+Connect putty to COM5 (your Arduino COM port)
 ```
 *** PetitFS test. ***
 *** List root directory
@@ -196,7 +201,6 @@ FILES
 
 ...  
 ``` 
-
 
 ### RASPI
 

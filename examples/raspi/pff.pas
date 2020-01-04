@@ -22,6 +22,7 @@
 unit pff;
 
 {$mode delphi}
+{$optimization noloopunroll}
 
 interface
 
@@ -681,9 +682,8 @@ end;
 (* Compare memory block *)
 function mem_cmp(dst: pointer; src: pointer; cnt: integer): integer;
 var
-  d: PChar;
-  s: PChar;
-  r: integer;
+  d, s: PChar;
+  r: Integer;
 begin
   d := dst;
   s := src;
@@ -691,8 +691,7 @@ begin
   while (cnt > 0) and (r = 0) do
   begin
     r := Ord(d^) - Ord(s^);
-    Inc(d);
-    Inc(s);
+    Inc(d); Inc(s);
     Dec(cnt);
   end;
   Result := r;
@@ -703,6 +702,7 @@ end;
   @param(clst Cluster# to get the link information)
   @returns(1:IO error, Else:Cluster status) }
 function get_fat(clst: CLUST): CLUST;
+// label EXIT_ERR;
 var
   buf: array [0..Pred(4)] of Byte;
   fs: pFATFS;
@@ -714,55 +714,54 @@ begin
   { Range check }
   if (clst < 2) or (clst >= fs.n_fatent) then
     Exit(1);
+  { Default - An error occured at the disk I/O layer }
+  Result := 1;
+
   case fs.fs_type of
     {$if PF_FS_FAT12}
     FS_FAT12:
     begin
       bc := UINT(clst);
-      bc := bc + (bc div 2);
-      ofs := bc mod 512;
-      bc := bc div 512;
-      if ofs <> 511 then
-        if disk_readp(@buf, fs.fatbase + bc, ofs, 2) <> RES_OK then
-          Exit(1)
-        else
-        begin
-          if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
-            Exit(1);
-          if disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
-            Exit(1);
-        end;
-      wc := ld_word(buf);
-      if (clst and 1) <> 0 then
-        Exit(wc shr 4)
+      bc := bc + (bc shr 1);
+
+      ofs := bc and (SECTOR_SIZE - 1);
+      bc := bc shr SECTOR_SIZE_BP;
+
+      if ofs <> (SECTOR_SIZE - 1) then
+      begin
+        if disk_readp(@buf, fs.fatbase + bc, ofs, 2) = DRESULT.RES_OK then
+          Result := 0
+      end
       else
-        Exit(wc and $FFF);
+        if (disk_readp(@buf, fs.fatbase + bc, (SECTOR_SIZE - 1), 1) = DRESULT.RES_OK)
+          and (disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) = DRESULT.RES_OK) then
+          Result := 0;
+
+      if Result = 0 then
+      begin
+        wc := ld_word(buf);
+        if (clst and 1) <> 0 then
+          Result := wc shr 4
+        else
+          Result := wc and $FFF;
+      end
     end;
     {$endif}
 
     {$if PF_FS_FAT16}
     FS_FAT16:
-    begin
-      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) <>
+      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) =
         RES_OK then
-        Exit(1);
-      Exit(ld_word(buf));
-    end;
+        Result := ld_word(buf);
     {$endif}
 
     {$if PF_FS_FAT32}
     FS_FAT32:
-    begin
-      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) <>
+      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
         RES_OK then
-        Exit(1);
-      Exit(ld_dword(buf) and $0FFFFFFF);
-    end;
+        Result := ld_dword(buf) and $0FFFFFFF;
     {$endif}
   end;
-
-  { An error occured at the disk I/O layer }
-  Result := 1;
 
 end;
 
@@ -800,7 +799,7 @@ begin
     clst := clst shl 16;
   end;
   // clst := clst or (ld_word(dir + DIR_FstClusLO));
-  Result := clst or (ld_word(dir + DIR_FstClusLO));
+  Result := clst or ld_word(dir + DIR_FstClusLO);
 end;
 
 { Directory handling - Rewind directory index
@@ -1170,15 +1169,18 @@ begin
   if disk_readp(buf, sect, 510, 2) <> RES_OK then
     Exit(3);
   { Check record signature }
-  if ld_word(buf) <> $AA55 then
+  // if ld_word(buf) <> $AA55 then
+  if (buf[0] <> $55) or (buf[1] <> $AA) then
     Exit(2);
   { Check FAT12/16 }
   if (not _FS_32ONLY) and (disk_readp(buf, sect, BS_FilSysType, 2) = RES_OK) then
-    if ld_word(buf) = $4146 then
+    // if ld_word(buf) = $4146 then
+    if (buf[0] = $46) and (buf[1] = $41) then
       Exit(0);
   { Check FAT32 }
   if PF_FS_FAT32 and (disk_readp(buf, sect, BS_FilSysType32, 2) = RES_OK) then
-    if ld_word(buf) = $4146 then
+    // if ld_word(buf) = $4146 then
+    if (buf[0] = $46) and (buf[1] = $41) then
       Exit(0);
 
   Result := 1;
@@ -1227,26 +1229,26 @@ begin
     Exit(FR_DISK_ERR);
 
   { Number of sectors per FAT }
-  fsize := ld_word(PByte(@buf) + BPB_FATSz16 - 13);
+  fsize := ld_word(PByte(@buf) + (BPB_FATSz16 - 13));
   if fsize = 0 then
-    fsize := ld_dword(PByte(@buf) + BPB_FATSz32 - 13);
+    fsize := ld_dword(PByte(@buf) + (BPB_FATSz32 - 13));
 
   { Number of sectors in FAT area }
   fsize := fsize * (buf[BPB_NumFATs - 13]);
   { FAT start sector (lba) }
-  fs.fatbase := bsect + ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13);
+  fs.fatbase := bsect + ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13));
   { Number of sectors per cluster }
   fs.csize := buf[BPB_SecPerClus - 13];
   { Nmuber of root directory entries }
-  fs.n_rootdir := ld_word(PByte(@buf) + BPB_RootEntCnt - 13);
+  fs.n_rootdir := ld_word(PByte(@buf) + (BPB_RootEntCnt - 13));
   { Number of sectors on the file system }
-  tsect := ld_word(PByte(@buf) + BPB_TotSec16 - 13);
+  tsect := ld_word(PByte(@buf) + (BPB_TotSec16 - 13));
 
   if tsect = 0 then
-    tsect := ld_dword(PByte(@buf) + BPB_TotSec32 - 13);
+    tsect := ld_dword(PByte(@buf) + (BPB_TotSec32 - 13));
 
   { Last cluster# + 1 }
-  mclst := (tsect - ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13) - fsize -
+  mclst := (tsect - ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13)) - fsize -
     fs.n_rootdir div 16) div fs.csize + 2;
   fs.n_fatent := CLUST(mclst);
 
@@ -1338,10 +1340,12 @@ begin
   while btr <> 0 do
   begin
     { On the sector boundary? }
-    if (fs.fptr mod 512) = 0 then
+    // if (fs.fptr mod 512) = 0 then
+    if (fs.fptr and (SECTOR_SIZE-1)) = 0 then
     begin
       { Sector offset in the cluster }
-      cs := Byte((fs.fptr div 512) and (fs.csize - 1));
+      // cs := Byte((fs.fptr div 512) and (fs.csize - 1));
+      cs := Byte((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
       { On the cluster boundary? }
       if cs = 0 then
       begin
@@ -1362,10 +1366,12 @@ begin
       fs.dsect := sect + cs;
     end;
     { Get partial sector data from sector buffer }
-    rcnt := 512 - UINT(fs.fptr mod 512);
+    // rcnt := 512 - UINT(fs.fptr mod 512);
+    rcnt := SECTOR_SIZE - UINT(fs.fptr and (SECTOR_SIZE-1));
     if rcnt > btr then
       rcnt := btr;
-    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
+    // dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
+    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr and (SECTOR_SIZE-1)), rcnt);
     if dr <> RES_OK then
       ABORT_DISK_ERR;
     { Advances file read pointer }
@@ -1401,7 +1407,8 @@ begin
   if ofs > 0 then
   begin
     { Cluster size (byte) }
-    bcs := DWORD(fs.csize) * 512;
+    // bcs := DWORD(fs.csize) * 512;
+    bcs := DWORD(fs.csize) shl SECTOR_SIZE_BP;
     if (ifptr > 0) and (((ofs - 1) div bcs) >= ((ifptr - 1) div bcs)) then
     begin
       { When seek to same or following cluster, }
@@ -1433,7 +1440,8 @@ begin
     sect := clust2sect(clst);
     if sect = 0 then
       ABORT_DISK_ERR;
-    fs.dsect := sect + ((fs.fptr div 512) and (fs.csize - 1));
+    //fs.dsect := sect + ((fs.fptr div 512) and (fs.csize - 1));
+    fs.dsect := sect + ((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
   end;
   Result := FR_OK;
 end;
@@ -1481,10 +1489,12 @@ begin
   while btw <> 0 do
   begin
     { Repeat until all data transferred }
-    if UINT(fs.fptr) mod 512 = 0 then
+    // if UINT(fs.fptr) mod 512 = 0 then
+    if UINT(fs.fptr) and (SECTOR_SIZE - 1) = 0 then
     begin
       { On the sector boundary? }
-      cs := Byte((fs.fptr div 512) and (fs.csize - 1)); { Sector offset in the cluster }
+      // cs := Byte((fs.fptr div 512) and (fs.csize - 1)); { Sector offset in the cluster }
+      cs := Byte((fs.fptr shl SECTOR_SIZE_BP) and (fs.csize - 1)); { Sector offset in the cluster }
       if cs = 0 then
       begin
         { On the cluster boundary? }
@@ -1510,7 +1520,8 @@ begin
       fs.flag := fs.flag or FA__WIP;
     end;
     { Number of bytes to write to the sector }
-    wcnt := 512 - (UINT(fs.fptr) mod 512);
+    // wcnt := 512 - (UINT(fs.fptr) mod 512);
+    wcnt := SECTOR_SIZE - (UINT(fs.fptr) and (SECTOR_SIZE-1));
     if wcnt > btw then
       wcnt := btw;
 
@@ -1524,7 +1535,8 @@ begin
     btw := btw - wcnt;
     bw^ := bw^ + wcnt;
 
-    if UINT(fs.fptr) mod 512 = 0 then
+    // if UINT(fs.fptr) mod 512 = 0 then
+    if UINT(fs.fptr) and (SECTOR_SIZE - 1) = 0 then
     begin
       { Finalize the current sector write operation }
       if disk_writep(nil, 0) <> DRESULT.RES_OK then

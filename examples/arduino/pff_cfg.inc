@@ -9,8 +9,8 @@ const
   {$undef PF_USE_LSEEK}
   {$undef PF_USE_WRITE}
 
-  PF_FS_FAT12 = True;
-  PF_FS_FAT16 = True;
+  PF_FS_FAT12 = False;
+  PF_FS_FAT16 = False;
   PF_FS_FAT32 = True;
 
   PF_USE_LCC = False;

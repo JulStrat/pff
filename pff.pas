@@ -22,6 +22,7 @@
 unit pff;
 
 {$mode delphi}
+{$optimization noloopunroll}
 
 interface
 
@@ -137,12 +138,12 @@ type
   (* File system object structure *)
   FATFS = record
     (* FAT sub type *)
-    fs_type: byte;
+    fs_type:Byte;
     (* File status flags *)
-    flag: byte;
+    flag:Byte;
     (* Number of sectors per cluster *)
-    csize: byte;
-    pad1: byte;
+    csize:Byte;
+    pad1:Byte;
     (* Number of root directory entries (0 on FAT32) *)
     n_rootdir: word;
     (* Number of FAT entries (= number of clusters + 2) *)
@@ -171,7 +172,7 @@ type
     (* Current read/write index number *)
     index: word;
     (* Pointer to the SFN (in/out) {file[8],ext[3],status[1]} *)
-    fn: pBYTE;
+    fn: PByte;
     (* Table start cluster (0:Static table) *)
     sclust: CLUST;
     (* Current cluster *)
@@ -190,7 +191,7 @@ type
     (* Last modified time *)
     ftime: word;
     (* Attribute *)
-    fattrib: byte;
+    fattrib:Byte;
     (* File name *)
     fname: array [0..Pred(13)] of char;
   end;
@@ -244,6 +245,7 @@ function pf_mount(var fs: FATFS): FRESULT;
 function pf_open(path: PChar): FRESULT;
 
 {$ifdef PF_USE_READ}
+{$info PF_USE_READ enabled}
 { Read data from the open file.
   
   The file read/write pointer in the file system object advances in number of bytes read. 
@@ -263,6 +265,7 @@ function pf_read(buff: Pointer; btr: UINT; var br: UINT): FRESULT;
 {$endif}
 
 {$ifdef PF_USE_WRITE}
+{$info PF_USE_WRITE enabled}
 { Write data to the open file.
   The write function has some restrictions listed below:
 
@@ -287,6 +290,7 @@ function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 {$endif}
 
 {$ifdef PF_USE_LSEEK}
+{$info PF_USE_LSEEK enabled}
 { Move file pointer of the open file
   
   The pf_lseek() function moves the file read/write pointer of the open file.
@@ -326,17 +330,16 @@ function pf_opendir(var dj: DIR; path: PChar): FRESULT;
   @param(fno Pointer to file information to return)
 
   @returns(FRESULT) }
-function pf_readdir(var dj: DIR; fno: PFILINFO): FRESULT;
+function pf_readdir(var dj: DIR; var fno: FILINFO): FRESULT;
+
+
+function pf_rewinddir(var dj: DIR): FRESULT;
 {$endif}
 
 implementation
-{$info Test info}
-{$note Test note}
-{
- DBCS code ranges and SBCS extend char conversion table
-}
+{ DBCS code ranges and SBCS extend char conversion table }
 type
-  _TEXCVT = array [0..127] of byte;
+  _TEXCVT = array [0..127] of Byte;
 {$if PF_USE_LCC}
 {$if PF_CODE_PAGE = 932} (* Japanese Shift-JIS *)
 {$info Code page - Japanese Shift-JIS}
@@ -442,7 +445,7 @@ const
     $E3, $E5, $E5, $E6, $E3, $E8, $E8, $EA, $EA, $EE, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
     $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
 {$elseif PF_CODE_PAGE = 850}(* Latin 1 *)
-{$info Code page -  Latin 1}
+{$info Code page - Latin 1}
 const
   _EXCVT: _TEXCVT = ($43, $55, $45, $41, $41, $41, $41, $43, $45, $45, $45, $49, $49, $49,
     $41, $41, $45, $92, $92, $4F, $4F, $4F, $55, $55, $59, $4F, $55, $4F, $9C, $4F, $9E,
@@ -465,7 +468,6 @@ const
     $F4, $F5, $F6, $F7, $F8, $F9, $FA, $EB, $FC, $FC, $FE, $FF);
 {$elseif PF_CODE_PAGE = 855}(* Cyrillic *)
 {$info Code page - Cyrillic}
-{$note Code page - Cyrillic}
 const
   _EXCVT: _TEXCVT = ($81, $81, $83, $83, $85, $85, $87, $87, $89, $89, $8B, $8B, $8D, $8D,
     $8F, $8F, $91, $91, $93, $93, $95, $95, $97, $97, $99, $99, $9B, $9B, $9D, $9D, $9F,
@@ -477,7 +479,6 @@ const
     $F4, $F6, $F6, $F8, $F8, $FA, $FA, $FC, $FC, $FD, $FE, $FF);
 {$elseif PF_CODE_PAGE = 857}(* Turkish *)
 {$info Code page - Turkish}
-{$note Code page - Turkish}
 const
   _EXCVT: _TEXCVT = ($80, $9A, $90, $B6, $8E, $B7, $8F, $80, $D2, $D3, $D4, $D8, $D7, $98,
     $8E, $8F, $90, $92, $92, $E2, $99, $E3, $EA, $EB, $98, $99, $9A, $9D, $9C, $9D, $9E, $9E,
@@ -582,12 +583,12 @@ const
 
 {$MACRO ON}
 {$define ABORT_DISK_ERR := begin fs.flag := 0; Exit(FR_DISK_ERR); end}
-
+{$define CHECK_FS_ENABLED := begin fs := iFatFs; if fs = nil then Exit(FR_NOT_ENABLED); end}
 var
   iFatFS: PFATFS;
 
 {$if PF_USE_LCC and (not declared(_EXCVT))}
-{$info PF_USE_LCC and (not _EXCVT)}
+{$info PF_USE_LCC and (not declared(_EXCVT))}
 {$if declared(_DF2S)}
 function IsDBCS1(c: integer): boolean;
 begin
@@ -638,7 +639,7 @@ begin
 end;
 
 { Load a 2-byte little-endian word }
-function ld_word(ptr: pBYTE): word;
+function ld_word(ptr: PByte): word;
 begin
 {$IFDEF ENDIAN_LITTLE}
 {$info ENDIAN_LITTLE}
@@ -650,7 +651,7 @@ begin
 end;
 
 { Load a 4-byte little-endian double word }
-function ld_dword(ptr: pBYTE): DWORD;
+function ld_dword(ptr: PByte): DWORD;
 begin
   {$IFDEF ENDIAN_LITTLE}
   {$info ENDIAN_LITTLE}
@@ -681,9 +682,8 @@ end;
 (* Compare memory block *)
 function mem_cmp(dst: pointer; src: pointer; cnt: integer): integer;
 var
-  d: PChar;
-  s: PChar;
-  r: integer;
+  d, s: PChar;
+  r: Integer;
 begin
   d := dst;
   s := src;
@@ -691,8 +691,7 @@ begin
   while (cnt > 0) and (r = 0) do
   begin
     r := Ord(d^) - Ord(s^);
-    Inc(d);
-    Inc(s);
+    Inc(d); Inc(s);
     Dec(cnt);
   end;
   Result := r;
@@ -703,73 +702,66 @@ end;
   @param(clst Cluster# to get the link information)
   @returns(1:IO error, Else:Cluster status) }
 function get_fat(clst: CLUST): CLUST;
+// label EXIT_ERR;
 var
-  buf: array [0..Pred(4)] of byte;
+  buf: array [0..Pred(4)] of Byte;
   fs: pFATFS;
-
 {$if PF_FS_FAT12}
-  wc: UINT;
-  bc: UINT;
-  ofs: UINT;
+  wc, bc, ofs: UINT;
 {$endif}
-
 begin
   fs := iFatFs;
-
   { Range check }
   if (clst < 2) or (clst >= fs.n_fatent) then
     Exit(1);
+  { Default - An error occured at the disk I/O layer }
+  Result := 1;
 
   case fs.fs_type of
     {$if PF_FS_FAT12}
     FS_FAT12:
     begin
-
       bc := UINT(clst);
-      bc := bc + (bc div 2);
-      ofs := bc mod 512;
-      bc := bc div 512;
-      if ofs <> 511 then
-        if disk_readp(@buf, fs.fatbase + bc, ofs, 2) <> RES_OK then
-          Exit(1)
-        else
-        begin
-          if disk_readp(@buf, fs.fatbase + bc, 511, 1) <> RES_OK then
-            Exit(1);
-          if disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) <> RES_OK then
-            Exit(1);
-        end;
-      wc := ld_word(buf);
-      if (clst and 1) <> 0 then
-        Exit(wc shr 4)
+      bc := bc + (bc shr 1);
+
+      ofs := bc and (SECTOR_SIZE - 1);
+      bc := bc shr SECTOR_SIZE_BP;
+
+      if ofs <> (SECTOR_SIZE - 1) then
+      begin
+        if disk_readp(@buf, fs.fatbase + bc, ofs, 2) = DRESULT.RES_OK then
+          Result := 0
+      end
       else
-        Exit(wc and $FFF);
+        if (disk_readp(@buf, fs.fatbase + bc, (SECTOR_SIZE - 1), 1) = DRESULT.RES_OK)
+          and (disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) = DRESULT.RES_OK) then
+          Result := 0;
+
+      if Result = 0 then
+      begin
+        wc := ld_word(buf);
+        if (clst and 1) <> 0 then
+          Result := wc shr 4
+        else
+          Result := wc and $FFF;
+      end
     end;
     {$endif}
 
     {$if PF_FS_FAT16}
     FS_FAT16:
-    begin
-      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) <>
+      if disk_readp(@buf, fs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) =
         RES_OK then
-        Exit(1);
-      Exit(ld_word(buf));
-    end;
+        Result := ld_word(buf);
     {$endif}
 
     {$if PF_FS_FAT32}
     FS_FAT32:
-    begin
-      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) <>
+      if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
         RES_OK then
-        Exit(1);
-      Exit(ld_dword(buf) and $0FFFFFFF);
-    end;
+        Result := ld_dword(buf) and $0FFFFFFF;
     {$endif}
   end;
-
-  { An error occured at the disk I/O layer }
-  Result := 1;
 
 end;
 
@@ -794,20 +786,20 @@ end;
 
   @param(dir Pointer to directory entry)
   @returns(Cluster# }
-function get_clust(dir: pBYTE): CLUST;
+function get_clust(dir: PByte): CLUST;
 var
   fs: pFATFS;
   clst: CLUST;
 begin
   fs := iFatFs;
   clst := 0;
-  if _FS_32ONLY  or (PF_FS_FAT32 and (fs.fs_type = FS_FAT32)) then
+  if _FS_32ONLY or (PF_FS_FAT32 and (fs.fs_type = FS_FAT32)) then
   begin
     clst := ld_word(dir + DIR_FstClusHI);
     clst := clst shl 16;
   end;
-  clst := clst or (ld_word(dir + DIR_FstClusLO));
-  Result := clst;
+  // clst := clst or (ld_word(dir + DIR_FstClusLO));
+  Result := clst or ld_word(dir + DIR_FstClusLO);
 end;
 
 { Directory handling - Rewind directory index
@@ -826,7 +818,7 @@ begin
   if (clst = 1) or (clst >= fs.n_fatent) then
     Exit(FR_DISK_ERR);
 
-  if PF_FS_FAT32 and (0 = clst) and (_FS_32ONLY or
+  if PF_FS_FAT32 and (clst = 0) and (_FS_32ONLY or
     (fs.fs_type = FS_FAT32)) then
     { Replace cluster# 0 with root cluster# if in FAT32 }
     clst := CLUST(fs.dirbase);
@@ -894,10 +886,10 @@ end;
   @param(dj Pointer to the directory object linked to the file name)
   @param(dir 32-byte working buffer)
   @returns(FRESULT) }
-function dir_find(var dj: DIR; dir: pBYTE): FRESULT;
+function dir_find(var dj: DIR; dir: PByte): FRESULT;
 var
   res: FRESULT;
-  c: byte;
+  c: Byte;
 begin
   { Rewind directory object }
   res := dir_rewind(dj);
@@ -905,27 +897,27 @@ begin
     Exit(res);
 
   repeat
+  begin
+    { Read an entry }
+    if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> RES_OK then
+      Exit(FRESULT.FR_DISK_ERR);
+    { First character }
+    c := dir[DIR_Name];
+    if c = 0 then
     begin
-      { Read an entry }
-      if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> RES_OK then
-        Exit(FRESULT.FR_DISK_ERR);
-      { First character }
-      c := dir[DIR_Name];
-      if c = 0 then
-      begin
-        { Reached to end of table }
-        res := FR_NO_FILE;
-        break;
-      end;
+      { Reached to end of table }
+      res := FR_NO_FILE;
+      break;
+    end;
 
-      { Is it a valid entry? }
-      if ((dir[DIR_Attr] and AM_VOL) = 0)
-        and (mem_cmp(dir, dj.fn, 11) = 0) then
-        break;
-      { Next entry }
-      res := dir_next(dj);
-    end
-  until not (res = FR_OK);
+    { Is it a valid entry? }
+    if ((dir[DIR_Attr] and AM_VOL) = 0)
+      and (mem_cmp(dir, dj.fn, 11) = 0) then
+      break;
+    { Next entry }
+    res := dir_next(dj);
+  end
+  until res <> FR_OK;
 
   Result := res;
 end;
@@ -936,11 +928,11 @@ end;
   @param(dj Pointer to the directory object to store read object name)
   @param(dir 32-byte working buffer)
   @returns(FRESULT) }
-function dir_read(var dj: DIR; dir: pBYTE): FRESULT;
+function dir_read(var dj: DIR; dir: PByte): FRESULT;
 var
   res: FRESULT;
-  a: byte;
-  c: byte;
+  a: Byte;
+  c: Byte;
 begin
   res := FR_NO_FILE;
   while dj.sect <> 0 do
@@ -971,7 +963,7 @@ begin
     res := dir_next(dj);
     if res <> FR_OK then
       break;
-  end;
+  end; (* while end *)
 
   if res <> FR_OK then
     dj.sect := 0;
@@ -986,7 +978,7 @@ end;
   @returns(FRESULT) }
 function create_name(var dj: DIR; var path: PChar): FRESULT;
 var
-  p: PBYTE;
+  p: PByte;
 (*
 {$ifdef PF_USE_LCC}
 {$ifdef _EXCVT}
@@ -994,12 +986,8 @@ var
 {$endif}
 {$endif}
 *)
-  c: byte;
-  d: byte;
-  ni: byte;
-  si: byte;
-  i: byte;
-  sfn: pBYTE;
+  c, d, ni, si, i: Byte;
+  sfn: PByte;
 begin
   { Create file name in directory form }
   sfn := dj.fn;
@@ -1007,7 +995,7 @@ begin
   si := 0;
   i := 0;
   ni := 8;
-  p := PBYTE(path);
+  p := PByte(path);
   while True do
   begin
     c := p[si];
@@ -1064,10 +1052,10 @@ end;
   @param(dj Pointer to the directory object)
   @param(dir 32-byte working buffer)
   @param(fno Pointer to store the file information) }
-procedure get_fileinfo(var dj: DIR; dir: pBYTE; fno: pFILINFO);
+procedure get_fileinfo(var dj: DIR; dir: PByte; var fno: FILINFO);
 var
-  i: byte;
-  c: byte;
+  i: Byte;
+  c: Byte;
   p: PChar;
 begin
   p := fno.fname;
@@ -1083,7 +1071,7 @@ begin
         c := $E5;
       p^ := char(c);
       Inc(p);
-    end;
+    end; (* for end *)
     if dir[8] <> Ord(' ') then
     begin
       { Copy file name extension }
@@ -1096,7 +1084,7 @@ begin
           break;
         p^ := char(c);
         Inc(p);
-      end;
+      end; (* for end *)
     end;
     { Attribute }
     fno.fattrib := dir[DIR_Attr];
@@ -1117,7 +1105,7 @@ end;
   @param(dir 32-byte working buffer)
   @param(path Full-path string to find a file or directory)
   @returns(FRESULT) }
-function follow_path(var dj: DIR; dir: pBYTE; path: PChar): FRESULT;
+function follow_path(var dj: DIR; dir: PByte; path: PChar): FRESULT;
 var
   res: FRESULT;
 begin
@@ -1161,12 +1149,11 @@ begin
       end;
       { Follow next }
       dj.sclust := get_clust(dir);
-    end;
+    end; (* while end *)
   end;
 
   Result := res;
 end;
-
 
 { Check a sector if it is an FAT boot record
 
@@ -1176,21 +1163,24 @@ end;
  @returns(0:The FAT boot record,
    1:Valid boot record but not an FAT,
    2:Not a boot record, 3:Error) }
-function check_fs(buf: pBYTE; sect: DWORD): byte;
+function check_fs(buf: PByte; sect: DWORD): Byte;
 begin
   { Read the boot record }
   if disk_readp(buf, sect, 510, 2) <> RES_OK then
     Exit(3);
   { Check record signature }
-  if ld_word(buf) <> $AA55 then
+  // if ld_word(buf) <> $AA55 then
+  if (buf[0] <> $55) or (buf[1] <> $AA) then
     Exit(2);
   { Check FAT12/16 }
   if (not _FS_32ONLY) and (disk_readp(buf, sect, BS_FilSysType, 2) = RES_OK) then
-    if ld_word(buf) = $4146 then
+    // if ld_word(buf) = $4146 then
+    if (buf[0] = $46) and (buf[1] = $41) then
       Exit(0);
   { Check FAT32 }
   if PF_FS_FAT32 and (disk_readp(buf, sect, BS_FilSysType32, 2) = RES_OK) then
-    if ld_word(buf) = $4146 then
+    // if ld_word(buf) = $4146 then
+    if (buf[0] = $46) and (buf[1] = $41) then
       Exit(0);
 
   Result := 1;
@@ -1198,12 +1188,9 @@ end;
 
 function pf_mount(var fs: FATFS): FRESULT;
 var
-  fmt: byte;
-  buf: array [0..Pred(36)] of byte;
-  bsect: DWORD;
-  fsize: DWORD;
-  tsect: DWORD;
-  mclst: DWORD;
+  fmt: Byte;
+  buf: array [0..Pred(36)] of Byte;
+  bsect, fsize, tsect, mclst: DWORD;
 begin
   iFatFs := nil;
   { Check if the drive is ready or not }
@@ -1218,18 +1205,18 @@ begin
   begin
     { Not an FAT boot record, it may be FDISK format }
     { Check a partition listed in top of the partition table }
-    if disk_readp(@buf, bsect, MBR_Table, 16) = RES_OK then
+    if disk_readp(@buf, bsect, MBR_Table, 16) <> RES_OK then
       { 1st partition entry }
       fmt := 3
     else
-    { Is the partition existing? }
-    if buf[4] <> 0 then
-    begin
-      { Partition offset in LBA }
-      bsect := ld_dword(@buf[8]);
-      { Check the partition }
-      fmt := check_fs(@buf, bsect);
-    end;
+      { Is the partition existing? }
+      if buf[4] <> 0 then
+      begin
+        { Partition offset in LBA }
+        bsect := ld_dword(@buf[8]);
+        { Check the partition }
+        fmt := check_fs(@buf, bsect);
+      end;
   end;
   if fmt = 3 then
     Exit(FR_DISK_ERR);
@@ -1242,26 +1229,26 @@ begin
     Exit(FR_DISK_ERR);
 
   { Number of sectors per FAT }
-  fsize := ld_word(PByte(@buf) + BPB_FATSz16 - 13);
+  fsize := ld_word(PByte(@buf) + (BPB_FATSz16 - 13));
   if fsize = 0 then
-    fsize := ld_dword(PByte(@buf) + BPB_FATSz32 - 13);
+    fsize := ld_dword(PByte(@buf) + (BPB_FATSz32 - 13));
 
   { Number of sectors in FAT area }
   fsize := fsize * (buf[BPB_NumFATs - 13]);
   { FAT start sector (lba) }
-  fs.fatbase := bsect + ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13);
+  fs.fatbase := bsect + ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13));
   { Number of sectors per cluster }
   fs.csize := buf[BPB_SecPerClus - 13];
   { Nmuber of root directory entries }
-  fs.n_rootdir := ld_word(PByte(@buf) + BPB_RootEntCnt - 13);
+  fs.n_rootdir := ld_word(PByte(@buf) + (BPB_RootEntCnt - 13));
   { Number of sectors on the file system }
-  tsect := ld_word(PByte(@buf) + BPB_TotSec16 - 13);
+  tsect := ld_word(PByte(@buf) + (BPB_TotSec16 - 13));
 
   if tsect = 0 then
-    tsect := ld_dword(PByte(@buf) + BPB_TotSec32 - 13);
+    tsect := ld_dword(PByte(@buf) + (BPB_TotSec32 - 13));
 
   { Last cluster# + 1 }
-  mclst := (tsect - ld_word(PByte(@buf) + BPB_RsvdSecCnt - 13) - fsize -
+  mclst := (tsect - ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13)) - fsize -
     fs.n_rootdir div 16) div fs.csize + 2;
   fs.n_fatent := CLUST(mclst);
 
@@ -1296,25 +1283,20 @@ function pf_open(path: PChar): FRESULT;
 var
   res: FRESULT;
   dj: DIR;
-  sp: array [0..Pred(12)] of byte;
-  dir: array [0..Pred(32)] of byte;
+  sp: array [0..Pred(12)] of Byte;
+  dir: array [0..Pred(32)] of Byte;
   fs: pFATFS;
 begin
-  fs := iFatFs;
-
   { Check file system }
-  if fs = nil then
-    Exit(FR_NOT_ENABLED);
+  CHECK_FS_ENABLED;
 
   fs.flag := 0;
   dj.fn := sp;
   { Follow the file path }
   res := follow_path(dj, dir, path);
-
   { Follow failed }
   if res <> FR_OK then
     Exit(res);
-
   { It is a directory }
   if (dir[0] = 0) or ((dir[DIR_Attr] and AM_DIR) <> 0) then
     Exit(FR_NO_FILE);
@@ -1336,18 +1318,15 @@ var
   sect: DWORD;
   remain: DWORD;
   rcnt: UINT;
-  cs: byte;
-  rbuff: pBYTE;
+  cs: Byte;
+  rbuff: PByte;
   fs: pFATFS;
 begin
-  rbuff := buff;
-  fs := iFatFs;
-
-  br := 0;
   { Check file system }
-  if nil = fs then
-    Exit(FR_NOT_ENABLED);
+  CHECK_FS_ENABLED;
 
+  rbuff := buff;
+  br := 0;
   { Check if opened }
   if (fs.flag and FA_OPENED) = 0 then
     Exit(FR_NOT_OPENED);
@@ -1361,10 +1340,12 @@ begin
   while btr <> 0 do
   begin
     { On the sector boundary? }
-    if (fs.fptr mod 512) = 0 then
+    // if (fs.fptr mod 512) = 0 then
+    if (fs.fptr and (SECTOR_SIZE-1)) = 0 then
     begin
       { Sector offset in the cluster }
-      cs := byte((fs.fptr div 512) and (fs.csize - 1));
+      // cs := Byte((fs.fptr div 512) and (fs.csize - 1));
+      cs := Byte((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
       { On the cluster boundary? }
       if cs = 0 then
       begin
@@ -1380,15 +1361,17 @@ begin
       end;
       { Get current sector }
       sect := clust2sect(fs.curr_clust);
-      if 0 = sect then
+      if sect = 0 then
         ABORT_DISK_ERR;
       fs.dsect := sect + cs;
     end;
     { Get partial sector data from sector buffer }
-    rcnt := 512 - UINT(fs.fptr mod 512);
+    // rcnt := 512 - UINT(fs.fptr mod 512);
+    rcnt := SECTOR_SIZE - UINT(fs.fptr and (SECTOR_SIZE-1));
     if rcnt > btr then
       rcnt := btr;
-    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
+    // dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
+    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr and (SECTOR_SIZE-1)), rcnt);
     if dr <> RES_OK then
       ABORT_DISK_ERR;
     { Advances file read pointer }
@@ -1407,18 +1390,12 @@ end;
 function pf_lseek(ofs: DWORD): FRESULT;
 var
   clst: CLUST;
-  bcs: DWORD;
-  sect: DWORD;
-  ifptr: DWORD;
+  bcs, sect, ifptr: DWORD;
   fs: pFATFS;
 begin
-  fs := iFatFs;
-
   { Check file system }
-  if fs = nil then
-    Exit(FR_NOT_ENABLED);
-
-  { Check if opened }
+  CHECK_FS_ENABLED;
+  { Check if file is opened }
   if (fs.flag and FA_OPENED) = 0 then
     Exit(FR_NOT_OPENED);
 
@@ -1430,7 +1407,8 @@ begin
   if ofs > 0 then
   begin
     { Cluster size (byte) }
-    bcs := DWORD(fs.csize) * 512;
+    // bcs := DWORD(fs.csize) * 512;
+    bcs := DWORD(fs.csize) shl SECTOR_SIZE_BP;
     if (ifptr > 0) and (((ofs - 1) div bcs) >= ((ifptr - 1) div bcs)) then
     begin
       { When seek to same or following cluster, }
@@ -1462,7 +1440,8 @@ begin
     sect := clust2sect(clst);
     if sect = 0 then
       ABORT_DISK_ERR;
-    fs.dsect := sect + ((fs.fptr div 512) and (fs.csize - 1));
+    //fs.dsect := sect + ((fs.fptr div 512) and (fs.csize - 1));
+    fs.dsect := sect + ((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
   end;
   Result := FR_OK;
 end;
@@ -1472,20 +1451,18 @@ end;
 {$ifdef PF_USE_WRITE}
 function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
 var
-  p: pBYTE;
+  p: PByte;
   clst: CLUST;
   sect: DWORD;
   remain: DWORD;
-  cs: byte;
+  cs: Byte;
   wcnt: UINT;
   fs: pFATFS;
 begin
-  p := buff;
-  fs := iFatFs;
   { Check file system }
-  if fs = nil then
-    Exit(FR_NOT_ENABLED);
+  CHECK_FS_ENABLED;
 
+  p := buff;
   bw^ := 0;
   { Check if opened }
   if (fs.flag and FA_OPENED) = 0 then
@@ -1500,10 +1477,10 @@ begin
     Exit(FR_OK);
   end
   else
-  { Write data request }
-  if (fs.flag and FA__WIP) = 0 then
-    { Round-down fptr to the sector boundary }
-    fs.fptr := fs.fptr and $FFFFFE00;
+    { Write data request }
+    if (fs.flag and FA__WIP) = 0 then
+      { Round-down fptr to the sector boundary }
+      fs.fptr := fs.fptr and $FFFFFE00;
 
   remain := fs.fsize - fs.fptr;
   if btw > remain then
@@ -1512,10 +1489,12 @@ begin
   while btw <> 0 do
   begin
     { Repeat until all data transferred }
-    if UINT(fs.fptr) mod 512 = 0 then
+    // if UINT(fs.fptr) mod 512 = 0 then
+    if UINT(fs.fptr) and (SECTOR_SIZE - 1) = 0 then
     begin
       { On the sector boundary? }
-      cs := byte((fs.fptr div 512) and (fs.csize - 1)); { Sector offset in the cluster }
+      // cs := Byte((fs.fptr div 512) and (fs.csize - 1)); { Sector offset in the cluster }
+      cs := Byte((fs.fptr shl SECTOR_SIZE_BP) and (fs.csize - 1)); { Sector offset in the cluster }
       if cs = 0 then
       begin
         { On the cluster boundary? }
@@ -1541,7 +1520,8 @@ begin
       fs.flag := fs.flag or FA__WIP;
     end;
     { Number of bytes to write to the sector }
-    wcnt := 512 - (UINT(fs.fptr) mod 512);
+    // wcnt := 512 - (UINT(fs.fptr) mod 512);
+    wcnt := SECTOR_SIZE - (UINT(fs.fptr) and (SECTOR_SIZE-1));
     if wcnt > btw then
       wcnt := btw;
 
@@ -1555,7 +1535,8 @@ begin
     btw := btw - wcnt;
     bw^ := bw^ + wcnt;
 
-    if UINT(fs.fptr) mod 512 = 0 then
+    // if UINT(fs.fptr) mod 512 = 0 then
+    if UINT(fs.fptr) and (SECTOR_SIZE - 1) = 0 then
     begin
       { Finalize the current sector write operation }
       if disk_writep(nil, 0) <> DRESULT.RES_OK then
@@ -1573,76 +1554,77 @@ end;
 function pf_opendir(var dj: DIR; path: PChar): FRESULT;
 var
   res: FRESULT;
-  sp: array [0..Pred(12)] of byte;
-  dir: array [0..Pred(32)] of byte;
+  sp: array [0..Pred(12)] of Byte;
+  dir: array [0..Pred(32)] of Byte;
   fs: pFATFS;
 begin
-  fs := iFatFs;
-
   { Check file system }
-  if fs = nil then
-    res := FR_NOT_ENABLED
-  else
+  CHECK_FS_ENABLED;
+
+  dj.fn := sp;
+  { Follow the path to the directory }
+  res := follow_path(dj, dir, path);
+  if res = FR_OK then
   begin
-    dj.fn := sp;
-    { Follow the path to the directory }
-    res := follow_path(dj, dir, path);
+    { Follow completed }
+    if dir[0] <> 0 then
+      { It is not the root dir }
+      if (dir[DIR_Attr] and AM_DIR) <> 0 then
+        { The object is a directory }
+        dj.sclust := get_clust(dir)
+      else
+        { The object is not a directory }
+        res := FR_NO_FILE;
     if res = FR_OK then
-    begin
-      { Follow completed }
-      if dir[0] <> 0 then
-        { It is not the root dir }
-        if (dir[DIR_Attr] and AM_DIR) <> 0 then
-          { The object is a directory }
-          dj.sclust := get_clust(dir)
-        else
-          { The object is not a directory }
-          res := FR_NO_FILE;
-      if res = FR_OK then
-        { Rewind dir }
-        res := dir_rewind(dj);
-    end;
+      { Rewind dir }
+      res := dir_rewind(dj);
   end;
+
   Result := res;
 end;
 
-function pf_readdir(var dj: DIR; fno: PFILINFO): FRESULT;
+function pf_readdir(var dj: DIR; var fno: FILINFO): FRESULT;
 var
   res: FRESULT;
-  sp: array [0..Pred(12)] of byte;
-  dir: array [0..Pred(32)] of byte;
+  sp: array [0..Pred(12)] of Byte;
+  dir: array [0..Pred(32)] of Byte;
   fs: pFATFS;
 begin
-  fs := iFatFs;
-
   { Check file system }
-  if fs = nil then
-    res := FR_NOT_ENABLED
-  else
+  CHECK_FS_ENABLED;
+
+  dj.fn := sp;
+  { Get current directory item }
+  res := dir_read(dj, dir);
+  if res = FR_NO_FILE then
+    res := FR_OK;
+  if res = FR_OK then
   begin
-    dj.fn := sp;
-    if fno = nil then
-      res := dir_rewind(dj)
-    else
-    begin
-      { Get current directory item }
-      res := dir_read(dj, dir);
-      if res = FR_NO_FILE then
-        res := FR_OK;
-      if res = FR_OK then
-      begin
-        { A valid entry is found }
-        { Get the object information }
-        get_fileinfo(dj, dir, fno);
-        { Increment read index for next }
-        res := dir_next(dj);
-        if res = FR_NO_FILE then
-          res := FR_OK;
-      end;
-    end;
+    { A valid entry is found }
+    { Get the object information }
+    get_fileinfo(dj, dir, fno);
+    { Increment read index for next }
+    res := dir_next(dj);
+    if res = FR_NO_FILE then
+      res := FR_OK;
   end;
+
   Result := res;
 end;
+
+(* New API function *)
+function pf_rewinddir(var dj: DIR): FRESULT;
+var
+  sp: array [0..Pred(12)] of Byte;
+  fs: pFATFS;
+begin
+  { Check file system }
+  CHECK_FS_ENABLED;
+
+  dj.fn := sp;
+  Result := dir_rewind(dj)
+end;
+
 {$endif}
 
 end.

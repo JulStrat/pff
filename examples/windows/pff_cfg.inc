@@ -13,7 +13,7 @@ const
   PF_FS_FAT16 = True;
   PF_FS_FAT32 = True;
 
-  PF_USE_LCC = True;
+  PF_USE_LCC = False;
   PF_CODE_PAGE = 857;
 
 
