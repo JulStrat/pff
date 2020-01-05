@@ -127,7 +127,7 @@ type
   WCHAR = word;
 
   PUINT = ^UINT;
-  UINT = DWORD;
+  UINT = NativeUInt;
 
   {$if PF_FS_FAT32}
   CLUST = DWORD;

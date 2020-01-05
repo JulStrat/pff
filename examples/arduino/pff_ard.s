@@ -128,12 +128,8 @@ PASCALMAIN:
 # [58] if (br = 0) then
 	lds	r18,(U_sPsPFF_ARD_ss_BR)
 	lds	r19,(U_sPsPFF_ARD_ss_BR+1)
-	lds	r20,(U_sPsPFF_ARD_ss_BR+2)
-	lds	r21,(U_sPsPFF_ARD_ss_BR+3)
 	cp	r18,r1
 	cpc	r19,r1
-	cpc	r20,r1
-	cpc	r21,r1
 	breq	.Lj14
 # [60] bf[br] := #0;
 	lds	r19,(U_sPsPFF_ARD_ss_BR)
@@ -150,18 +146,13 @@ PASCALMAIN:
 .Lj13:
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_BF)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_BF)
-	ldi	r18,lo8(U_sPsPFF_ARD_ss_BR)
-	ldi	r19,hi8(U_sPsPFF_ARD_ss_BR)
-	ldi	r20,-128
-	mov	r21,r1
-	mov	r22,r1
+	ldi	r20,lo8(U_sPsPFF_ARD_ss_BR)
+	ldi	r21,hi8(U_sPsPFF_ARD_ss_BR)
+	ldi	r22,-128
 	mov	r23,r1
-	call	PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT
+	call	PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
 	cp	r24,r1
-	brne	.Lj22
-# [75] end.
-	rjmp	.Lj12
-.Lj22:
+	breq	.Lj12
 .Lj14:
 # [64] uart_puts(''#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld4)
@@ -176,13 +167,9 @@ PASCALMAIN:
 	rjmp	.Lj18
 .Lj17:
 # [69] if (br = 0) then
-	lds	r20,(U_sPsPFF_ARD_ss_BR)
-	lds	r21,(U_sPsPFF_ARD_ss_BR+1)
-	lds	r18,(U_sPsPFF_ARD_ss_BR+2)
-	lds	r19,(U_sPsPFF_ARD_ss_BR+3)
-	cp	r20,r1
-	cpc	r21,r1
-	cpc	r18,r1
+	lds	r18,(U_sPsPFF_ARD_ss_BR)
+	lds	r19,(U_sPsPFF_ARD_ss_BR+1)
+	cp	r18,r1
 	cpc	r19,r1
 	breq	.Lj19
 # [71] bf[br] := #0;
@@ -200,18 +187,15 @@ PASCALMAIN:
 .Lj18:
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_BF)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_BF)
-	ldi	r18,lo8(U_sPsPFF_ARD_ss_BR)
-	ldi	r19,hi8(U_sPsPFF_ARD_ss_BR)
-	ldi	r20,-128
-	mov	r21,r1
-	mov	r22,r1
+	ldi	r20,lo8(U_sPsPFF_ARD_ss_BR)
+	ldi	r21,hi8(U_sPsPFF_ARD_ss_BR)
+	ldi	r22,-128
 	mov	r23,r1
-	call	PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT
+	call	PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
 	cp	r24,r1
-	brne	.Lj23
-	rjmp	.Lj17
-.Lj23:
+	breq	.Lj17
 .Lj19:
+# [75] end.
 	call	fpc_do_exit
 .Lc1:
 .Le0:
@@ -262,9 +246,9 @@ U_sPsPFF_ARD_ss_BF:
 
 .section .bss.n_u_spspff_ard_ss_br,"aw",%nobits
 # [15] br: UINT;
-	.size U_sPsPFF_ARD_ss_BR,4
+	.size U_sPsPFF_ARD_ss_BR,2
 U_sPsPFF_ARD_ss_BR:
-	.zero 4
+	.zero 2
 
 .section .data.n_INITFINAL
 	.balign 2

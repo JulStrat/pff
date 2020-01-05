@@ -242,28 +242,28 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 # Var $result located in register r5
 # Var buf located at r28+2, size=OS_32
 # Var fs located in register r18
-	movw	r16,r22
-	movw	r18,r24
-# Var clst located in register r16
+	movw	r6,r22
+# Var clst located in register r6
 # Var fs located in register r20
 # [713] fs := iFatFs;
 	lds	r20,(U_sPFF_ss_IFATFS)
 	lds	r21,(U_sPFF_ss_IFATFS+1)
 # [715] if (clst < 2) or (clst >= fs.n_fatent) then
-	cpi	r16,2
-	cpc	r17,r1
-	cpc	r18,r1
-	cpc	r19,r1
+	ldi	r26,2
+	cp	r6,r26
+	cpc	r7,r1
+	cpc	r24,r1
+	cpc	r25,r1
 	brlo	.Lj32
 	movw	r30,r20
-	ldd	r22,Z+8
-	ldd	r23,Z+9
-	ldd	r24,Z+10
-	ldd	r25,Z+11
-	cp	r16,r22
-	cpc	r17,r23
-	cpc	r18,r24
-	cpc	r19,r25
+	ldd	r18,Z+8
+	ldd	r19,Z+9
+	ldd	r22,Z+10
+	ldd	r23,Z+11
+	cp	r6,r18
+	cpc	r7,r19
+	cpc	r24,r22
+	cpc	r25,r23
 	brlo	.Lj34
 .Lj32:
 # [716] Exit(1);
@@ -282,34 +282,14 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 	mov	r3,r1
 # [720] case fs.fs_type of
 	movw	r30,r20
-	ld	r22,Z
-	cpi	r22,3
+	ld	r18,Z
+	cpi	r18,3
 	breq	.Lj40
 # [766] end;
 	rjmp	.Lj30
 .Lj40:
 # [760] if disk_readp(@buf, fs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
-	mov	r7,r16
-	mov	r24,r17
-	mov	r25,r18
-	mov	r6,r19
-	ldi	r22,7
-.Lj37:
-	lsr	r6
-	ror	r25
-	ror	r24
-	ror	r7
-	dec	r22
-	brne	.Lj37
-	movw	r30,r20
-	ldd	r20,Z+12
-	ldd	r21,Z+13
-	ldd	r22,Z+14
-	ldd	r23,Z+15
-	add	r20,r7
-	adc	r21,r24
-	adc	r22,r25
-	adc	r23,r6
+	movw	r16,r6
 	andi	r16,127
 	mov	r17,r1
 	mov	r18,r1
@@ -322,6 +302,23 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 	rol	r17
 	rol	r18
 	rol	r19
+	ldi	r22,7
+.Lj37:
+	lsr	r25
+	ror	r24
+	ror	r7
+	ror	r6
+	dec	r22
+	brne	.Lj37
+	movw	r30,r20
+	ldd	r20,Z+12
+	ldd	r21,Z+13
+	ldd	r22,Z+14
+	ldd	r23,Z+15
+	add	r20,r6
+	adc	r21,r7
+	adc	r22,r24
+	adc	r23,r25
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2455,11 +2452,11 @@ PFF_ss_PF_OPENsPCHARssFRESULT:
 .Le20:
 	.size	PFF_ss_PF_OPENsPCHARssFRESULT, .Le20 - PFF_ss_PF_OPENsPCHARssFRESULT
 
-.section .text.n_pff_ss_pf_readspointerslongwordslongwordssfresult,"ax"
-.globl	PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT
-PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
+.section .text.n_pff_ss_pf_readspointersnativeuintsnativeuintssfresult,"ax"
+.globl	PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
+PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 .Lc44:
-# Temps allocated between r28+2 and r28+18
+# Temps allocated between r28+2 and r28+14
 # [1324] begin
 	push	r29
 	push	r28
@@ -2481,7 +2478,7 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	push	r2
 	in	r28,61
 	in	r29,62
-	subi	r28,18
+	subi	r28,14
 	sbci	r29,0
 	in	r0,63
 	cli
@@ -2489,27 +2486,25 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	out	63,r0
 	out	61,r28
 # Var $result located in register r18
-# Var dr located in register r6
+# Var dr located in register r4
 # Var clst located in register r18
-# Var sect located in register r18
+# Var sect located in register r9
 # Var remain located in register r18
 # Var rcnt located in register r3
-# Var cs located in register r7
+# Var cs located in register r5
 # Var rbuff located in register r18
 # Var fs located in register r18
 # Var buff located in register r24
-	std	Y+5,r20
-	std	Y+6,r21
-	std	Y+7,r22
-	std	Y+8,r23
+	std	Y+5,r22
+	std	Y+6,r23
 # Var btr located in register r18
-	std	Y+3,r18
-	std	Y+4,r19
+	std	Y+3,r20
+	std	Y+4,r21
 # Var br located in register r18
-# Var fs located in register r23
-	lds	r23,(U_sPFF_ss_IFATFS)
+# Var fs located in register r21
+	lds	r21,(U_sPFF_ss_IFATFS)
 	lds	r22,(U_sPFF_ss_IFATFS+1)
-	cp	r23,r1
+	cp	r21,r1
 	cpc	r22,r1
 	brne	.Lj239
 	ldi	r26,5
@@ -2519,8 +2514,8 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 # Var rbuff located in register r18
 # Var buff located in register r24
 # [1328] rbuff := buff;
-	std	Y+9,r24
-	std	Y+10,r25
+	std	Y+7,r24
+	std	Y+8,r25
 # [1329] br := 0;
 	ldd	r18,Y+3
 	mov	r30,r18
@@ -2528,10 +2523,8 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	mov	r31,r18
 	st	Z,r1
 	std	Z+1,r1
-	std	Z+2,r1
-	std	Z+3,r1
 # [1331] if (fs.flag and FA_OPENED) = 0 then
-	mov	r30,r23
+	mov	r30,r21
 	mov	r31,r22
 	ldd	r18,Z+1
 	andi	r18,1
@@ -2541,55 +2534,294 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	std	Y+2,r26
 	rjmp	.Lj236
 .Lj241:
-# Var fs located in register r23
+# Var fs located in register r21
 # [1334] remain := fs.fsize - fs.fptr;
-	std	Y+11,r23
-	std	Y+12,r22
+	std	Y+9,r21
+	std	Y+10,r22
 # Var fs located in register r18
-	mov	r30,r23
+	mov	r30,r21
 	mov	r31,r22
 	ldd	r22,Z+28
-	ldd	r23,Z+29
-	ldd	r24,Z+30
-	ldd	r25,Z+31
-	ldd	r18,Y+11
+	ldd	r25,Z+29
+	ldd	r23,Z+30
+	ldd	r24,Z+31
+	ldd	r18,Y+9
 	mov	r30,r18
-	ldd	r18,Y+12
+	ldd	r18,Y+10
 	mov	r31,r18
-	ldd	r18,Z+24
-	ldd	r19,Z+25
-	ldd	r20,Z+26
-	ldd	r21,Z+27
-	sub	r22,r18
-	sbc	r23,r19
-	sbc	r24,r20
-	sbc	r25,r21
+	ldd	r20,Z+24
+	ldd	r18,Z+25
+	ldd	r21,Z+26
+	ldd	r19,Z+27
+	sub	r22,r20
+	sbc	r25,r18
+	sbc	r23,r21
+	sbc	r24,r19
 # Var remain located in register r22
 # [1335] if btr > remain then
 	ldd	r18,Y+5
-	cp	r22,r18
+	mov	r21,r18
 	ldd	r18,Y+6
-	cpc	r23,r18
-	ldd	r18,Y+7
-	cpc	r24,r18
-	ldd	r18,Y+8
+	cp	r22,r21
 	cpc	r25,r18
+	cpc	r23,r1
+	cpc	r24,r1
 	brlo	.Lj264
 # [1387] end;
 	rjmp	.Lj245
 .Lj264:
 # [1337] btr := UINT(remain);
 	std	Y+5,r22
-	std	Y+6,r23
-	std	Y+7,r24
-	std	Y+8,r25
+	std	Y+6,r25
 # [1340] while btr <> 0 do
 	rjmp	.Lj245
 .Lj244:
 # [1344] if (fs.fptr and (SECTOR_SIZE-1)) = 0 then
-	ldd	r18,Y+11
+	ldd	r18,Y+9
 	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r18,Z+24
+	ldd	r19,Z+25
+	ldd	r21,Z+26
+	ldd	r23,Z+27
+	mov	r22,r18
+	mov	r20,r19
+	mov	r19,r21
+	mov	r18,r23
+	andi	r20,1
+	cp	r22,r1
+	cpc	r20,r1
+	cpc	r1,r1
+	cpc	r1,r1
+	breq	.Lj265
+	rjmp	.Lj248
+.Lj265:
+# [1348] cs := Byte((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r18,Z+2
+	mov	r19,r1
+	subi	r18,1
+	sbc	r19,r1
+	movw	r22,r18
+	mov	r21,r1
+	sbrc	r19,7
+	com	r21
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r18,Z+24
+	ldd	r18,Z+25
+	ldd	r19,Z+26
+	ldd	r25,Z+27
+	mov	r20,r19
+	mov	r19,r25
+	lsr	r19
+	ror	r20
+	ror	r18
+	mov	r11,r18
+	mov	r18,r1
+	and	r11,r22
+	and	r20,r23
+	and	r19,r21
+	and	r18,r21
+	mov	r5,r11
+# [1350] if cs = 0 then
+	cp	r5,r1
+	breq	.Lj266
+	rjmp	.Lj250
+.Lj266:
+# [1353] if fs.fptr = 0 then
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r21,Z+24
+	ldd	r20,Z+25
+	ldd	r18,Z+26
+	ldd	r19,Z+27
+	cp	r21,r1
+	cpc	r20,r1
+	cpc	r18,r1
+	cpc	r19,r1
+	brne	.Lj252
+# [1354] clst := fs.org_clust
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r18,Z+32
+	std	Y+11,r18
+	ldd	r18,Z+33
+	std	Y+12,r18
+	ldd	r18,Z+34
+	std	Y+13,r18
+	ldd	r10,Z+35
+	rjmp	.Lj253
+.Lj252:
+# [1356] clst := get_fat(fs.curr_clust);
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r22,Z+36
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r23,Z+37
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r24,Z+38
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r25,Z+39
+	call	PFF_ss_GET_FATsLONGWORDssLONGWORD
+	std	Y+11,r22
+	std	Y+12,r23
+	std	Y+13,r24
+	mov	r10,r25
+.Lj253:
+# [1357] if clst <= 1 then
+	ldi	r19,1
+	ldd	r18,Y+11
+	cp	r19,r18
 	ldd	r18,Y+12
+	cpc	r1,r18
+	ldd	r18,Y+13
+	cpc	r1,r18
+	cpc	r1,r10
+	brlo	.Lj255
+# [585] {$define ABORT_DISK_ERR := begin fs.flag := 0; Exit(FR_DISK_ERR); end}
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj236
+.Lj255:
+# [1360] fs.curr_clust := clst;
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r18,Y+11
+	std	Z+36,r18
+	ldd	r18,Y+12
+	std	Z+37,r18
+	ldd	r18,Y+13
+	std	Z+38,r18
+	std	Z+39,r10
+.Lj250:
+# [1363] sect := clust2sect(fs.curr_clust);
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r22,Z+36
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r23,Z+37
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r24,Z+38
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r25,Z+39
+	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
+	mov	r9,r22
+	mov	r8,r23
+	mov	r7,r24
+	mov	r6,r25
+# [1364] if sect = 0 then
+	cp	r9,r1
+	cpc	r8,r1
+	cpc	r7,r1
+	cpc	r6,r1
+	brne	.Lj257
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj236
+.Lj257:
+# [1366] fs.dsect := sect + cs;
+	mov	r24,r9
+	mov	r22,r8
+	mov	r25,r7
+	mov	r23,r6
+	add	r24,r5
+	adc	r22,r1
+	adc	r25,r1
+	adc	r23,r1
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	std	Z+40,r24
+	std	Z+41,r22
+	std	Z+42,r25
+	std	Z+43,r23
+.Lj248:
+# [1370] rcnt := SECTOR_SIZE - UINT(fs.fptr and (SECTOR_SIZE-1));
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
+	mov	r31,r18
+	ldd	r18,Z+24
+	ldd	r19,Z+25
+	ldd	r22,Z+26
+	ldd	r23,Z+27
+	movw	r20,r18
+	mov	r19,r22
+	mov	r18,r23
+	andi	r21,1
+	mov	r11,r20
+	ldi	r20,2
+	mov	r19,r1
+	mov	r22,r1
+	mov	r18,r1
+	sub	r22,r11
+	sbc	r20,r21
+	sbc	r19,r1
+	sbc	r18,r1
+	mov	r3,r22
+	mov	r2,r20
+# [1371] if rcnt > btr then
+	ldd	r18,Y+5
+	cp	r18,r3
+	ldd	r18,Y+6
+	cpc	r18,r2
+	brsh	.Lj259
+# [1372] rcnt := btr;
+	ldd	r18,Y+5
+	mov	r3,r18
+	ldd	r18,Y+6
+	mov	r2,r18
+.Lj259:
+# [1374] dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr and (SECTOR_SIZE-1)), rcnt);
+	ldd	r18,Y+9
+	mov	r30,r18
+	ldd	r18,Y+10
 	mov	r31,r18
 	ldd	r18,Z+24
 	ldd	r19,Z+25
@@ -2600,300 +2832,46 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	mov	r19,r22
 	mov	r18,r23
 	andi	r20,1
-	cp	r21,r1
-	cpc	r20,r1
-	cpc	r1,r1
-	cpc	r1,r1
-	breq	.Lj265
-	rjmp	.Lj248
-.Lj265:
-# [1348] cs := Byte((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r18,Z+2
-	mov	r19,r1
-	subi	r18,1
-	sbc	r19,r1
-	mov	r23,r18
-	mov	r21,r19
-	mov	r22,r1
-	sbrc	r19,7
-	com	r22
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r18,Z+24
-	ldd	r18,Z+25
-	ldd	r20,Z+26
-	ldd	r25,Z+27
-	mov	r19,r18
-	lsr	r25
-	ror	r20
-	ror	r19
-	mov	r11,r19
-	mov	r19,r25
-	mov	r18,r1
-	and	r11,r23
-	and	r20,r21
-	and	r19,r22
-	and	r18,r22
-	mov	r7,r11
-# [1350] if cs = 0 then
-	cp	r7,r1
-	breq	.Lj266
-	rjmp	.Lj250
-.Lj266:
-# [1353] if fs.fptr = 0 then
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r19,Z+24
-	ldd	r21,Z+25
-	ldd	r18,Z+26
-	ldd	r20,Z+27
-	cp	r19,r1
-	cpc	r21,r1
-	cpc	r18,r1
-	cpc	r20,r1
-	brne	.Lj252
-# [1354] clst := fs.org_clust
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r18,Z+32
-	std	Y+13,r18
-	ldd	r18,Z+33
-	std	Y+14,r18
-	ldd	r18,Z+34
-	std	Y+15,r18
-	ldd	r18,Z+35
-	std	Y+16,r18
-	rjmp	.Lj253
-.Lj252:
-# [1356] clst := get_fat(fs.curr_clust);
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r22,Z+36
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r23,Z+37
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r24,Z+38
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r25,Z+39
-	call	PFF_ss_GET_FATsLONGWORDssLONGWORD
-	std	Y+13,r22
-	std	Y+14,r23
-	std	Y+15,r24
-	std	Y+16,r25
-.Lj253:
-# [1357] if clst <= 1 then
-	ldi	r19,1
-	ldd	r18,Y+13
-	cp	r19,r18
-	ldd	r18,Y+14
-	cpc	r1,r18
-	ldd	r18,Y+15
-	cpc	r1,r18
-	ldd	r18,Y+16
-	cpc	r1,r18
-	brlo	.Lj255
-# [585] {$define ABORT_DISK_ERR := begin fs.flag := 0; Exit(FR_DISK_ERR); end}
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	std	Z+1,r1
-	ldi	r26,1
-	std	Y+2,r26
-	rjmp	.Lj236
-.Lj255:
-# [1360] fs.curr_clust := clst;
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r18,Y+13
-	std	Z+36,r18
-	ldd	r18,Y+14
-	std	Z+37,r18
-	ldd	r18,Y+15
-	std	Z+38,r18
-	ldd	r18,Y+16
-	std	Z+39,r18
-.Lj250:
-# [1363] sect := clust2sect(fs.curr_clust);
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r22,Z+36
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r23,Z+37
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r24,Z+38
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r25,Z+39
-	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
-	std	Y+17,r22
-	mov	r10,r23
-	mov	r9,r24
-	mov	r8,r25
-# [1364] if sect = 0 then
-	ldd	r18,Y+17
-	cp	r18,r1
-	cpc	r10,r1
-	cpc	r9,r1
-	cpc	r8,r1
-	brne	.Lj257
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	std	Z+1,r1
-	ldi	r26,1
-	std	Y+2,r26
-	rjmp	.Lj236
-.Lj257:
-# [1366] fs.dsect := sect + cs;
-	ldd	r18,Y+17
-	mov	r11,r18
-	mov	r24,r10
-	mov	r23,r9
-	mov	r25,r8
-	add	r11,r7
-	adc	r24,r1
-	adc	r23,r1
-	adc	r25,r1
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	std	Z+40,r11
-	std	Z+41,r24
-	std	Z+42,r23
-	std	Z+43,r25
-.Lj248:
-# [1370] rcnt := SECTOR_SIZE - UINT(fs.fptr and (SECTOR_SIZE-1));
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r18,Z+24
-	ldd	r19,Z+25
-	ldd	r20,Z+26
-	ldd	r21,Z+27
-	mov	r11,r18
-	mov	r12,r19
-	mov	r25,r20
-	mov	r24,r21
-	ldi	r26,1
-	and	r12,r26
-	mov	r23,r1
-	ldi	r20,2
-	mov	r19,r1
-	mov	r18,r1
-	sub	r23,r11
-	sbc	r20,r12
-	sbc	r19,r1
-	sbc	r18,r1
-	mov	r3,r23
-	mov	r2,r20
-	mov	r5,r19
-	mov	r4,r18
-# [1371] if rcnt > btr then
-	ldd	r18,Y+5
-	cp	r18,r3
-	ldd	r18,Y+6
-	cpc	r18,r2
-	ldd	r18,Y+7
-	cpc	r18,r5
-	ldd	r18,Y+8
-	cpc	r18,r4
-	brsh	.Lj259
-# [1372] rcnt := btr;
-	ldd	r18,Y+5
-	mov	r3,r18
-	ldd	r18,Y+6
-	mov	r2,r18
-	ldd	r18,Y+7
-	mov	r5,r18
-	ldd	r18,Y+8
-	mov	r4,r18
-.Lj259:
-# [1374] dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr and (SECTOR_SIZE-1)), rcnt);
-	ldd	r18,Y+11
-	mov	r30,r18
-	ldd	r18,Y+12
-	mov	r31,r18
-	ldd	r18,Z+24
-	ldd	r19,Z+25
-	ldd	r20,Z+26
-	ldd	r21,Z+27
-	andi	r19,1
-	movw	r16,r18
+	mov	r16,r21
+	mov	r17,r20
 	mov	r18,r1
 	mov	r19,r1
-	ldd	r20,Y+11
-	mov	r30,r20
-	ldd	r20,Y+12
-	mov	r31,r20
-	ldd	r20,Z+40
-	ldd	r21,Y+11
-	mov	r30,r21
-	ldd	r21,Y+12
-	mov	r31,r21
-	ldd	r21,Z+41
-	ldd	r22,Y+11
-	mov	r30,r22
-	ldd	r22,Y+12
-	mov	r31,r22
-	ldd	r22,Z+42
-	ldd	r23,Y+11
-	mov	r30,r23
-	ldd	r23,Y+12
-	mov	r31,r23
-	ldd	r23,Z+43
 	mov	r12,r3
 	mov	r13,r2
-	mov	r14,r5
-	mov	r15,r4
-	ldd	r25,Y+9
+	mov	r14,r1
+	mov	r15,r1
+	ldd	r20,Y+9
+	mov	r30,r20
+	ldd	r20,Y+10
+	mov	r31,r20
+	ldd	r20,Z+40
+	ldd	r21,Y+9
+	mov	r30,r21
+	ldd	r21,Y+10
+	mov	r31,r21
+	ldd	r21,Z+41
+	ldd	r22,Y+9
+	mov	r30,r22
+	ldd	r22,Y+10
+	mov	r31,r22
+	ldd	r22,Z+42
+	ldd	r23,Y+9
+	mov	r30,r23
+	ldd	r23,Y+10
+	mov	r31,r23
+	ldd	r23,Z+43
+	ldd	r25,Y+7
 	mov	r24,r25
-	ldd	r11,Y+10
+	ldd	r11,Y+8
 	mov	r25,r11
 	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsLONGWORDsLONGWORDssDRESULT
-	mov	r6,r24
+	mov	r4,r24
 # [1375] if dr <> RES_OK then
-	cp	r6,r1
+	cp	r4,r1
 	breq	.Lj261
-	ldd	r18,Y+11
+	ldd	r18,Y+9
 	mov	r30,r18
-	ldd	r18,Y+12
+	ldd	r18,Y+10
 	mov	r31,r18
 	std	Z+1,r1
 	ldi	r26,1
@@ -2901,26 +2879,26 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	rjmp	.Lj236
 .Lj261:
 # [1378] fs.fptr := fs.fptr + rcnt;
-	ldd	r18,Y+11
+	ldd	r18,Y+9
 	mov	r30,r18
-	ldd	r18,Y+12
+	ldd	r18,Y+10
 	mov	r31,r18
-	ldd	r20,Z+24
-	ldd	r22,Z+25
-	ldd	r21,Z+26
-	ldd	r19,Z+27
-	add	r20,r3
-	adc	r22,r2
-	adc	r21,r5
-	adc	r19,r4
-	ldd	r18,Y+11
+	ldd	r19,Z+24
+	ldd	r23,Z+25
+	ldd	r20,Z+26
+	ldd	r22,Z+27
+	add	r19,r3
+	adc	r23,r2
+	adc	r20,r1
+	adc	r22,r1
+	ldd	r18,Y+9
 	mov	r30,r18
-	ldd	r18,Y+12
+	ldd	r18,Y+10
 	mov	r31,r18
-	std	Z+24,r20
-	std	Z+25,r22
-	std	Z+26,r21
-	std	Z+27,r19
+	std	Z+24,r19
+	std	Z+25,r23
+	std	Z+26,r20
+	std	Z+27,r22
 # [1380] btr := btr - rcnt;
 	ldd	r18,Y+5
 	sub	r18,r3
@@ -2928,56 +2906,38 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	ldd	r18,Y+6
 	sbc	r18,r2
 	std	Y+6,r18
-	ldd	r18,Y+7
-	sbc	r18,r5
-	std	Y+7,r18
-	ldd	r18,Y+8
-	sbc	r18,r4
-	std	Y+8,r18
 # [1381] br := br + rcnt;
 	ldd	r18,Y+3
 	mov	r30,r18
 	ldd	r18,Y+4
 	mov	r31,r18
-	ld	r21,Z
+	ld	r19,Z
 	ldd	r20,Z+1
-	ldd	r19,Z+2
-	ldd	r22,Z+3
-	add	r21,r3
+	add	r19,r3
 	adc	r20,r2
-	adc	r19,r5
-	adc	r22,r4
 	ldd	r18,Y+3
 	mov	r30,r18
 	ldd	r18,Y+4
 	mov	r31,r18
-	st	Z,r21
+	st	Z,r19
 	std	Z+1,r20
-	std	Z+2,r19
-	std	Z+3,r22
 # [1383] if rbuff <> nil then
-	ldd	r18,Y+9
+	ldd	r18,Y+7
 	cp	r18,r1
-	ldd	r18,Y+10
+	ldd	r18,Y+8
 	cpc	r18,r1
 	breq	.Lj245
 # [1384] rbuff := rbuff + rcnt;
-	ldd	r18,Y+9
-	mov	r21,r18
-	ldd	r18,Y+10
-	mov	r22,r18
-	add	r21,r3
-	adc	r22,r2
-	std	Y+9,r21
-	std	Y+10,r22
+	ldd	r18,Y+7
+	add	r18,r3
+	ldd	r18,Y+8
+	adc	r18,r2
+	std	Y+7,r18
+	std	Y+8,r18
 .Lj245:
 	ldd	r18,Y+5
 	cp	r18,r1
 	ldd	r18,Y+6
-	cpc	r18,r1
-	ldd	r18,Y+7
-	cpc	r18,r1
-	ldd	r18,Y+8
 	cpc	r18,r1
 	breq	.Lj267
 	rjmp	.Lj244
@@ -2987,7 +2947,7 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 .Lj236:
 	ldd	r18,Y+2
 	mov	r24,r18
-	subi	r28,-18
+	subi	r28,-14
 	sbci	r29,-1
 	in	r0,63
 	cli
@@ -3015,7 +2975,7 @@ PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT:
 	ret
 .Lc43:
 .Le21:
-	.size	PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT, .Le21 - PFF_ss_PF_READsPOINTERsLONGWORDsLONGWORDssFRESULT
+	.size	PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT, .Le21 - PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
 
 .section .text.n_pff_ss_pf_opendirsdirspcharssfresult,"ax"
 .globl	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
@@ -3334,7 +3294,7 @@ RTTI_sPFF_ss_PUINT:
 	.byte	29,5
 	.ascii	"PUINT"
 	.short	0
-	.short	RTTI_sSYSTEM_ss_LONGWORDsindirect
+	.short	RTTI_sSYSTEM_ss_NATIVEUINTsindirect
 .Le26:
 	.size	RTTI_sPFF_ss_PUINT, .Le26 - RTTI_sPFF_ss_PUINT
 
