@@ -57,22 +57,19 @@ Petit FatFs is a sub-set of FatFs module for Tiny 8-bit MicroControllers. It can
 <td class="itemcode"><code>function <b><a  href="pff.html#pf_opendir">pf_opendir</a></b>(var dj: <a  href="pff.DIR.html">DIR</a>; path: PChar): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <b><a  href="pff.html#pf_readdir">pf_readdir</a></b>(var dj: <a  href="pff.DIR.html">DIR</a>; fno: <a  href="pff.html#PFILINFO">PFILINFO</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_readdir">pf_readdir</a></b>(var dj: <a  href="pff.DIR.html">DIR</a>; var fno: <a  href="pff.FILINFO.html">FILINFO</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <b><a  href="pff.html#pf_rewinddir">pf_rewinddir</a></b>(var dj: <a  href="pff.DIR.html">DIR</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><b><a  href="pff.html#PWCHAR">PWCHAR</a></b> = &circ;<a  href="pff.html#WCHAR">WCHAR</a>;</code></td>
-</tr>
-<tr class="list2">
-<td class="itemcode"><code><b><a  href="pff.html#WCHAR">WCHAR</a></b> = word;</code></td>
-</tr>
-<tr class="list">
 <td class="itemcode"><code><b><a  href="pff.html#PUINT">PUINT</a></b> = &circ;<a  href="pff.html#UINT">UINT</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><b><a  href="pff.html#UINT">UINT</a></b> = DWORD;</code></td>
+<td class="itemcode"><code><b><a  href="pff.html#UINT">UINT</a></b> = NativeUInt;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><b><a  href="pff.html#CLUST">CLUST</a></b> = DWORD;</code></td>
@@ -430,13 +427,13 @@ Create a directory Object.
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="pf_readdir"></span><code>function <b>pf_readdir</b>(var dj: <a  href="pff.DIR.html">DIR</a>; fno: <a  href="pff.html#PFILINFO">PFILINFO</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+<td class="itemcode"><span id="pf_readdir"></span><code>function <b>pf_readdir</b>(var dj: <a  href="pff.DIR.html">DIR</a>; var fno: <a  href="pff.FILINFO.html">FILINFO</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
 Read a directory item from the open directory.
 
-<p>The pf_readdir() function reads directory entries in sequence. All items in the directory can be read by calling this function repeatedly. When all directory entries have been read and no item to read, the function returns a null string into member f_name[] in the file information structure without error. When a null pointer is given to the fno, the read index of the directory object will be rewinded.
+<p>The pf_readdir() function reads directory entries in sequence. All items in the directory can be read by calling this function repeatedly. When all directory entries have been read and no item to read, the function returns a null string into member f_name[] in the file information structure without error.
 
 <p> 
 
@@ -451,21 +448,26 @@ Read a directory item from the open directory.
 <h6 class="description_section">Returns</h6>
 <p class="return">FRESULT</p></td></tr>
 </table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="pf_rewinddir"></span><code>function <b>pf_rewinddir</b>(var dj: <a  href="pff.DIR.html">DIR</a>): <a  href="pff.html#FRESULT">FRESULT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Directory rewind.
+
+<p>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>dj</dt>
+<dd>Open directory object</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">FRESULT</p></td></tr>
+</table>
 <h3 class="detail">Types</h3>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><span id="PWCHAR"></span><code><b>PWCHAR</b> = &circ;<a  href="pff.html#WCHAR">WCHAR</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><span id="WCHAR"></span><code><b>WCHAR</b> = word;</code></td>
-</tr>
-<tr><td colspan="1">
-&nbsp;</td></tr>
-</table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="PUINT"></span><code><b>PUINT</b> = &circ;<a  href="pff.html#UINT">UINT</a>;</code></td>
@@ -475,7 +477,7 @@ Read a directory item from the open directory.
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UINT"></span><code><b>UINT</b> = DWORD;</code></td>
+<td class="itemcode"><span id="UINT"></span><code><b>UINT</b> = NativeUInt;</code></td>
 </tr>
 <tr><td colspan="1">
 &nbsp;</td></tr>

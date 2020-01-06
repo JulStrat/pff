@@ -39,9 +39,9 @@ const
     {$if PF_FS_FAT32 
       and (not PF_FS_FAT12)
       and (not PF_FS_FAT16)}
-      _FS_32ONLY = True;
+  _FS_32ONLY = True;
     {$else}
-      _FS_32ONLY = False;
+  _FS_32ONLY = False;
     {$endif}
   {$endif}
 
@@ -56,7 +56,7 @@ const
   (* Hidden *)
   AM_HID = $02;
   (* System *)
-  AM_SYS = $04;  
+  AM_SYS = $04;
   (* Volume label *)
   AM_VOL = $08;
   (* LFN entry *)
@@ -65,7 +65,7 @@ const
   AM_DIR = $10;
   (* Archive *)
   AM_ARC = $20;
- (* Mask of defined bits *)
+  (* Mask of defined bits *)
   AM_MASK = $3F;
 
   FS_FAT12 = 1;
@@ -123,8 +123,6 @@ const
   DIR_FileSize = 28;
 
 type
-  PWCHAR = ^WCHAR;
-  WCHAR = word;
 
   PUINT = ^UINT;
   UINT = NativeUInt;
@@ -132,18 +130,18 @@ type
   {$if PF_FS_FAT32}
   CLUST = DWORD;
   {$else}
-  CLUST = WORD;
+  CLUST = word;
   {$endif}
 
   (* File system object structure *)
   FATFS = record
     (* FAT sub type *)
-    fs_type:Byte;
+    fs_type: byte;
     (* File status flags *)
-    flag:Byte;
+    flag: byte;
     (* Number of sectors per cluster *)
-    csize:Byte;
-    pad1:Byte;
+    csize: byte;
+    pad1: byte;
     (* Number of root directory entries (0 on FAT32) *)
     n_rootdir: word;
     (* Number of FAT entries (= number of clusters + 2) *)
@@ -191,7 +189,7 @@ type
     (* Last modified time *)
     ftime: word;
     (* Attribute *)
-    fattrib:Byte;
+    fattrib: byte;
     (* File name *)
     fname: array [0..Pred(13)] of char;
   end;
@@ -323,8 +321,6 @@ function pf_opendir(var dj: DIR; path: PChar): FRESULT;
   When all directory entries have been read and no item to read, 
   the function returns a null string into member f_name[] 
   in the file information structure without error. 
-  When a null pointer is given to the fno, the read index 
-  of the directory object will be rewinded.  
 
   @param(dj Open directory object)
   @param(fno Pointer to file information to return)
@@ -332,254 +328,17 @@ function pf_opendir(var dj: DIR; path: PChar): FRESULT;
   @returns(FRESULT) }
 function pf_readdir(var dj: DIR; var fno: FILINFO): FRESULT;
 
+{ Directory rewind.
 
+  @param(dj Open directory object)
+
+  @returns(FRESULT) }
 function pf_rewinddir(var dj: DIR): FRESULT;
 {$endif}
 
 implementation
-{ DBCS code ranges and SBCS extend char conversion table }
-type
-  _TEXCVT = array [0..127] of Byte;
-{$if PF_USE_LCC}
-{$if PF_CODE_PAGE = 932} (* Japanese Shift-JIS *)
-{$info Code page - Japanese Shift-JIS}
-const
-  (* DBC 1st byte range 1 start *)
-  _DF1S = $81;
-  (* DBC 1st byte range 1 end *)
-  _DF1E = $9F;
-  (* DBC 1st byte range 2 start *)
-  _DF2S = $E0;
-  (* DBC 1st byte range 2 end *)
-  _DF2E = $FC;
-  (* DBC 2nd byte range 1 start *)
-  _DS1S = $40;
-  (* DBC 2nd byte range 1 end *)
-  _DS1E = $7E;
-  (* DBC 2nd byte range 2 start *)
-  _DS2S = $80;
-  (* DBC 2nd byte range 2 end *)
-  _DS2E = $FC;
-{$elseif PF_CODE_PAGE = 936}(* Simplified Chinese GBK *)
-{$info Code page - Simplified Chinese GBK}
-const
-  _DF1S = $81;
-  _DF1E = $FE;
-  _DS1S = $40;
-  _DS1E = $7E;
-  _DS2S = $80;
-  _DS2E = $FE;
-{$elseif PF_CODE_PAGE = 949}(* Korean *)
-{$info Code page - Korean}
-const
-  _DF1S = $81;
-  _DF1E = $FE;
-  _DS1S = $41;
-  _DS1E = $5A;
-  _DS2S = $61;
-  _DS2E = $7A;
-  _DS3S = $81;
-  _DS3E = $FE;
-{$elseif PF_CODE_PAGE = 950}(* Traditional Chinese Big5 *)
-{$info Code page - Traditional Chinese Big5}
-const
-  _DF1S = $81;
-  _DF1E = $FE;
-  _DS1S = $40;
-  _DS1E = $7E;
-  _DS2S = $A1;
-  _DS2E = $FE;
-{$elseif PF_CODE_PAGE = 437}(* U.S. *)
-{$info Code page - U.S.}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $45, $41, $8E, $41, $8F, $80, $45, $45, $45, $49, $49, $49,
-    $8E, $8F, $90, $92, $92, $4F, $99, $4F, $55, $55, $59, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 720}(* Arabic *)
-{$info Code page - Arabic}
-const
-  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
-    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $A0, $A1, $A2, $A3, $A4, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 737}(* Greek *)
-{$info Code page - Greek}
-const
-  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
-    $8E, $8F, $90, $92, $92, $93, $94, $95, $96, $97, $80, $81, $82, $83, $84, $85, $86,
-    $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F, $90, $91, $AA, $92, $93, $94, $95, $96,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $97, $EA, $EB,
-    $EC, $E4, $ED, $EE, $EF, $F5, $F0, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 771}(* KBL *)
-{$info Code page - KBL}
-const
-  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
-    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DC, $DE, $DE, $90, $91, $92,
-    $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E, $9F, $F0, $F0, $F2, $F2,
-    $F4, $F4, $F6, $F6, $F8, $F8, $FA, $FA, $FC, $FC, $FE, $FF);
-{$elseif PF_CODE_PAGE = 775}(* Baltic *)
-{$info Code page - Baltic}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $91, $A0, $8E, $95, $8F, $80, $AD, $ED, $8A, $8A, $A1, $8D,
-    $8E, $8F, $90, $92, $92, $E2, $99, $95, $96, $97, $97, $99, $9A, $9D, $9C, $9D, $9E,
-    $9F, $A0, $A1, $E0, $A3, $A3, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $B5, $B6,
-    $B7, $B8, $BD, $BE, $C6, $C7, $A5, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E5, $E5, $E6, $E3, $E8, $E8, $EA, $EA, $EE, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 850}(* Latin 1 *)
-{$info Code page - Latin 1}
-const
-  _EXCVT: _TEXCVT = ($43, $55, $45, $41, $41, $41, $41, $43, $45, $45, $45, $49, $49, $49,
-    $41, $41, $45, $92, $92, $4F, $4F, $4F, $55, $55, $59, $4F, $55, $4F, $9C, $4F, $9E,
-    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $41, $41, $41, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $41, $41, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D1, $D1,
-    $45, $45, $45, $49, $49, $49, $49, $D9, $DA, $DB, $DC, $DD, $49, $DF, $4F, $E1, $4F,
-    $4F, $4F, $4F, $E6, $E8, $E8, $55, $55, $55, $59, $59, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 852}(* Latin 2 *)
-{$info Code page - Latin 2}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $90, $B6, $8E, $DE, $8F, $80, $9D, $D3, $8A, $8A, $D7, $8D,
-    $8E, $8F, $90, $91, $91, $E2, $99, $95, $95, $97, $97, $99, $9A, $9B, $9B, $9D, $9E,
-    $AC, $B5, $D6, $E0, $E9, $A4, $A4, $A6, $A6, $A8, $A8, $AA, $8D, $AC, $B8, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BD, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C6, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D1, $D1,
-    $D2, $D3, $D2, $D5, $D6, $D7, $B7, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E3, $D5, $E6, $E6, $E8, $E9, $E8, $EB, $ED, $ED, $DD, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $EB, $FC, $FC, $FE, $FF);
-{$elseif PF_CODE_PAGE = 855}(* Cyrillic *)
-{$info Code page - Cyrillic}
-const
-  _EXCVT: _TEXCVT = ($81, $81, $83, $83, $85, $85, $87, $87, $89, $89, $8B, $8B, $8D, $8D,
-    $8F, $8F, $91, $91, $93, $93, $95, $95, $97, $97, $99, $99, $9B, $9B, $9D, $9D, $9F,
-    $9F, $A1, $A1, $A3, $A3, $A5, $A5, $A7, $A7, $A9, $A9, $AB, $AB, $AD, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B6, $B6, $B8, $B8, $B9, $BA, $BB, $BC, $BE, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C7, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D1, $D1,
-    $D3, $D3, $D5, $D5, $D7, $D7, $DD, $D9, $DA, $DB, $DC, $DD, $E0, $DF, $E0, $E2, $E2,
-    $E4, $E4, $E6, $E6, $E8, $E8, $EA, $EA, $EC, $EC, $EE, $EE, $EF, $F0, $F2, $F2, $F4,
-    $F4, $F6, $F6, $F8, $F8, $FA, $FA, $FC, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 857}(* Turkish *)
-{$info Code page - Turkish}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $90, $B6, $8E, $B7, $8F, $80, $D2, $D3, $D4, $D8, $D7, $98,
-    $8E, $8F, $90, $92, $92, $E2, $99, $E3, $EA, $EB, $98, $99, $9A, $9D, $9C, $9D, $9E, $9E,
-    $B5, $D6, $E0, $E9, $A5, $A5, $A6, $A6, $A8, $A9, $AA, $AB, $AC, $21, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF,
-    $C0, $C1, $C2, $C3, $C4, $C5, $C7, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF,
-    $D0, $D1, $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF,
-    $E0, $E1, $E2, $E3, $E5, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $DE, $59, $EE, $EF,
-    $F0, $F1, $F2, $F3, $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 860}(* Portuguese *)
-{$info Code page - Portuguese}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $90, $8F, $8E, $91, $86, $80, $89, $89, $92, $8B, $8C, $98,
-    $8E, $8F, $90, $91, $92, $8C, $99, $A9, $96, $9D, $98, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $86, $8B, $9F, $96, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 861}(* Icelandic *)
-{$info Code page - Icelandic}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $90, $41, $8E, $41, $8F, $80, $45, $45, $45, $8B, $8B, $8D,
-    $8E, $8F, $90, $92, $92, $4F, $99, $8D, $55, $97, $97, $99, $9A, $9D, $9C, $9D, $9E,
-    $9F, $A4, $A5, $A6, $A7, $A4, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 862}(* Hebrew *)
-{$info Code page - Hebrew}
-const
-  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
-    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 863}(* Canadian French *)
-{$info Code page - Canadian French}
-const
-  _EXCVT: _TEXCVT = ($43, $55, $45, $41, $41, $41, $86, $43, $45, $45, $45, $49, $49, $8D,
-    $41, $8F, $45, $45, $45, $4F, $45, $49, $55, $55, $98, $4F, $55, $9B, $9C, $55, $55,
-    $9F, $A0, $A1, $4F, $55, $A4, $A5, $A6, $A7, $49, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 864}(* Arabic *)
-{$info Code page - Arabic}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $45, $41, $8E, $41, $8F, $80, $45, $45, $45, $49, $49, $49,
-    $8E, $8F, $90, $92, $92, $4F, $99, $4F, $55, $55, $59, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 865}(* Nordic *)
-{$info Code page - Nordic}
-const
-  _EXCVT: _TEXCVT = ($80, $9A, $90, $41, $8E, $41, $8F, $80, $45, $45, $45, $49, $49, $49,
-    $8E, $8F, $90, $92, $92, $4F, $99, $4F, $55, $55, $59, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $41, $49, $4F, $55, $A5, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $E0, $E1, $E2,
-    $E3, $E4, $E5, $E6, $E7, $E8, $E9, $EA, $EB, $EC, $ED, $EE, $EF, $F0, $F1, $F2, $F3,
-    $F4, $F5, $F6, $F7, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 866}(* Russian *)
-{$info Code page - Russian}
-const
-  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
-    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E,
-    $9F, $80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D, $8E, $8F,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $D6, $D7, $D8, $D9, $DA, $DB, $DC, $DD, $DE, $DF, $90, $91, $92,
-    $93, $94, $95, $96, $97, $98, $99, $9A, $9B, $9C, $9D, $9E, $9F, $F0, $F0, $F2, $F2,
-    $F4, $F4, $F6, $F6, $F8, $F9, $FA, $FB, $FC, $FD, $FE, $FF);
-{$elseif PF_CODE_PAGE = 869}(* Greek 2 *)
-{$info Code page - Greek 2}
-const
-  _EXCVT: _TEXCVT = ($80, $81, $82, $83, $84, $85, $86, $87, $88, $89, $8A, $8B, $8C, $8D,
-    $8E, $8F, $90, $91, $92, $93, $94, $95, $96, $97, $98, $99, $9A, $86, $9C, $8D, $8F,
-    $90, $91, $90, $92, $95, $A4, $A5, $A6, $A7, $A8, $A9, $AA, $AB, $AC, $AD, $AE, $AF,
-    $B0, $B1, $B2, $B3, $B4, $B5, $B6, $B7, $B8, $B9, $BA, $BB, $BC, $BD, $BE, $BF, $C0,
-    $C1, $C2, $C3, $C4, $C5, $C6, $C7, $C8, $C9, $CA, $CB, $CC, $CD, $CE, $CF, $D0, $D1,
-    $D2, $D3, $D4, $D5, $A4, $A5, $A6, $D9, $DA, $DB, $DC, $A7, $A8, $DF, $A9, $AA, $AC,
-    $AD, $B5, $B6, $B7, $B8, $BD, $BE, $C6, $C7, $CF, $CF, $D0, $EF, $F0, $F1, $D1, $D2,
-    $D3, $F5, $D4, $F7, $F8, $F9, $D5, $96, $95, $98, $FE, $FF);
-{$else}
-{$error Unknown code page.}
-{$endif}
-{$endif}
+
+{$I cvt.inc}
 
 {$MACRO ON}
 {$define ABORT_DISK_ERR := begin fs.flag := 0; Exit(FR_DISK_ERR); end}
@@ -595,11 +354,13 @@ begin
   Result := ((byte(c) >= _DF1S) and (byte(c) <= _DF1E)) or
     ((byte(c) >= _DF2S) and (byte(c) <= _DF2E));
 end;
+
 {$else}
 function IsDBCS1(c: integer): boolean;
 begin
   Result := (byte(c) >= _DF1S) and (byte(c) <= _DF1E);
 end;
+
 {$endif}
 {$if declared(_DS3S)}
 function IsDBCS2(c: integer): boolean;
@@ -608,12 +369,14 @@ begin
     ((byte(c) >= _DS2S) and (byte(c) <= _DS2E)) or
     ((byte(c) >= _DS3S) and (byte(c) <= _DS3E));
 end;
+
 {$else}
 function IsDBCS2(c: integer): boolean;
 begin
   Result := ((byte(c) >= _DS1S) and (byte(c) <= _DS1E)) or
     ((byte(c) >= _DS2S) and (byte(c) <= _DS2E));
 end;
+
 {$endif}
 {$else}
 (* SBCS configuration *)
@@ -626,6 +389,7 @@ function IsDBCS2(c: integer): boolean;
 begin
   Result := False;
 end;
+
 {$endif}
 
 function IsUpper(c: char): boolean;
@@ -655,16 +419,16 @@ function ld_dword(ptr: PByte): DWORD;
 begin
   {$IFDEF ENDIAN_LITTLE}
   {$info ENDIAN_LITTLE}
-    Result := PDWord(ptr)^;
+  Result := PDWord(ptr)^;
   {$ELSE}
   {$info NOT ENDIAN_LITTLE}
-    Result := (ptr[3] shl 8) or ptr[2];
-    Result := (Result shl 8) or ptr[1];
-    Result := (Result shl 8) or ptr[0];
+  Result := (ptr[3] shl 8) or ptr[2];
+  Result := (Result shl 8) or ptr[1];
+  Result := (Result shl 8) or ptr[0];
   {$ENDIF}
 end;
 
-(* String functions                                                      *)
+(* String functions  *)
 (* Fill memory block *)
 procedure mem_set(dst: pointer; val: integer; cnt: integer);
 var
@@ -683,7 +447,7 @@ end;
 function mem_cmp(dst: pointer; src: pointer; cnt: integer): integer;
 var
   d, s: PChar;
-  r: Integer;
+  r: integer;
 begin
   d := dst;
   s := src;
@@ -691,7 +455,8 @@ begin
   while (cnt > 0) and (r = 0) do
   begin
     r := Ord(d^) - Ord(s^);
-    Inc(d); Inc(s);
+    Inc(d);
+    Inc(s);
     Dec(cnt);
   end;
   Result := r;
@@ -702,9 +467,9 @@ end;
   @param(clst Cluster# to get the link information)
   @returns(1:IO error, Else:Cluster status) }
 function get_fat(clst: CLUST): CLUST;
-// label EXIT_ERR;
+  // label EXIT_ERR;
 var
-  buf: array [0..Pred(4)] of Byte;
+  buf: array [0..Pred(4)] of byte;
   fs: pFATFS;
 {$if PF_FS_FAT12}
   wc, bc, ofs: UINT;
@@ -730,12 +495,13 @@ begin
       if ofs <> (SECTOR_SIZE - 1) then
       begin
         if disk_readp(@buf, fs.fatbase + bc, ofs, 2) = DRESULT.RES_OK then
-          Result := 0
+          Result := 0;
       end
       else
-        if (disk_readp(@buf, fs.fatbase + bc, (SECTOR_SIZE - 1), 1) = DRESULT.RES_OK)
-          and (disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) = DRESULT.RES_OK) then
-          Result := 0;
+      if (disk_readp(@buf, fs.fatbase + bc, (SECTOR_SIZE - 1), 1) =
+        DRESULT.RES_OK) and (disk_readp(PByte(@buf) + 1, fs.fatbase + bc + 1, 0, 1) =
+        DRESULT.RES_OK) then
+        Result := 0;
 
       if Result = 0 then
       begin
@@ -744,7 +510,7 @@ begin
           Result := wc shr 4
         else
           Result := wc and $FFF;
-      end
+      end;
     end;
     {$endif}
 
@@ -818,8 +584,7 @@ begin
   if (clst = 1) or (clst >= fs.n_fatent) then
     Exit(FR_DISK_ERR);
 
-  if PF_FS_FAT32 and (clst = 0) and (_FS_32ONLY or
-    (fs.fs_type = FS_FAT32)) then
+  if PF_FS_FAT32 and (clst = 0) and (_FS_32ONLY or (fs.fs_type = FS_FAT32)) then
     { Replace cluster# 0 with root cluster# if in FAT32 }
     clst := CLUST(fs.dirbase);
 
@@ -889,7 +654,7 @@ end;
 function dir_find(var dj: DIR; dir: PByte): FRESULT;
 var
   res: FRESULT;
-  c: Byte;
+  c: byte;
 begin
   { Rewind directory object }
   res := dir_rewind(dj);
@@ -897,26 +662,25 @@ begin
     Exit(res);
 
   repeat
-  begin
-    { Read an entry }
-    if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> RES_OK then
-      Exit(FRESULT.FR_DISK_ERR);
-    { First character }
-    c := dir[DIR_Name];
-    if c = 0 then
     begin
-      { Reached to end of table }
-      res := FR_NO_FILE;
-      break;
-    end;
+      { Read an entry }
+      if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> RES_OK then
+        Exit(FRESULT.FR_DISK_ERR);
+      { First character }
+      c := dir[DIR_Name];
+      if c = 0 then
+      begin
+        { Reached to end of table }
+        res := FR_NO_FILE;
+        break;
+      end;
 
-    { Is it a valid entry? }
-    if ((dir[DIR_Attr] and AM_VOL) = 0)
-      and (mem_cmp(dir, dj.fn, 11) = 0) then
-      break;
-    { Next entry }
-    res := dir_next(dj);
-  end
+      { Is it a valid entry? }
+      if ((dir[DIR_Attr] and AM_VOL) = 0) and (mem_cmp(dir, dj.fn, 11) = 0) then
+        break;
+      { Next entry }
+      res := dir_next(dj);
+    end
   until res <> FR_OK;
 
   Result := res;
@@ -931,8 +695,8 @@ end;
 function dir_read(var dj: DIR; dir: PByte): FRESULT;
 var
   res: FRESULT;
-  a: Byte;
-  c: Byte;
+  a: byte;
+  c: byte;
 begin
   res := FR_NO_FILE;
   while dj.sect <> 0 do
@@ -956,8 +720,7 @@ begin
     a := dir[DIR_Attr] and AM_MASK;
 
     { Is it a valid entry? }
-    if (c <> $E5) and (c <> Ord('.'))
-      and ((a and AM_VOL) = 0) then
+    if (c <> $E5) and (c <> Ord('.')) and ((a and AM_VOL) = 0) then
       break;
     { Next entry }
     res := dir_next(dj);
@@ -969,6 +732,7 @@ begin
     dj.sect := 0;
   Result := res;
 end;
+
 {$endif}
 
 { Pick a segment and create the object name in directory form
@@ -986,7 +750,7 @@ var
 {$endif}
 {$endif}
 *)
-  c, d, ni, si, i: Byte;
+  c, d, ni, si, i: byte;
   sfn: PByte;
 begin
   { Create file name in directory form }
@@ -1042,7 +806,7 @@ begin
   { Return pointer to the next segment }
   path := @p[si];
   { Set last segment flag if end of path }
-  sfn[11] := Byte(c <= Ord(' '));
+  sfn[11] := byte(c <= Ord(' '));
   Result := FR_OK;
 end;
 
@@ -1054,8 +818,8 @@ end;
   @param(fno Pointer to store the file information) }
 procedure get_fileinfo(var dj: DIR; dir: PByte; var fno: FILINFO);
 var
-  i: Byte;
-  c: Byte;
+  i: byte;
+  c: byte;
   p: PChar;
 begin
   p := fno.fname;
@@ -1097,6 +861,7 @@ begin
   end;
   p^ := char(0);
 end;
+
 {$endif}
 
 { Follow a file path
@@ -1163,7 +928,7 @@ end;
  @returns(0:The FAT boot record,
    1:Valid boot record but not an FAT,
    2:Not a boot record, 3:Error) }
-function check_fs(buf: PByte; sect: DWORD): Byte;
+function check_fs(buf: PByte; sect: DWORD): byte;
 begin
   { Read the boot record }
   if disk_readp(buf, sect, 510, 2) <> RES_OK then
@@ -1188,8 +953,8 @@ end;
 
 function pf_mount(var fs: FATFS): FRESULT;
 var
-  fmt: Byte;
-  buf: array [0..Pred(36)] of Byte;
+  fmt: byte;
+  buf: array [0..Pred(36)] of byte;
   bsect, fsize, tsect, mclst: DWORD;
 begin
   iFatFs := nil;
@@ -1209,14 +974,14 @@ begin
       { 1st partition entry }
       fmt := 3
     else
-      { Is the partition existing? }
-      if buf[4] <> 0 then
-      begin
-        { Partition offset in LBA }
-        bsect := ld_dword(@buf[8]);
-        { Check the partition }
-        fmt := check_fs(@buf, bsect);
-      end;
+    { Is the partition existing? }
+    if buf[4] <> 0 then
+    begin
+      { Partition offset in LBA }
+      bsect := ld_dword(@buf[8]);
+      { Check the partition }
+      fmt := check_fs(@buf, bsect);
+    end;
   end;
   if fmt = 3 then
     Exit(FR_DISK_ERR);
@@ -1248,8 +1013,8 @@ begin
     tsect := ld_dword(PByte(@buf) + (BPB_TotSec32 - 13));
 
   { Last cluster# + 1 }
-  mclst := (tsect - ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13)) - fsize -
-    fs.n_rootdir div 16) div fs.csize + 2;
+  mclst := (tsect - ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13)) -
+    fsize - fs.n_rootdir div 16) div fs.csize + 2;
   fs.n_fatent := CLUST(mclst);
 
   fmt := 0;
@@ -1283,8 +1048,8 @@ function pf_open(path: PChar): FRESULT;
 var
   res: FRESULT;
   dj: DIR;
-  sp: array [0..Pred(12)] of Byte;
-  dir: array [0..Pred(32)] of Byte;
+  sp: array [0..Pred(12)] of byte;
+  dir: array [0..Pred(32)] of byte;
   fs: pFATFS;
 begin
   { Check file system }
@@ -1318,7 +1083,7 @@ var
   sect: DWORD;
   remain: DWORD;
   rcnt: UINT;
-  cs: Byte;
+  cs: byte;
   rbuff: PByte;
   fs: pFATFS;
 begin
@@ -1341,11 +1106,11 @@ begin
   begin
     { On the sector boundary? }
     // if (fs.fptr mod 512) = 0 then
-    if (fs.fptr and (SECTOR_SIZE-1)) = 0 then
+    if (fs.fptr and (SECTOR_SIZE - 1)) = 0 then
     begin
       { Sector offset in the cluster }
       // cs := Byte((fs.fptr div 512) and (fs.csize - 1));
-      cs := Byte((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
+      cs := byte((fs.fptr shr SECTOR_SIZE_BP) and (fs.csize - 1));
       { On the cluster boundary? }
       if cs = 0 then
       begin
@@ -1367,11 +1132,11 @@ begin
     end;
     { Get partial sector data from sector buffer }
     // rcnt := 512 - UINT(fs.fptr mod 512);
-    rcnt := SECTOR_SIZE - UINT(fs.fptr and (SECTOR_SIZE-1));
+    rcnt := SECTOR_SIZE - UINT(fs.fptr and (SECTOR_SIZE - 1));
     if rcnt > btr then
       rcnt := btr;
     // dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr) mod 512, rcnt);
-    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr and (SECTOR_SIZE-1)), rcnt);
+    dr := disk_readp(rbuff, fs.dsect, UINT(fs.fptr and (SECTOR_SIZE - 1)), rcnt);
     if dr <> RES_OK then
       ABORT_DISK_ERR;
     { Advances file read pointer }
@@ -1455,7 +1220,7 @@ var
   clst: CLUST;
   sect: DWORD;
   remain: DWORD;
-  cs: Byte;
+  cs: byte;
   wcnt: UINT;
   fs: pFATFS;
 begin
@@ -1477,10 +1242,10 @@ begin
     Exit(FR_OK);
   end
   else
-    { Write data request }
-    if (fs.flag and FA__WIP) = 0 then
-      { Round-down fptr to the sector boundary }
-      fs.fptr := fs.fptr and $FFFFFE00;
+  { Write data request }
+  if (fs.flag and FA__WIP) = 0 then
+    { Round-down fptr to the sector boundary }
+    fs.fptr := fs.fptr and $FFFFFE00;
 
   remain := fs.fsize - fs.fptr;
   if btw > remain then
@@ -1494,7 +1259,8 @@ begin
     begin
       { On the sector boundary? }
       // cs := Byte((fs.fptr div 512) and (fs.csize - 1)); { Sector offset in the cluster }
-      cs := Byte((fs.fptr shl SECTOR_SIZE_BP) and (fs.csize - 1)); { Sector offset in the cluster }
+      cs := byte((fs.fptr shl SECTOR_SIZE_BP) and (fs.csize - 1));
+      { Sector offset in the cluster }
       if cs = 0 then
       begin
         { On the cluster boundary? }
@@ -1521,7 +1287,7 @@ begin
     end;
     { Number of bytes to write to the sector }
     // wcnt := 512 - (UINT(fs.fptr) mod 512);
-    wcnt := SECTOR_SIZE - (UINT(fs.fptr) and (SECTOR_SIZE-1));
+    wcnt := SECTOR_SIZE - (UINT(fs.fptr) and (SECTOR_SIZE - 1));
     if wcnt > btw then
       wcnt := btw;
 
@@ -1554,8 +1320,8 @@ end;
 function pf_opendir(var dj: DIR; path: PChar): FRESULT;
 var
   res: FRESULT;
-  sp: array [0..Pred(12)] of Byte;
-  dir: array [0..Pred(32)] of Byte;
+  sp: array [0..Pred(12)] of byte;
+  dir: array [0..Pred(32)] of byte;
   fs: pFATFS;
 begin
   { Check file system }
@@ -1586,8 +1352,8 @@ end;
 function pf_readdir(var dj: DIR; var fno: FILINFO): FRESULT;
 var
   res: FRESULT;
-  sp: array [0..Pred(12)] of Byte;
-  dir: array [0..Pred(32)] of Byte;
+  sp: array [0..Pred(12)] of byte;
+  dir: array [0..Pred(32)] of byte;
   fs: pFATFS;
 begin
   { Check file system }
@@ -1612,17 +1378,16 @@ begin
   Result := res;
 end;
 
-(* New API function *)
 function pf_rewinddir(var dj: DIR): FRESULT;
 var
-  sp: array [0..Pred(12)] of Byte;
+  sp: array [0..Pred(12)] of byte;
   fs: pFATFS;
 begin
   { Check file system }
   CHECK_FS_ENABLED;
 
   dj.fn := sp;
-  Result := dir_rewind(dj)
+  Result := dir_rewind(dj);
 end;
 
 {$endif}

@@ -8492,7 +8492,6 @@ Removing objpas.o(.rdata.n_RTTI_$OBJPAS_$$_IENUMERABLE)
 Removing objpas.o(.rdata.n_RTTI_$OBJPAS_$$_TRESOURCEITERATOR)
 Removing objpas.o(.rdata.n_RTTI_$OBJPAS_$$_PRESSTRINGREC)
 Removing objpas.o(.rdata.n_INIT_$OBJPAS_$$_TRESOURCESTRINGRECORD)
-Removing pff.o(.rdata.n_RTTI_$PFF_$$_PWCHAR)
 Removing pff.o(.rdata.n_RTTI_$PFF_$$_PUINT)
 Removing pff.o(.rdata.n_INIT_$PFF_$$_FATFS)
 Removing pff.o(.rdata.n_RTTI_$PFF_$$_FATFS)
@@ -8501,7 +8500,7 @@ Removing pff.o(.rdata.n_INIT_$PFF_$$_DIR)
 Removing pff.o(.rdata.n_RTTI_$PFF_$$_DIR)
 Removing pff.o(.rdata.n_RTTI_$PFF_$$_PDIR)
 Removing pff.o(.rdata.n_INIT_$PFF_$$_FILINFO)
-Removing pff.o(.rdata.n_RTTI_$PFF_$$_DEF7)
+Removing pff.o(.rdata.n_RTTI_$PFF_$$_DEF6)
 Removing pff.o(.rdata.n_RTTI_$PFF_$$_FILINFO)
 Removing pff.o(.rdata.n_RTTI_$PFF_$$_PFILINFO)
 Removing pff.o(.rdata.n_RTTI_$PFF_$$_FRESULT_s2o)
@@ -10674,18 +10673,18 @@ Memory map (ImageBase=0x00400000)
  .idata$5       0x0041716C      0x11c *Internal*
  .idata$6       0x00417288      0x4c2 *Internal*
  .idata$7       0x0041774C       0x25 *Internal*
-.debug_info     0x00418000     0x1dd3
+.debug_info     0x00418000     0x1dbd
  .debug_info    0x00418000      0x3e1 ex_fpc.o
- .debug_info    0x004183E1     0x16dc pff.o
- .debug_info    0x00419ABD      0x316 disk_io.o
+ .debug_info    0x004183E1     0x16c6 pff.o
+ .debug_info    0x00419AA7      0x316 disk_io.o
 .debug_abbrev   0x0041A000      0x1de
  .debug_abbrev  0x0041A000       0x90 ex_fpc.o
  .debug_abbrev  0x0041A090       0xc9 pff.o
  .debug_abbrev  0x0041A159       0x85 disk_io.o
-.debug_line     0x0041B000      0xd47
+.debug_line     0x0041B000      0xd43
  .debug_line    0x0041B000      0x10e ex_fpc.o
- .debug_line    0x0041B10E      0xb7e pff.o
- .debug_line    0x0041BC8C       0xbb disk_io.o
+ .debug_line    0x0041B10E      0xb7a pff.o
+ .debug_line    0x0041BC88       0xbb disk_io.o
 .debug_frame    0x0041C000      0x514
  .debug_frame   0x0041C000       0x3c ex_fpc.o
  .debug_frame   0x0041C03C      0x44c pff.o

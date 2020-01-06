@@ -96,13 +96,22 @@
 <td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
 <td class="itemdesc"><p>Read a directory item from the open directory.
 
-<p>The pf_readdir() function reads directory entries in sequence. All items in the directory can be read by calling this function repeatedly. When all directory entries have been read and no item to read, the function returns a null string into member f_name[] in the file information structure without error. When a null pointer is given to the fno, the read index of the directory object will be rewinded.
+<p>The pf_readdir() function reads directory entries in sequence. All items in the directory can be read by calling this function repeatedly. When all directory entries have been read and no item to read, the function returns a null string into member f_name[] in the file information structure without error.
 
 <p> 
 
 <p></p></td>
 </tr>
 <tr class="list2">
+<td class="itemname"><a class="bold" href="pff.html#pf_rewinddir">pf_rewinddir</a></td>
+<td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
+<td class="itemdesc"><p>Directory rewind.
+
+<p>
+
+<p></p></td>
+</tr>
+<tr class="list">
 <td class="itemname"><a class="bold" href="pff.html#pf_write">pf_write</a></td>
 <td class="itemunit"><a class="bold" href="pff.html">pff</a></td>
 <td class="itemdesc"><p>Write data to the open file. The write function has some restrictions listed below:
