@@ -11,9 +11,8 @@ var
   dr: DIR;
   fi: FILINFO;
   fr: FRESULT;
-  bf: array[0..Pred(256)] of char;
+  bf: array[0..Pred(129)] of char;
   br: UINT;
-
 begin
   {$info PetitFS test}
   uart_init();
@@ -71,5 +70,4 @@ begin
     bf[br] := #0;
     uart_puts(bf);
   end;
-
 end.

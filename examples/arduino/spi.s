@@ -7,12 +7,10 @@ SPI_ss_SPI_INIT_MASTER:
 .Lc2:
 # [spi.pas]
 # [23] begin
-# [25] DDRB := DDRB or (1 shl 2); // SS
-	sbi	4,2
-# [26] DDRB := DDRB or (1 shl 3); // MOSI
-	sbi	4,3
-# [27] DDRB := DDRB or (1 shl 5); // SCK
-	sbi	4,5
+# [28] DDRB := DDRB or ((1 shl 2) or (1 shl 3) or (1 shl 5));
+	in	r18,4
+	ori	r18,44
+	out	4,r18
 # [29] SPCR := (1 shl SPE) or (1 shl MSTR);
 	ldi	r18,80
 	out	44,r18

@@ -10,20 +10,20 @@ PASCALMAIN:
 .Lc3:
 # Var fr located in register r18
 # [pff_ard.pas]
-# [17] begin
+# [16] begin
 	call	FPC_INIT_FUNC_TABLE
-# [19] uart_init();
+# [18] uart_init();
 	call	UART_ss_UART_INIT
-# [20] uart_puts('*** PetitFS test. ***'#13#10);
+# [19] uart_puts('*** PetitFS test. ***'#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld1)
 	ldi	r25,hi8(_sPFF_ARDs_Ld1)
 	call	UART_ss_UART_PUTSsPCHAR
-# [21] fr := pf_mount(fs);
+# [20] fr := pf_mount(fs);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_FS)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_FS)
 	call	PFF_ss_PF_MOUNTsFATFSssFRESULT
 # Var fr located in register r24
-# [23] fr := pf_opendir(dr, '');
+# [22] fr := pf_opendir(dr, '');
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
 	ldi	r22,lo8(_sPFF_ARDs_Ld2)
@@ -31,61 +31,61 @@ PASCALMAIN:
 	call	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
 	mov	r2,r24
 # Var fr located in register r2
-# [24] uart_puts('*** List root directory'#13#10);
+# [23] uart_puts('*** List root directory'#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld3)
 	ldi	r25,hi8(_sPFF_ARDs_Ld3)
 	call	UART_ss_UART_PUTSsPCHAR
 .Lj3:
-# [28] fr := pf_readdir(dr, fi);
+# [27] fr := pf_readdir(dr, fi);
 	ldi	r22,lo8(U_sPsPFF_ARD_ss_FI)
 	ldi	r23,hi8(U_sPsPFF_ARD_ss_FI)
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
 	call	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
 	mov	r2,r24
-# [29] uart_puts(fi.fname);
+# [28] uart_puts(fi.fname);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_FI+9)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_FI+9)
 	call	UART_ss_UART_PUTSsPCHAR
-# [30] uart_puts(''#13#10);
+# [29] uart_puts(''#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld4)
 	ldi	r25,hi8(_sPFF_ARDs_Ld4)
 	call	UART_ss_UART_PUTSsPCHAR
-# [32] until fi.fname[0] = char(#0);
+# [31] until fi.fname[0] = char(#0);
 	lds	r18,(U_sPsPFF_ARD_ss_FI+9)
 	cp	r18,r1
 	brne	.Lj3
-# [34] fr := pf_rewinddir(dr);
+# [33] fr := pf_rewinddir(dr);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
 	call	PFF_ss_PF_REWINDDIRsDIRssFRESULT
 	mov	r2,r24
 # Var fr located in register r2
-# [35] uart_puts('*** Rewind and read ... '#13#10);
+# [34] uart_puts('*** Rewind and read ... '#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld5)
 	ldi	r25,hi8(_sPFF_ARDs_Ld5)
 	call	UART_ss_UART_PUTSsPCHAR
 .Lj6:
-# [39] fr := pf_readdir(dr, fi);
+# [38] fr := pf_readdir(dr, fi);
 	ldi	r22,lo8(U_sPsPFF_ARD_ss_FI)
 	ldi	r23,hi8(U_sPsPFF_ARD_ss_FI)
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
 	call	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
 	mov	r2,r24
-# [40] uart_puts(fi.fname);
+# [39] uart_puts(fi.fname);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_FI+9)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_FI+9)
 	call	UART_ss_UART_PUTSsPCHAR
-# [41] uart_puts(''#13#10);
+# [40] uart_puts(''#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld4)
 	ldi	r25,hi8(_sPFF_ARDs_Ld4)
 	call	UART_ss_UART_PUTSsPCHAR
-# [43] until fi.fname[0] = char(#0);
+# [42] until fi.fname[0] = char(#0);
 	lds	r18,(U_sPsPFF_ARD_ss_FI+9)
 	cp	r18,r1
 	brne	.Lj6
-# [45] fr := pf_opendir(dr, 'RASPI');
+# [44] fr := pf_opendir(dr, 'RASPI');
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
 	ldi	r22,lo8(_sPFF_ARDs_Ld6)
@@ -93,45 +93,45 @@ PASCALMAIN:
 	call	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
 	mov	r2,r24
 # Var fr located in register r2
-# [46] uart_puts('*** List RASPI directory - '#13#10);
+# [45] uart_puts('*** List RASPI directory - '#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld7)
 	ldi	r25,hi8(_sPFF_ARDs_Ld7)
 	call	UART_ss_UART_PUTSsPCHAR
 .Lj9:
-# [49] fr := pf_readdir(dr, fi);
+# [48] fr := pf_readdir(dr, fi);
 	ldi	r22,lo8(U_sPsPFF_ARD_ss_FI)
 	ldi	r23,hi8(U_sPsPFF_ARD_ss_FI)
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
 	call	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
 	mov	r2,r24
-# [50] uart_puts(fi.fname);
+# [49] uart_puts(fi.fname);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_FI+9)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_FI+9)
 	call	UART_ss_UART_PUTSsPCHAR
-# [51] uart_puts(''#13#10);
+# [50] uart_puts(''#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld4)
 	ldi	r25,hi8(_sPFF_ARDs_Ld4)
 	call	UART_ss_UART_PUTSsPCHAR
-# [53] until fi.fname[0] = char(#0);
+# [52] until fi.fname[0] = char(#0);
 	lds	r18,(U_sPsPFF_ARD_ss_FI+9)
 	cp	r18,r1
 	brne	.Lj9
-# [55] fr := pf_open('00README.TXT');
+# [54] fr := pf_open('00README.TXT');
 	ldi	r24,lo8(_sPFF_ARDs_Ld8)
 	ldi	r25,hi8(_sPFF_ARDs_Ld8)
 	call	PFF_ss_PF_OPENsPCHARssFRESULT
 # Var fr located in register r24
-# [56] while pf_read(@bf, 128, br) = FR_OK do
+# [55] while pf_read(@bf, 128, br) = FR_OK do
 	rjmp	.Lj13
 .Lj12:
-# [58] if (br = 0) then
+# [57] if (br = 0) then
 	lds	r18,(U_sPsPFF_ARD_ss_BR)
 	lds	r19,(U_sPsPFF_ARD_ss_BR+1)
 	cp	r18,r1
 	cpc	r19,r1
 	breq	.Lj14
-# [60] bf[br] := #0;
+# [59] bf[br] := #0;
 	lds	r19,(U_sPsPFF_ARD_ss_BR)
 	lds	r20,(U_sPsPFF_ARD_ss_BR+1)
 	ldi	r30,lo8(U_sPsPFF_ARD_ss_BF)
@@ -139,7 +139,7 @@ PASCALMAIN:
 	add	r30,r19
 	adc	r31,r20
 	st	Z,r1
-# [61] uart_puts(bf);
+# [60] uart_puts(bf);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_BF)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_BF)
 	call	UART_ss_UART_PUTSsPCHAR
@@ -154,25 +154,25 @@ PASCALMAIN:
 	cp	r24,r1
 	breq	.Lj12
 .Lj14:
-# [64] uart_puts(''#13#10);
+# [63] uart_puts(''#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld4)
 	ldi	r25,hi8(_sPFF_ARDs_Ld4)
 	call	UART_ss_UART_PUTSsPCHAR
-# [66] fr := pf_open('LICENSE.TXT');
+# [65] fr := pf_open('LICENSE.TXT');
 	ldi	r24,lo8(_sPFF_ARDs_Ld9)
 	ldi	r25,hi8(_sPFF_ARDs_Ld9)
 	call	PFF_ss_PF_OPENsPCHARssFRESULT
 # Var fr located in register r24
-# [67] while pf_read(@bf, 128, br) = FR_OK do
+# [66] while pf_read(@bf, 128, br) = FR_OK do
 	rjmp	.Lj18
 .Lj17:
-# [69] if (br = 0) then
+# [68] if (br = 0) then
 	lds	r18,(U_sPsPFF_ARD_ss_BR)
 	lds	r19,(U_sPsPFF_ARD_ss_BR+1)
 	cp	r18,r1
 	cpc	r19,r1
 	breq	.Lj19
-# [71] bf[br] := #0;
+# [70] bf[br] := #0;
 	lds	r19,(U_sPsPFF_ARD_ss_BR)
 	lds	r20,(U_sPsPFF_ARD_ss_BR+1)
 	ldi	r30,lo8(U_sPsPFF_ARD_ss_BF)
@@ -180,7 +180,7 @@ PASCALMAIN:
 	add	r30,r19
 	adc	r31,r20
 	st	Z,r1
-# [72] uart_puts(bf);
+# [71] uart_puts(bf);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_BF)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_BF)
 	call	UART_ss_UART_PUTSsPCHAR
@@ -195,7 +195,7 @@ PASCALMAIN:
 	cp	r24,r1
 	breq	.Lj17
 .Lj19:
-# [75] end.
+# [73] end.
 	call	fpc_do_exit
 .Lc1:
 .Le0:
@@ -204,7 +204,7 @@ PASCALMAIN:
 .section .text.n_FPC_INIT_FUNC_TABLE,"ax"
 .globl	FPC_INIT_FUNC_TABLE
 FPC_INIT_FUNC_TABLE:
-# [76] 
+# [74] 
 	ret
 
 .section .text.n_FPC_FINALIZE_FUNC_TABLE,"ax"
@@ -239,10 +239,10 @@ U_sPsPFF_ARD_ss_FR:
 	.zero 1
 
 .section .bss.n_u_spspff_ard_ss_bf,"aw",%nobits
-# [14] bf: array[0..Pred(256)] of char;
-	.size U_sPsPFF_ARD_ss_BF,256
+# [14] bf: array[0..Pred(129)] of char;
+	.size U_sPsPFF_ARD_ss_BF,129
 U_sPsPFF_ARD_ss_BF:
-	.zero 256
+	.zero 129
 
 .section .bss.n_u_spspff_ard_ss_br,"aw",%nobits
 # [15] br: UINT;
@@ -292,7 +292,7 @@ FPC_RESSTRINITTABLES:
 
 .section .fpc.n_version,"aw"
 __fpc_ident:
-	.ascii	"FPC 3.3.1 [2020/01/01] for avr - embedded"
+	.ascii	"FPC 3.3.1 [2020/01/06] for avr - embedded"
 .Le6:
 	.size	__fpc_ident, .Le6 - __fpc_ident
 

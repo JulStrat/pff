@@ -78,7 +78,7 @@ PIN 7: MISO   --->  Arduino DIO 12 PB4 MISO
 
 #### Build
 ```
-$ ppcrossavr.exe -Tembedded -Cpavr5 -Wpatmega328p -vi -aln -B -O3 pff_ard.pas
+$ ppcrossavr.exe -Tembedded -Cpavr5 -Wpatmega328p -vi -aln -Xm -B -O3 pff_ard.pas
 Target OS: Embedded
 Compiling pff_ard.pas
 Compiling pff.pas
@@ -96,7 +96,7 @@ Assembling pff
 User defined: PetitFS test
 Assembling pff_ard
 Linking pff_ard
-2109 lines compiled, 0.4 sec, 8758 bytes code, 539 bytes data
+2066 lines compiled, 0.3 sec, 8276 bytes code, 410 bytes data
 ```
 
 #### Upload
@@ -156,20 +156,20 @@ Reading | ################################################## | 100% 0.00s
 
 avrdude.exe: Device signature = 0x1e950f (probably m328p)
 avrdude.exe: reading input file "pff_ard.hex"
-avrdude.exe: writing flash (10198 bytes):
+avrdude.exe: writing flash (8458 bytes):
 
-Writing | ################################################## | 100% 1.64s
+Writing | ################################################## | 100% 1.39s
 
-avrdude.exe: 10198 bytes of flash written
+avrdude.exe: 8458 bytes of flash written
 avrdude.exe: verifying flash memory against pff_ard.hex:
 avrdude.exe: load data flash data from input file pff_ard.hex:
-avrdude.exe: input file pff_ard.hex contains 10198 bytes
+avrdude.exe: input file pff_ard.hex contains 8458 bytes
 avrdude.exe: reading on-chip flash data:
 
-Reading | ################################################## | 100% 1.31s
+Reading | ################################################## | 100% 1.09s
 
 avrdude.exe: verifying ...
-avrdude.exe: 10198 bytes of flash verified
+avrdude.exe: 8458 bytes of flash verified
 
 avrdude.exe done.  Thank you.
 ```

@@ -24,11 +24,15 @@ type
     RES_PARERR
     );
 
+PUINT = ^UINT;
+UINT = NativeUInt;
+
+
 { Initialize Disk Drive }
 function disk_initialize(): DSTATUS;
 
 { Read Partial Sector }
-function disk_readp(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): DRESULT;
+function disk_readp(buff: Pointer; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
 
 { Write Partial Sector }
 function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
@@ -70,15 +74,17 @@ var
 
 function send_cmd(cmd: byte; arg: DWORD): byte;
 var
-  n, res: byte;
+  // n, res: byte;
+  n: byte;
 begin
   // spi_set_divisor(CardType);
   if cmd and $80 <> 0 then
   begin
     cmd := cmd and $7F;
-    res := send_cmd(CMD55, 0);
-    if res > 1 then
-      Exit(res);
+    // res := send_cmd(CMD55, 0);
+    Result := send_cmd(CMD55, 0);
+    if Result > 1 then
+      Exit(Result);
   end;
   DESELECT;
   spi_transceiver();
@@ -86,25 +92,25 @@ begin
   spi_transceiver();
 
   (* Send a command packet *)
-  spi_transceiver(cmd);            (* Start + Command index *)
-  spi_transceiver(byte(arg shr 24));  (* Argument[31..24] *)
-  spi_transceiver(byte(arg shr 16));  (* Argument[23..16] *)
-  spi_transceiver(byte(arg shr 8));   (* Argument[15..8] *)
-  spi_transceiver(byte(arg));      (* Argument[7..0] *)
-  n := $01;                (* Dummy CRC + Stop *)
+  spi_transceiver(cmd);               (* Start + Command index *)
+  spi_transceiver(byte(arg shr 24));  (* Argument[31..24]      *)
+  spi_transceiver(byte(arg shr 16));  (* Argument[23..16]      *)
+  spi_transceiver(byte(arg shr 8));   (* Argument[15..8]       *)
+  spi_transceiver(byte(arg));         (* Argument[7..0]        *)
+  n := $01;                           (* Dummy CRC + Stop *)
   if (cmd = CMD0) then
-    n := $95;  (* Valid CRC for CMD0(0) *)
+    n := $95;                         (* Valid CRC for CMD0(0) *)
   if (cmd = CMD8) then
-    n := $87;  (* Valid CRC for CMD8(0x1AA) *)
+    n := $87;                         (* Valid CRC for CMD8(0x1AA) *)
   spi_transceiver(n);
 
-  for n := 0 to 9 do
+  for n := 9 downto 0 do
   begin
-    res := spi_transceiver();
-    if res and $80 = 0 then
+    Result := spi_transceiver();
+    if Result and $80 = 0 then
       break;
   end;
-  Result := res;
+  // Result := res;
 end;
 
 
@@ -114,12 +120,12 @@ var
 
   n, cmd, ty: byte;
   ocr: array[0..3] of byte;
-  tmr: DWORD;
+  tmr: WORD;
 begin
   (* Put your code here *)
   spi_init_master();
   DESELECT;
-  for n := 0 to 9 do
+  for n := 9 downto 0 do
     spi_transceiver();
 
   ty := 0;
@@ -154,7 +160,7 @@ begin
     else
     begin
       (* SDv1 or MMCv3 *)
-      if send_cmd(ACMD41, 0) <= 1 then
+      if send_cmd(ACMD41, 0) < 2 then
       begin
         ty := CT_SD1;
         cmd := ACMD41;
@@ -180,27 +186,25 @@ begin
   spi_transceiver();
 
   if ty <> 0 then
-  begin
-    Result := 0;
-  end
+    Result := 0
   else
     Result := STA_NOINIT;
 end;
 
-function disk_readp(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): DRESULT;
+function disk_readp(buff: Pointer; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
 var
-  res: DRESULT;
+  // res: DRESULT;
 
   bp: PBYTE;
   rc: byte;
-  bc: DWORD;
+  bc: UINT;
 begin
   (* Put your code here *)
 
   if CardType and CT_BLOCK = 0 then
     sector := sector * 512;
 
-  res := RES_ERROR;
+  Result := RES_ERROR;
   if send_cmd(CMD17, sector) = 0 then
   begin
     for bc := 40000 downto 0 do
@@ -243,13 +247,13 @@ begin
         spi_transceiver();
         Dec(bc);
       end;
-      res := RES_OK;
+      Result := RES_OK;
     end;
   end;
 
   DESELECT;
   spi_transceiver();
-  Result := res;
+  //Result := res;
 end;
 
 function disk_writep(buff: Pointer; sc: DWORD): DRESULT;

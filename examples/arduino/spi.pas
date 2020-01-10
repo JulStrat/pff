@@ -22,10 +22,10 @@ PIN 8: GND          N/A
 procedure spi_init_master();
 begin
   (* Set output *)
-  DDRB := DDRB or (1 shl 2); // SS
-  DDRB := DDRB or (1 shl 3); // MOSI
-  DDRB := DDRB or (1 shl 5); // SCK
-
+  // DDRB := DDRB or (1 shl 2); // SS
+  //DDRB := DDRB or (1 shl 3); // MOSI
+  // DDRB := DDRB or (1 shl 5); // SCK
+  DDRB := DDRB or ((1 shl 2) or (1 shl 3) or (1 shl 5));
   SPCR := (1 shl SPE) or (1 shl MSTR);
 end;
 
