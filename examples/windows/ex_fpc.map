@@ -1089,18 +1089,38 @@ Keeping ex_fpc.o(.rdata.n__$EX_FPC$_Ld13) 0 references
 Keeping ex_fpc.o(.rdata.n__$EX_FPC$_Ld12) 0 references
 Keeping ex_fpc.o(.rdata.n__$EX_FPC$_Ld11) 0 references
 Keeping ex_fpc.o(.rdata.n__$EX_FPC$_Ld10) 0 references
-Keeping pff.o(.text.n_pff_$$_pf_read$pointer$longword$longword$$fresult) 15 references
+Keeping pff.o(.text.n_pff_$$_pf_read$pointer$longword$longword$$fresult) 35 references
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .text.n_pff_$$_get_fat$longword$$longword in pff.o(.text.n_pff_$$_get_fat$longword$$longword)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .text.n_pff_$$_clust2sect$longword$$longword in pff.o(.text.n_pff_$$_clust2sect$longword$$longword)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
@@ -1145,29 +1165,37 @@ Keeping system.o(.text.n_system_$$_seek$file$int64) 7 references
 Keeping system.o(.text.n_system_$$_do_seek$longword$int64) 4 references
   References  .text.n_system_$$_errno2inoutres$longword in system.o(.text.n_system_$$_errno2inoutres$longword)
 Keeping disk_io.o(.bss.n_u_$disk_io_$$_gdh) 0 references
-Keeping pff.o(.text.n_pff_$$_clust2sect$longword$$longword) 6 references
-  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+Keeping pff.o(.text.n_pff_$$_clust2sect$longword$$longword) 8 references
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
-Keeping pff.o(.text.n_pff_$$_get_fat$longword$$longword) 18 references
+Keeping pff.o(.text.n_pff_$$_get_fat$longword$$longword) 24 references
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
   References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
+  References  .text.n_pff_$$_ld_word$pbyte$$word in pff.o(.text.n_pff_$$_ld_word$pbyte$$word)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
-  References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
-  References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
   References  .text.n_pff_$$_ld_word$pbyte$$word in pff.o(.text.n_pff_$$_ld_word$pbyte$$word)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
-  References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
-  References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
-  References  .text.n_pff_$$_ld_word$pbyte$$word in pff.o(.text.n_pff_$$_ld_word$pbyte$$word)
-  References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
   References  .text.n_pff_$$_ld_dword$pbyte$$longword in pff.o(.text.n_pff_$$_ld_dword$pbyte$$longword)
@@ -1184,14 +1212,19 @@ Keeping system.o(.text.n_fpc_rangeerror) 2 references
   References  .text.n_system_$$_handleerroraddrframeind$longint$pointer$pointer in system.o(.text.n_system_$$_handleerroraddrframeind$longint$pointer$pointer)
 Keeping ex_fpc.o(.bss.n_u_$p$ex_fpc_$$_br) 0 references
 Keeping ex_fpc.o(.rdata.n__$EX_FPC$_Ld9) 0 references
-Keeping pff.o(.text.n_pff_$$_pf_open$pchar$$fresult) 7 references
+Keeping pff.o(.text.n_pff_$$_pf_open$pchar$$fresult) 12 references
   References  fpc_fillmem in system.o(.text.n_fpc_fillmem)
   References  fpc_fillmem in system.o(.text.n_fpc_fillmem)
   References  fpc_fillmem in system.o(.text.n_fpc_fillmem)
   References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .text.n_pff_$$_follow_path$dir$pbyte$pchar$$fresult in pff.o(.text.n_pff_$$_follow_path$dir$pbyte$pchar$$fresult)
   References  .text.n_pff_$$_get_clust$pbyte$$longword in pff.o(.text.n_pff_$$_get_clust$pbyte$$longword)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .text.n_pff_$$_ld_dword$pbyte$$longword in pff.o(.text.n_pff_$$_ld_dword$pbyte$$longword)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
 Keeping pff.o(.text.n_pff_$$_get_clust$pbyte$$longword) 3 references
   References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .text.n_pff_$$_ld_word$pbyte$$word in pff.o(.text.n_pff_$$_ld_word$pbyte$$word)
@@ -1208,23 +1241,25 @@ Keeping pff.o(.text.n_pff_$$_dir_find$dir$pbyte$$fresult) 8 references
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
   References  DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT in disk_io.o(.text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult)
-  References  .text.n_pff_$$_mem_cmp$pointer$pointer$longint$$longint in pff.o(.text.n_pff_$$_mem_cmp$pointer$pointer$longint$$longint)
+  References  .text.n_pff_$$_mem_cmp$pchar$pchar$longint$$longint in pff.o(.text.n_pff_$$_mem_cmp$pchar$pchar$longint$$longint)
   References  .text.n_pff_$$_dir_next$dir$$fresult in pff.o(.text.n_pff_$$_dir_next$dir$$fresult)
-Keeping pff.o(.text.n_pff_$$_dir_next$dir$$fresult) 9 references
-  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+Keeping pff.o(.text.n_pff_$$_dir_next$dir$$fresult) 11 references
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  .text.n_pff_$$_get_fat$longword$$longword in pff.o(.text.n_pff_$$_get_fat$longword$$longword)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .text.n_pff_$$_clust2sect$longword$$longword in pff.o(.text.n_pff_$$_clust2sect$longword$$longword)
-Keeping pff.o(.text.n_pff_$$_mem_cmp$pointer$pointer$longint$$longint) 2 references
+Keeping pff.o(.text.n_pff_$$_mem_cmp$pchar$pchar$longint$$longint) 2 references
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
 Keeping pff.o(.text.n_pff_$$_create_name$dir$pchar$$fresult) 15 references
-  References  .text.n_pff_$$_mem_set$pointer$longint$longint in pff.o(.text.n_pff_$$_mem_set$pointer$longint$longint)
+  References  .text.n_pff_$$_mem_set$pchar$char$longint in pff.o(.text.n_pff_$$_mem_set$pchar$char$longint)
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
   References  .text.n_pff_$$_isdbcs1$longint$$boolean in pff.o(.text.n_pff_$$_isdbcs1$longint$$boolean)
@@ -1240,11 +1275,14 @@ Keeping pff.o(.text.n_pff_$$_create_name$dir$pchar$$fresult) 15 references
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
   References  fpc_rangeerror in system.o(.text.n_fpc_rangeerror)
 Keeping pff.o(.text.n_pff_$$_isdbcs1$longint$$boolean) 0 references
-Keeping pff.o(.text.n_pff_$$_mem_set$pointer$longint$longint) 1 references
+Keeping pff.o(.text.n_pff_$$_mem_set$pchar$char$longint) 1 references
   References  FPC_OVERFLOW in system.o(.text.n_fpc_overflow)
-Keeping pff.o(.text.n_pff_$$_dir_rewind$dir$$fresult) 2 references
+Keeping pff.o(.text.n_pff_$$_dir_rewind$dir$$fresult) 5 references
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
   References  .text.n_pff_$$_clust2sect$longword$$longword in pff.o(.text.n_pff_$$_clust2sect$longword$$longword)
+  References  .bss.n_u_$pff_$$_ifatfs in pff.o(.bss.n_u_$pff_$$_ifatfs)
 Keeping system.o(.text.n_fpc_fillmem) 1 references
   References  .text.n_system_$$_fillbyte$formal$longint$byte in system.o(.text.n_system_$$_fillbyte$formal$longint$byte)
 Keeping system.o(.text.n_system_$$_fillbyte$formal$longint$byte) 1 references
@@ -8507,6 +8545,7 @@ Removing pff.o(.rdata.n_RTTI_$PFF_$$_FRESULT_s2o)
 Removing disk_io.o(.rdata.n_RTTI_$DISK_IO_$$_DRESULT)
 Removing disk_io.o(.rdata.n_RTTI_$DISK_IO_$$_DRESULT_s2o)
 Removing disk_io.o(.rdata.n_RTTI_$DISK_IO_$$_DRESULT_o2s)
+Removing disk_io.o(.rdata.n_RTTI_$DISK_IO_$$_PUINT)
 Removing *Internal*(*__bss_start__)
 Removing *Internal*(.bss)
 Removing system.o(.bss.n_u_$system_$$_randseed)
@@ -8606,7 +8645,7 @@ Importing from DLL user32.dll
 
 Memory map (ImageBase=0x00400000)
 
-.text           0x00401000     0xd380
+.text           0x00401000     0xd2f0
  .text          0x00401000      0x436 *Internal*
                 0x00401000                __$dll$kernel32$GetLastError
                 0x00401010                __$dll$kernel32$SetLastError
@@ -9918,100 +9957,100 @@ Memory map (ImageBase=0x00400000)
  .text.n_pff_$$_ld_dword$pbyte$$longword
                 0x0040CD40       0x20 pff.o
                 0x0040CD40                PFF_$$_LD_DWORD$PBYTE$$LONGWORD
- .text.n_pff_$$_mem_set$pointer$longint$longint
-                0x0040CD60       0x50 pff.o
-                0x0040CD60                PFF_$$_MEM_SET$POINTER$LONGINT$LONGINT
- .text.n_pff_$$_mem_cmp$pointer$pointer$longint$$longint
-                0x0040CDB0       0x90 pff.o
-                0x0040CDB0                PFF_$$_MEM_CMP$POINTER$POINTER$LONGINT$$LONGINT
+ .text.n_pff_$$_mem_set$pchar$char$longint
+                0x0040CD60       0x40 pff.o
+                0x0040CD60                PFF_$$_MEM_SET$PCHAR$CHAR$LONGINT
+ .text.n_pff_$$_mem_cmp$pchar$pchar$longint$$longint
+                0x0040CDA0       0x70 pff.o
+                0x0040CDA0                PFF_$$_MEM_CMP$PCHAR$PCHAR$LONGINT$$LONGINT
  .text.n_pff_$$_get_fat$longword$$longword
-                0x0040CE40      0x220 pff.o
-                0x0040CE40                PFF_$$_GET_FAT$LONGWORD$$LONGWORD
+                0x0040CE10      0x220 pff.o
+                0x0040CE10                PFF_$$_GET_FAT$LONGWORD$$LONGWORD
  .text.n_pff_$$_clust2sect$longword$$longword
-                0x0040D060       0xa0 pff.o
-                0x0040D060                PFF_$$_CLUST2SECT$LONGWORD$$LONGWORD
+                0x0040D030       0xa0 pff.o
+                0x0040D030                PFF_$$_CLUST2SECT$LONGWORD$$LONGWORD
  .text.n_pff_$$_get_clust$pbyte$$longword
-                0x0040D100       0x70 pff.o
-                0x0040D100                PFF_$$_GET_CLUST$PBYTE$$LONGWORD
+                0x0040D0D0       0x50 pff.o
+                0x0040D0D0                PFF_$$_GET_CLUST$PBYTE$$LONGWORD
  .text.n_pff_$$_dir_rewind$dir$$fresult
-                0x0040D170       0xa0 pff.o
-                0x0040D170                PFF_$$_DIR_REWIND$DIR$$FRESULT
+                0x0040D120       0x90 pff.o
+                0x0040D120                PFF_$$_DIR_REWIND$DIR$$FRESULT
  .text.n_pff_$$_dir_next$dir$$fresult
-                0x0040D210      0x150 pff.o
-                0x0040D210                PFF_$$_DIR_NEXT$DIR$$FRESULT
+                0x0040D1B0      0x140 pff.o
+                0x0040D1B0                PFF_$$_DIR_NEXT$DIR$$FRESULT
  .text.n_pff_$$_dir_find$dir$pbyte$$fresult
-                0x0040D360       0xf0 pff.o
-                0x0040D360                PFF_$$_DIR_FIND$DIR$PBYTE$$FRESULT
+                0x0040D2F0       0xe0 pff.o
+                0x0040D2F0                PFF_$$_DIR_FIND$DIR$PBYTE$$FRESULT
  .text.n_pff_$$_dir_read$dir$pbyte$$fresult
-                0x0040D450      0x110 pff.o
-                0x0040D450                PFF_$$_DIR_READ$DIR$PBYTE$$FRESULT
+                0x0040D3D0      0x110 pff.o
+                0x0040D3D0                PFF_$$_DIR_READ$DIR$PBYTE$$FRESULT
  .text.n_pff_$$_create_name$dir$pchar$$fresult
-                0x0040D560      0x200 pff.o
-                0x0040D560                PFF_$$_CREATE_NAME$DIR$PCHAR$$FRESULT
+                0x0040D4E0      0x200 pff.o
+                0x0040D4E0                PFF_$$_CREATE_NAME$DIR$PCHAR$$FRESULT
  .text.n_pff_$$_get_fileinfo$dir$pbyte$filinfo
-                0x0040D760      0x100 pff.o
-                0x0040D760                PFF_$$_GET_FILEINFO$DIR$PBYTE$FILINFO
+                0x0040D6E0      0x100 pff.o
+                0x0040D6E0                PFF_$$_GET_FILEINFO$DIR$PBYTE$FILINFO
  .text.n_pff_$$_follow_path$dir$pbyte$pchar$$fresult
-                0x0040D860       0xb0 pff.o
-                0x0040D860                PFF_$$_FOLLOW_PATH$DIR$PBYTE$PCHAR$$FRESULT
+                0x0040D7E0       0xb0 pff.o
+                0x0040D7E0                PFF_$$_FOLLOW_PATH$DIR$PBYTE$PCHAR$$FRESULT
  .text.n_pff_$$_check_fs$pbyte$longword$$byte
-                0x0040D910       0xb0 pff.o
-                0x0040D910                PFF_$$_CHECK_FS$PBYTE$LONGWORD$$BYTE
+                0x0040D890       0xb0 pff.o
+                0x0040D890                PFF_$$_CHECK_FS$PBYTE$LONGWORD$$BYTE
  .text.n_pff_$$_pf_mount$fatfs$$fresult
-                0x0040D9C0      0x300 pff.o
-                0x0040D9C0                PFF_$$_PF_MOUNT$FATFS$$FRESULT
+                0x0040D940      0x300 pff.o
+                0x0040D940                PFF_$$_PF_MOUNT$FATFS$$FRESULT
  .text.n_pff_$$_pf_open$pchar$$fresult
-                0x0040DCC0       0xe0 pff.o
-                0x0040DCC0                PFF_$$_PF_OPEN$PCHAR$$FRESULT
+                0x0040DC40       0xd0 pff.o
+                0x0040DC40                PFF_$$_PF_OPEN$PCHAR$$FRESULT
  .text.n_pff_$$_pf_read$pointer$longword$longword$$fresult
-                0x0040DDA0      0x270 pff.o
-                0x0040DDA0                PFF_$$_PF_READ$POINTER$LONGWORD$LONGWORD$$FRESULT
+                0x0040DD10      0x290 pff.o
+                0x0040DD10                PFF_$$_PF_READ$POINTER$LONGWORD$LONGWORD$$FRESULT
  .text.n_pff_$$_pf_opendir$dir$pchar$$fresult
-                0x0040E010       0xb0 pff.o
-                0x0040E010                PFF_$$_PF_OPENDIR$DIR$PCHAR$$FRESULT
+                0x0040DFA0       0xa0 pff.o
+                0x0040DFA0                PFF_$$_PF_OPENDIR$DIR$PCHAR$$FRESULT
  .text.n_pff_$$_pf_readdir$dir$filinfo$$fresult
-                0x0040E0C0       0xa0 pff.o
-                0x0040E0C0                PFF_$$_PF_READDIR$DIR$FILINFO$$FRESULT
+                0x0040E040       0x90 pff.o
+                0x0040E040                PFF_$$_PF_READDIR$DIR$FILINFO$$FRESULT
  .text.n_pff_$$_pf_rewinddir$dir$$fresult
-                0x0040E160       0x50 pff.o
-                0x0040E160                PFF_$$_PF_REWINDDIR$DIR$$FRESULT
+                0x0040E0D0       0x50 pff.o
+                0x0040E0D0                PFF_$$_PF_REWINDDIR$DIR$$FRESULT
  .text.z_DEBUGEND_$PFF
-                0x0040E1B0        0x0 pff.o
-                0x0040E1B0                DEBUGEND_$PFF
+                0x0040E120        0x0 pff.o
+                0x0040E120                DEBUGEND_$PFF
  .text.b_DEBUGSTART_$DISK_IO
-                0x0040E1B0        0x0 disk_io.o
-                0x0040E1B0                DEBUGSTART_$DISK_IO
+                0x0040E120        0x0 disk_io.o
+                0x0040E120                DEBUGSTART_$DISK_IO
  .text.n_disk_io_$$_disk_initialize$$byte
-                0x0040E1B0       0x40 disk_io.o
-                0x0040E1B0                DISK_IO_$$_DISK_INITIALIZE$$BYTE
+                0x0040E120       0x40 disk_io.o
+                0x0040E120                DISK_IO_$$_DISK_INITIALIZE$$BYTE
  .text.n_disk_io_$$_disk_readp$pointer$longword$longword$longword$$dresult
-                0x0040E1F0       0xa0 disk_io.o
-                0x0040E1F0                DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT
+                0x0040E160       0xa0 disk_io.o
+                0x0040E160                DISK_IO_$$_DISK_READP$POINTER$LONGWORD$LONGWORD$LONGWORD$$DRESULT
  .text.z_DEBUGEND_$DISK_IO
-                0x0040E290        0x0 disk_io.o
-                0x0040E290                DEBUGEND_$DISK_IO
+                0x0040E200        0x0 disk_io.o
+                0x0040E200                DEBUGEND_$DISK_IO
  .text.n_sysinitpas_$$_asm_exit
-                0x0040E290       0x10 sysinitpas.o
-                0x0040E290                SYSINITPAS_$$_ASM_EXIT
-                0x0040E290                asm_exit
+                0x0040E200       0x10 sysinitpas.o
+                0x0040E200                SYSINITPAS_$$_ASM_EXIT
+                0x0040E200                asm_exit
  .text.n_sysinitpas_$$_linkin$pointer$pointer$pointer
-                0x0040E2A0       0x10 sysinitpas.o
-                0x0040E2A0                SYSINITPAS_$$_LINKIN$POINTER$POINTER$POINTER
+                0x0040E210       0x10 sysinitpas.o
+                0x0040E210                SYSINITPAS_$$_LINKIN$POINTER$POINTER$POINTER
  .text.n_sysinitpas_$$_setupentryinformation
-                0x0040E2B0       0x10 sysinitpas.o
-                0x0040E2B0                SYSINITPAS_$$_SETUPENTRYINFORMATION
+                0x0040E220       0x10 sysinitpas.o
+                0x0040E220                SYSINITPAS_$$_SETUPENTRYINFORMATION
  .text.n_sysinitpas_$$_exec_tls_callback$pointer$longword$pointer
-                0x0040E2C0       0x60 sysinitpas.o
-                0x0040E2C0                _FPC_Tls_Callback
-                0x0040E2C0                SYSINITPAS_$$_EXEC_TLS_CALLBACK$POINTER$LONGWORD$POINTER
+                0x0040E230       0x60 sysinitpas.o
+                0x0040E230                _FPC_Tls_Callback
+                0x0040E230                SYSINITPAS_$$_EXEC_TLS_CALLBACK$POINTER$LONGWORD$POINTER
  .text.n_sysinitpas_$$__fpc_maincrtstartup
-                0x0040E320       0x50 sysinitpas.o
-                0x0040E320                _mainCRTStartup
-                0x0040E320                SYSINITPAS_$$__FPC_MAINCRTSTARTUP
- *values1       0x0040E370        0x4 *Internal*
- *values2       0x0040E374        0x4 *Internal*
- *values3       0x0040E378        0x4 *Internal*
- *values4       0x0040E37C        0x4 *Internal*
+                0x0040E290       0x50 sysinitpas.o
+                0x0040E290                _mainCRTStartup
+                0x0040E290                SYSINITPAS_$$__FPC_MAINCRTSTARTUP
+ *values1       0x0040E2E0        0x4 *Internal*
+ *values2       0x0040E2E4        0x4 *Internal*
+ *values3       0x0040E2E8        0x4 *Internal*
+ *values4       0x0040E2EC        0x4 *Internal*
 .data           0x0040F000      0x774
  .data.n_INITFINAL
                 0x0040F000       0x30 ex_fpc.o
@@ -10673,18 +10712,18 @@ Memory map (ImageBase=0x00400000)
  .idata$5       0x0041716C      0x11c *Internal*
  .idata$6       0x00417288      0x4c2 *Internal*
  .idata$7       0x0041774C       0x25 *Internal*
-.debug_info     0x00418000     0x1dbd
+.debug_info     0x00418000     0x1cd0
  .debug_info    0x00418000      0x3e1 ex_fpc.o
- .debug_info    0x004183E1     0x16c6 pff.o
- .debug_info    0x00419AA7      0x316 disk_io.o
-.debug_abbrev   0x0041A000      0x1de
+ .debug_info    0x004183E1     0x15c4 pff.o
+ .debug_info    0x004199A5      0x32b disk_io.o
+.debug_abbrev   0x0041A000      0x1e5
  .debug_abbrev  0x0041A000       0x90 ex_fpc.o
  .debug_abbrev  0x0041A090       0xc9 pff.o
- .debug_abbrev  0x0041A159       0x85 disk_io.o
-.debug_line     0x0041B000      0xd43
+ .debug_abbrev  0x0041A159       0x8c disk_io.o
+.debug_line     0x0041B000      0xcfb
  .debug_line    0x0041B000      0x10e ex_fpc.o
- .debug_line    0x0041B10E      0xb7a pff.o
- .debug_line    0x0041BC88       0xbb disk_io.o
+ .debug_line    0x0041B10E      0xb32 pff.o
+ .debug_line    0x0041BC40       0xbb disk_io.o
 .debug_frame    0x0041C000      0x514
  .debug_frame   0x0041C000       0x3c ex_fpc.o
  .debug_frame   0x0041C03C      0x44c pff.o

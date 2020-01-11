@@ -26,6 +26,9 @@ type
     RES_PARERR
     );
 
+  PUINT = ^UINT;
+  UINT = NativeUInt;
+
 { Initialize Disk Drive }
 function disk_initialize(): DSTATUS;
 
@@ -35,7 +38,7 @@ function disk_initialize(): DSTATUS;
   @param(sector Sector number (LBA))
   @param(offset Offset in the sector)
   @param(count Byte count (bit15:destination)) }
-function disk_readp(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): DRESULT;
+function disk_readp(buff: Pointer; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
 
 { Write Partial Sector
 
@@ -59,7 +62,7 @@ begin
   Result := 0;
 end;
 
-function disk_readp(buff: Pointer; sector: DWORD; offset: DWORD; Count: DWORD): DRESULT;
+function disk_readp(buff: Pointer; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
 var
   res: DRESULT;
   br: integer;
