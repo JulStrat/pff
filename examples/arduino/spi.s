@@ -6,15 +6,15 @@
 SPI_ss_SPI_INIT_MASTER:
 .Lc2:
 # [spi.pas]
-# [23] begin
-# [28] DDRB := DDRB or ((1 shl 2) or (1 shl 3) or (1 shl 5));
+# [22] begin
+# [24] DDRB := DDRB or ((1 shl 2) or (1 shl 3) or (1 shl 5));
 	in	r18,4
 	ori	r18,44
 	out	4,r18
-# [29] SPCR := (1 shl SPE) or (1 shl MSTR);
+# [25] SPCR := (1 shl SPE) or (1 shl MSTR);
 	ldi	r18,80
 	out	44,r18
-# [30] end;
+# [26] end;
 	ret
 .Lc1:
 .Le0:
@@ -26,19 +26,19 @@ SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE:
 .Lc4:
 # Var $result located in register r18
 # Var d located in register r24
-# [33] begin
+# [29] begin
 # Var d located in register r24
-# [34] SPDR := d;
+# [30] SPDR := d;
 	out	46,r24
 .Lj7:
-# [35] while (SPSR and (1 shl SPIF)) = 0 do ;
+# [31] while (SPSR and (1 shl SPIF)) = 0 do ;
 	in	r18,45
 	andi	r18,-128
 	breq	.Lj7
 # Var $result located in register r24
-# [36] Result := SPDR;
+# [32] Result := SPDR;
 	in	r24,46
-# [37] end;
+# [33] end;
 	ret
 .Lc3:
 .Le1:

@@ -1,5 +1,6 @@
 unit uart;
-{$mode delphi}
+// {$mode delphi}
+{$mode objfpc}
 interface
 
 procedure uart_init();
@@ -35,25 +36,19 @@ begin
 end;
 
 procedure uart_xputc(b: byte);
-var
-  t: Byte;
+const
+  hexbyte: array[0..15] of byte = (
+    ord('0'), ord('1'), ord('2'), ord('3'), ord('4'), ord('5'), ord('6'), ord('7'), 
+	ord('8'), ord('9'), ord('A'), ord('B'), ord('C'), ord('D'), ord('E'), ord('F'));
 begin
   while UCSR0A and (1 shl UDRE0) = 0 do;
   UDR0 := Ord('$');
-  
   while UCSR0A and (1 shl UDRE0) = 0 do;
-  t := b shr 4;
-  if t < 10 then
-    UDR0 := t + Ord('0')
-  else
-    UDR0 := t - (10 - Ord('A'));
-	
+     
+  UDR0 := hexbyte[b shr 4];
   while UCSR0A and (1 shl UDRE0) = 0 do;
-  t := b and $0F;
-  if t < 10 then
-    UDR0 := t + Ord('0')
-  else
-    UDR0 := t - (10 - Ord('A'));
+     
+  UDR0 := hexbyte[b and $0F];
 end;
 
 procedure uart_puts(s: PChar);

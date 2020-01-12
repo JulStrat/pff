@@ -1,13 +1,12 @@
 unit spi;
+{$mode objfpc}
 
-{$mode delphi}
 interface
 
 procedure spi_init_master();
 function spi_transceiver(d: byte = $FF): byte;
 
 implementation
-
 (* Current SD card connection
 PIN 1: GND    <-->  Arduino GND
 PIN 2: +3.3V  <---  Arduino 3V
@@ -21,10 +20,7 @@ PIN 8: GND          N/A
 
 procedure spi_init_master();
 begin
-  (* Set output *)
-  // DDRB := DDRB or (1 shl 2); // SS
-  //DDRB := DDRB or (1 shl 3); // MOSI
-  // DDRB := DDRB or (1 shl 5); // SCK
+  (* Set output SS, MOSI, SCK *)
   DDRB := DDRB or ((1 shl 2) or (1 shl 3) or (1 shl 5));
   SPCR := (1 shl SPE) or (1 shl MSTR);
 end;

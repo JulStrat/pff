@@ -6,20 +6,20 @@
 UART_ss_UART_INIT:
 .Lc2:
 # [uart.pas]
-# [18] begin
-# [19] UBRR0  := CPU_Clock div (16 * Baud) - 1;
+# [19] begin
+# [20] UBRR0  := CPU_Clock div (16 * Baud) - 1;
 	ldi	r18,103
 	sts	(197),r1
 	sts	(196),r18
-# [20] UCSR0A := 0;
+# [21] UCSR0A := 0;
 	sts	(192),r1
-# [21] UCSR0B := (1 shl TXEN0) or (1 shl RXEN0);
+# [22] UCSR0B := (1 shl TXEN0) or (1 shl RXEN0);
 	ldi	r18,24
 	sts	(193),r18
-# [22] UCSR0C := (3 shl UCSZ0);
+# [23] UCSR0C := (3 shl UCSZ0);
 	ldi	r18,6
 	sts	(194),r18
-# [23] end;
+# [24] end;
 	ret
 .Lc1:
 .Le0:
@@ -30,16 +30,16 @@ UART_ss_UART_INIT:
 UART_ss_UART_GETCssCHAR:
 .Lc4:
 # Var $result located in register r18
-# [26] begin
+# [27] begin
 .Lj7:
-# [27] while UCSR0A and (1 shl RXC0) = 0 do;
+# [28] while UCSR0A and (1 shl RXC0) = 0 do;
 	lds	r18,(192)
 	andi	r18,-128
 	breq	.Lj7
 # Var $result located in register r24
-# [28] Result := Char(UDR0);
+# [29] Result := Char(UDR0);
 	lds	r24,(198)
-# [29] end;
+# [30] end;
 	ret
 .Lc3:
 .Le1:
@@ -49,18 +49,18 @@ UART_ss_UART_GETCssCHAR:
 .globl	UART_ss_UART_PUTCsCHAR
 UART_ss_UART_PUTCsCHAR:
 .Lc6:
-# [32] begin
+# [33] begin
 	mov	r18,r24
 # Var c located in register r18
 .Lj12:
-# [33] while UCSR0A and (1 shl UDRE0) = 0 do;
+# [34] while UCSR0A and (1 shl UDRE0) = 0 do;
 	lds	r19,(192)
 	andi	r19,32
 	breq	.Lj12
 # Var c located in register r18
-# [34] UDR0 := Byte(c);
+# [35] UDR0 := Byte(c);
 	sts	(198),r18
-# [35] end;
+# [36] end;
 	ret
 .Lc5:
 .Le2:
@@ -70,69 +70,48 @@ UART_ss_UART_PUTCsCHAR:
 .globl	UART_ss_UART_XPUTCsBYTE
 UART_ss_UART_XPUTCsBYTE:
 .Lc8:
-# Var t located in register r18
-# Var b located in register r24
-# [40] begin
+# [43] begin
+	mov	r19,r24
+# Var b located in register r19
 .Lj17:
-# [41] while UCSR0A and (1 shl UDRE0) = 0 do;
-	lds	r18,(192)
-	andi	r18,32
-	breq	.Lj17
-# [42] UDR0 := Ord('$');
-	ldi	r18,36
-	sts	(198),r18
-.Lj20:
 # [44] while UCSR0A and (1 shl UDRE0) = 0 do;
 	lds	r18,(192)
 	andi	r18,32
-	breq	.Lj20
-# [45] t := b shr 4;
-	mov	r18,r24
-	lsr	r18
-	lsr	r18
-	lsr	r18
-	lsr	r18
-# Var t located in register r18
-# [46] if t < 10 then
-	cpi	r18,10
-	brsh	.Lj24
-# [47] UDR0 := t + Ord('0')
-	mov	r19,r18
-	ldi	r20,48
-	add	r19,r20
-	sts	(198),r19
-	rjmp	.Lj26
-.Lj24:
-# [49] UDR0 := t - (10 - Ord('A'));
-	mov	r19,r1
-	subi	r18,-55
-	sbci	r19,-1
+	breq	.Lj17
+# [45] UDR0 := Ord('$');
+	ldi	r18,36
 	sts	(198),r18
-.Lj26:
-# [51] while UCSR0A and (1 shl UDRE0) = 0 do;
+.Lj20:
+# [46] while UCSR0A and (1 shl UDRE0) = 0 do;
 	lds	r18,(192)
 	andi	r18,32
-	breq	.Lj26
-# [52] t := b and $0F;
-	andi	r24,15
-# Var t located in register r24
-# [53] if t < 10 then
-	cpi	r24,10
-	brsh	.Lj30
-# [54] UDR0 := t + Ord('0')
-	mov	r18,r24
-	ldi	r19,48
-	add	r18,r19
-	sts	(198),r18
-	rjmp	.Lj31
-.Lj30:
-# [56] UDR0 := t - (10 - Ord('A'));
-	mov	r18,r1
-	subi	r24,-55
-	sbci	r18,-1
-	sts	(198),r24
-.Lj31:
-# [57] end;
+	breq	.Lj20
+# [48] UDR0 := hexbyte[b shr 4];
+	mov	r20,r19
+	lsr	r20
+	lsr	r20
+	lsr	r20
+	lsr	r20
+	ldi	r30,lo8(TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE)
+	ldi	r31,hi8(TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE)
+	add	r30,r20
+	adc	r31,r1
+	ld	r0,Z
+	sts	(198),r0
+.Lj23:
+# [49] while UCSR0A and (1 shl UDRE0) = 0 do;
+	lds	r18,(192)
+	andi	r18,32
+	breq	.Lj23
+# [51] UDR0 := hexbyte[b and $0F];
+	andi	r19,15
+	ldi	r30,lo8(TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE)
+	ldi	r31,hi8(TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE)
+	add	r30,r19
+	adc	r31,r1
+	ld	r0,Z
+	sts	(198),r0
+# [52] end;
 	ret
 .Lc7:
 .Le3:
@@ -142,28 +121,28 @@ UART_ss_UART_XPUTCsBYTE:
 .globl	UART_ss_UART_PUTSsPCHAR
 UART_ss_UART_PUTSsPCHAR:
 .Lc10:
-# [60] begin
+# [55] begin
 	push	r3
 	push	r2
 	movw	r2,r24
 # Var s located in register r2
-# [61] while s^ <> #0 do
-	rjmp	.Lj35
-.Lj34:
-# [63] uart_putc(s^);
+# [56] while s^ <> #0 do
+	rjmp	.Lj29
+.Lj28:
+# [58] uart_putc(s^);
 	movw	r30,r2
 	ld	r24,Z
 	call	UART_ss_UART_PUTCsCHAR
-# [64] Inc(s);
+# [59] Inc(s);
 	ldi	r18,1
 	add	r2,r18
 	adc	r3,r1
-.Lj35:
+.Lj29:
 	movw	r30,r2
 	ld	r18,Z
 	cp	r18,r1
-	brne	.Lj34
-# [66] end;
+	brne	.Lj28
+# [61] end;
 	pop	r2
 	pop	r3
 	ret
@@ -171,6 +150,14 @@ UART_ss_UART_PUTSsPCHAR:
 .Le4:
 	.size	UART_ss_UART_PUTSsPCHAR, .Le4 - UART_ss_UART_PUTSsPCHAR
 # End asmlist al_procedures
+# Begin asmlist al_typedconsts
+
+.section .data.n_TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE
+TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE:
+	.byte	48,49,50,51,52,53,54,55,56,57,65,66,67,68,69,70
+.Le5:
+	.size	TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE, .Le5 - TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE
+# End asmlist al_typedconsts
 # Begin asmlist al_dwarf_frame
 
 .section .debug_frame
