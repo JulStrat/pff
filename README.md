@@ -65,6 +65,22 @@ begin
 
 ## Testing
 
+7.86GB SD card content - 
+```
+root@raspberrypi:/mnt/SD# ls -al
+total 7196
+drwxr-xr-x 4 root root    4096 Jan  1  1970 .
+drwxr-xr-x 5 root root    4096 Dec 19 12:07 ..
+-rwxr-xr-x 1 root root    2078 Jan 30  2019 00readme.txt
+-rwxr-xr-x 1 root root    1961 Dec  4 12:48 LICENSE.txt
+drwxr-xr-x 2 root root    4096 Dec 11 13:01 RASPI
+-rwxr-xr-x 1 root root 2097152 Jan 16 15:32 RW2.TXT
+-rwxr-xr-x 1 root root 4194304 Jan 16 15:32 RW4.TXT
+-rwxr-xr-x 1 root root 1048576 Jan 16 15:28 RW.TXT
+drwxr-xr-x 2 root root    4096 Dec 11 13:02 System Volume Information
+-rwxr-xr-x 1 root root      22 Dec 10 15:31 TEST.TXT
+```
+
 ### Arduino UNO R3
 
 #### Connectar
@@ -176,6 +192,8 @@ avrdude.exe done.  Thank you.
 
 #### Connect putty to COM5 (your Arduino COM port)
 
+pff-ard output - 
+
 ```
 *** PetitFS test. ***
 *** List root directory
@@ -184,6 +202,9 @@ TEST.TXT
 RASPI
 00README.TXT
 LICENSE.TXT
+RW.TXT
+RW2.TXT
+RW4.TXT
 
 *** Rewind and read ...
 SYSTEM~1
@@ -191,25 +212,26 @@ TEST.TXT
 RASPI
 00README.TXT
 LICENSE.TXT
+RW.TXT
+RW2.TXT
+RW4.TXT
 
 *** List RASPI directory -
 MKSDIMG.SH
 
-Petit FatFs Module Source Files R0.03a               (C)ChaN, 2019
+...
 
-
-FILES
-
-  pff.h      Common include file for Petit FatFs and application module.
-  pff.c      Petit FatFs module.
-
-...  
+Try read RW.TXT (1M)...
+Done reading RW.TXT!
+Try read RW2.TXT (2M)...
+Done reading RW2.TXT!
+Try read RW4.TXT (4M)...
+Done reading RW4.TXT!
 ``` 
 
 ### RASPI
 
-ex_fpc output
-
+ex_fpc output - 
 ```
 PetitFS test.
 pf_mount() - FR_OK
@@ -243,8 +265,7 @@ FILES
 
 ### Windows
 
-ex_fpc output
-
+ex_fpc output - 
 ```
 PetitFS test.
 pf_mount() - FR_OK
