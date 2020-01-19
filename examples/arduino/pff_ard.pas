@@ -11,9 +11,51 @@ var
   dr: DIR;
   fi: FILINFO;
   fr: FRESULT;
-  bf: array[0..Pred(512)] of char;
-  br: UINT;
-  cnt: DWORD;
+
+function t_cat(fname: PChar): boolean;
+var
+  bfl: array[0..Pred(513)] of char;
+  brl: UINT; 
+  cntl: DWORD;  
+begin
+  if pf_open(fname) <> FR_OK then
+    Exit(false);
+
+  cntl := 0;	
+  while pf_read(@bfl, 512, brl) = FR_OK do
+  begin
+    bfl[brl] := #0;
+	cntl := cntl + brl;
+    uart_puts(bfl);
+  end;
+  
+  if cntl = fs.fsize then
+    Result := true
+  else  
+    Result := false;
+end;  
+
+function t_read(fname: PChar; sig: Byte): boolean;
+var
+  bfl: array[0..Pred(513)] of char;
+  brl: UINT; 
+  cntl: DWORD;  
+begin
+  if pf_open(fname) <> FR_OK then
+    Exit(false);
+
+  cntl := 0;	
+  while pf_read(@bfl, 512, brl) = FR_OK do
+  begin
+	cntl := cntl + brl;
+  end;
+  
+  if cntl = fs.fsize then
+    Result := true
+  else  
+    Result := false;
+end;  
+  
 begin
   {$info PetitFS test}
   uart_init();
@@ -52,64 +94,26 @@ begin
     end;
   until fi.fname[0] = char(#0);
 
-  fr := pf_open('00README.TXT');
-  while pf_read(@bf, 128, br) = FR_OK do
-  begin
-    if (br = 0) then
-      break;
-    bf[br] := #0;
-    uart_puts(bf);
-  end;
-
+  t_cat('00README.TXT');
   uart_puts(''#13#10);
 
-  fr := pf_open('LICENSE.TXT');
-  while pf_read(@bf, 128, br) = FR_OK do
-  begin
-    if (br = 0) then
-      break;
-    bf[br] := #0;
-    uart_puts(bf);
-  end;
+  t_cat('LICENSE.TXT');
+  uart_puts(''#13#10);
   
   uart_puts('Try read RW.TXT (1M)...'#13#10);
-  fr := pf_open('RW.TXT');
-  cnt := 0;
-  while pf_read(@bf, 512, br) = FR_OK do
-  begin
-    if (br <= 0) then
-      break;
-    cnt := cnt + br;  
-  end;
-  if (cnt = fs.fsize) and (fr = FR_OK)then
+  if t_read('RW.TXT', Ord('A')) then
     uart_puts('Done reading RW.TXT!'#13#10)
   else  
     uart_puts('Error reading RW.TXT.'#13#10);
     
   uart_puts('Try read RW2.TXT (2M)...'#13#10);
-  fr := pf_open('RW2.TXT');
-  cnt := 0;
-  while pf_read(@bf, 512, br) = FR_OK do
-  begin
-    if (br <= 0) then
-      break;
-    cnt := cnt + br;  
-  end;
-  if (cnt = fs.fsize) and (fr = FR_OK)then
+  if t_read('RW2.TXT', Ord('B')) then
     uart_puts('Done reading RW2.TXT!'#13#10)
   else  
     uart_puts('Error reading RW2.TXT.'#13#10);
 
   uart_puts('Try read RW4.TXT (4M)...'#13#10);
-  fr := pf_open('RW4.TXT');
-  cnt := 0;
-  while pf_read(@bf, 512, br) = FR_OK do
-  begin
-    if (br <= 0) then
-      break;
-    cnt := cnt + br;  
-  end;
-  if (cnt = fs.fsize) and (fr = FR_OK) then
+  if t_read('RW4.TXT', Ord('C')) then
     uart_puts('Done reading RW4.TXT!'#13#10)
   else  
     uart_puts('Error reading RW4.TXT.'#13#10);
