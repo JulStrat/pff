@@ -195,38 +195,35 @@ avrdude.exe done.  Thank you.
 pff-ard output - 
 
 ```
-*** PetitFS test. ***
-*** List root directory
-SYSTEM~1
-TEST.TXT
-RASPI
-00README.TXT
-LICENSE.TXT
-RW.TXT
-RW2.TXT
-RW4.TXT
-
-*** Rewind and read ...
-SYSTEM~1
-TEST.TXT
-RASPI
-00README.TXT
-LICENSE.TXT
-RW.TXT
-RW2.TXT
-RW4.TXT
-
-*** List RASPI directory -
-MKSDIMG.SH
-
+<<< PetitFS TEST >>>
+DIR list -
+> SYSTEM~1
+> TEST.TXT
+> RASPI
+> 00README.TXT
+> LICENSE.TXT
+> RW.TXT
+> RW2.TXT
+> RW4.TXT
+>
+DIR - OK
+DIR list - RASPI
+> MKSDIMG.SH
+>
+DIR - OK
 ...
-
-Try read RW.TXT (1M)...
-Done reading RW.TXT!
-Try read RW2.TXT (2M)...
-Done reading RW2.TXT!
-Try read RW4.TXT (4M)...
-Done reading RW4.TXT!
+READ file - RW.TXT
+READ - OK
+READ file - RW2.TXT
+READ - OK
+READ file - RW4.TXT
+READ - OK
+WRITE file - RW.TXT
+WRITE - OK
+WRITE file - RW2.TXT
+WRITE - OK
+WRITE file - RW4.TXT
+WRITE - OK
 ``` 
 
 ### RASPI

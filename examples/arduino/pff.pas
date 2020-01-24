@@ -284,7 +284,7 @@ function pf_read(buff: Pointer; btr: UINT; var br: UINT): FRESULT;
   @param(bw Pointer to number of bytes written)
 
   @returns(FRESULT) }
-function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
+function pf_write(buff: Pointer; btw: UINT; var bw: UINT): FRESULT;
 {$endif}
 
 {$ifdef PF_USE_LSEEK}
@@ -1157,7 +1157,7 @@ end;
 {$endif}
 
 {$ifdef PF_USE_WRITE}
-function pf_write(buff: Pointer; btw: UINT; bw: pUINT): FRESULT;
+function pf_write(buff: Pointer; btw: UINT; var bw: UINT): FRESULT;
 var
   p: PByte;
   clst: CLUST;
@@ -1170,7 +1170,7 @@ begin
   CHECK_FS_ENABLED;
 
   p := buff;
-  bw^ := 0;
+  bw := 0;
   { Check if opened }
   if (iFatFs.flag and FA_OPENED) = 0 then
     Exit(FR_NOT_OPENED);
@@ -1239,7 +1239,7 @@ begin
     iFatFs.fptr := iFatFs.fptr + wcnt;
     p := p + wcnt;
     btw := btw - wcnt;
-    bw^ := bw^ + wcnt;
+    bw := bw + wcnt;
 
     if UINT(iFatFs.fptr) and (SECTOR_SIZE - 1) = 0 then
     begin

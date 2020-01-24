@@ -32,7 +32,7 @@ UINT = NativeUInt;
 function disk_initialize(): DSTATUS;
 
 { Read Partial Sector }
-function disk_readp(buff: Pointer; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
+function disk_readp(buff: PByte; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
 
 { Write Partial Sector }
 function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
@@ -191,11 +191,11 @@ begin
     Result := STA_NOINIT;
 end;
 
-function disk_readp(buff: Pointer; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
+function disk_readp(buff: PByte; sector: DWORD; offset: UINT; Count: UINT): DRESULT;
 var
   // res: DRESULT;
 
-  bp: PBYTE;
+  //bp: PBYTE;
   rc: byte;
   bc: UINT;
 begin
@@ -224,11 +224,11 @@ begin
       end;
       if buff <> nil then
       begin
-        bp := PBYTE(buff);
+        //bp := PBYTE(buff);
         while Count > 0 do
         begin
-          bp^ := spi_transceiver();
-          Inc(bp);
+          buff^ := spi_transceiver();
+          Inc(buff);
           Dec(Count);
         end;
       end
@@ -257,26 +257,80 @@ begin
 end;
 
 function disk_writep(buff: Pointer; sc: DWORD): DRESULT;
+const
+  wc: UINT = 0;
 var
-  res: DRESULT;
+  //res: DRESULT;
+  bc: UINT;
+  rc: Byte;
+  bp: PByte;
 begin
-  if buff = nil then
+  Result := RES_ERROR;
+  if buff <> nil then
   begin
-    if sc <> 0 then
+    (* Send data to the disk *)
+    bc := sc;
+    bp := PByte(buff);
+    while (bc > 0) and (wc > 0) do
+    begin
+      spi_transceiver(bp^);
+      bp := bp + 1;
+      bc := bc - 1;
+      wc := wc - 1;
+    end;
+    Result := RES_OK;
+  end
+  else
+  begin
+    if sc > 0 then
     begin
       (* Initiate write process *)
+      if (CardType and CT_BLOCK) = 0 then 
+        (* Convert to byte address if needed *)
+        sc := sc * 512;
+      (* WRITE_SINGLE_BLOCK *)
+      if send_cmd(CMD24, sc) = 0 then
+      begin
+        (* Data block header *)
+        spi_transceiver($FF);
+        spi_transceiver($FE);
+        (* Set byte counter *)
+        wc := 512;
+        Result := RES_OK;
+      end      
     end
     else
     begin
       (* Finalize write process *)
+      bc := wc + 2;
+      while bc > 0 do 
+      begin
+        (* Fill left bytes and CRC with zeros *)
+        spi_transceiver(0);
+        bc := bc - 1;
+      end;  
+
+      if (spi_transceiver() and $1F) = $05 then
+      begin
+        (* Receive data resp and wait for end of write process in timeout of 500ms *)
+        for bc := 40000 downto 0 do
+        begin
+          rc := spi_transceiver();
+          //uart_xputc(rc);
+          //uart_puts('<D>'#13#10);
+          if rc = $FF then
+            break;
+        end;
+        
+        if bc <> 0 then  
+          Result := RES_OK;
+      end;
+      DESELECT;
+      spi_transceiver();;      
     end;
   end
-  else
-  begin
-    (* Send data to the disk *)
-  end;
 
-  Result := res;
+  //Result := res;
 end;
 
 end.

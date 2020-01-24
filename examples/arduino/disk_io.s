@@ -418,9 +418,9 @@ DISK_IO_ss_DISK_INITIALIZEssBYTE:
 .Le1:
 	.size	DISK_IO_ss_DISK_INITIALIZEssBYTE, .Le1 - DISK_IO_ss_DISK_INITIALIZEssBYTE
 
-.section .text.n_disk_io_ss_disk_readpspointerslongwordsnativeuintsnativeuintssdresult,"ax"
-.globl	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
-DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
+.section .text.n_disk_io_ss_disk_readpspbyteslongwordsnativeuintsnativeuintssdresult,"ax"
+.globl	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 .Lc6:
 # [201] begin
 	push	r17
@@ -434,15 +434,14 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 	push	r3
 	push	r2
 # Var $result located in register r18
-# Var bp located in register r4
 # Var rc located in register r9
-# Var bc located in register r6
-	mov	r8,r24
-	mov	r2,r25
-# Var buff located in register r8
+# Var bc located in register r2
+	mov	r3,r24
+	mov	r4,r25
+# Var buff located in register r3
 # Var sector located in register r20
 	mov	r5,r18
-	mov	r4,r19
+	mov	r6,r19
 # Var offset located in register r5
 # Var Count located in register r16
 # [204] if CardType and CT_BLOCK = 0 then
@@ -460,10 +459,10 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 	mov	r21,r19
 	movw	r22,r24
 .Lj63:
-# Var $result located in register r3
+# Var $result located in register r8
 # [207] Result := RES_ERROR;
 	ldi	r26,1
-	mov	r3,r26
+	mov	r8,r26
 # [208] if send_cmd(CMD17, sector) = 0 then
 	ldi	r26,81
 	mov	r24,r26
@@ -475,12 +474,12 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 .Lj88:
 # [210] for bc := 40000 downto 0 do
 	ldi	r26,65
-	mov	r6,r26
+	mov	r2,r26
 	ldi	r26,-100
 	mov	r7,r26
 .Lj66:
 	ldi	r26,1
-	sub	r6,r26
+	sub	r2,r26
 	sbc	r7,r1
 # [212] rc := spi_transceiver();
 	ldi	r26,-1
@@ -491,7 +490,7 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 	ldi	r26,-1
 	cp	r9,r26
 	brne	.Lj68
-	cp	r1,r6
+	cp	r1,r2
 	cpc	r1,r7
 	brlo	.Lj66
 .Lj68:
@@ -502,19 +501,19 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 	rjmp	.Lj65
 .Lj89:
 # [219] bc := 512 - offset - Count;
-	mov	r19,r1
-	ldi	r25,2
 	mov	r22,r1
-	mov	r18,r1
-	sub	r19,r5
-	sbc	r25,r4
-	sbc	r22,r1
-	sbc	r18,r1
-	sub	r19,r16
+	ldi	r25,2
+	mov	r19,r1
+	mov	r20,r1
+	sub	r22,r5
+	sbc	r25,r6
+	sbc	r19,r1
+	sbc	r20,r1
+	sub	r22,r16
 	sbc	r25,r17
-	sbc	r22,r1
-	sbc	r18,r1
-	mov	r6,r19
+	sbc	r19,r1
+	sbc	r20,r1
+	mov	r2,r22
 	mov	r7,r25
 # [220] while offset > 0 do
 	rjmp	.Lj74
@@ -526,31 +525,29 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 # [223] Dec(offset);
 	ldi	r26,1
 	sub	r5,r26
-	sbc	r4,r1
+	sbc	r6,r1
 .Lj74:
 	cp	r1,r5
-	cpc	r1,r4
+	cpc	r1,r6
 	brlo	.Lj73
 # [225] if buff <> nil then
-	cp	r8,r1
-	cpc	r2,r1
+	cp	r3,r1
+	cpc	r4,r1
 	breq	.Lj83
-# [227] bp := PBYTE(buff);
-	mov	r4,r8
 # [228] while Count > 0 do
 	rjmp	.Lj79
 .Lj78:
-# [230] bp^ := spi_transceiver();
+# [230] buff^ := spi_transceiver();
 	ldi	r26,-1
 	mov	r24,r26
 	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
-	mov	r30,r4
-	mov	r31,r2
+	mov	r30,r3
+	mov	r31,r4
 	st	Z,r24
-# [231] Inc(bp);
+# [231] Inc(buff);
 	ldi	r18,1
-	add	r4,r18
-	adc	r2,r1
+	add	r3,r18
+	adc	r4,r1
 # [232] Dec(Count);
 	subi	r16,1
 	sbc	r17,r1
@@ -582,21 +579,21 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
 # [248] Dec(bc);
 	ldi	r26,1
-	sub	r6,r26
+	sub	r2,r26
 	sbc	r7,r1
 .Lj86:
-	cp	r1,r6
+	cp	r1,r2
 	cpc	r1,r7
 	brlo	.Lj85
 # [250] Result := RES_OK;
-	mov	r3,r1
+	mov	r8,r1
 .Lj65:
 	sbi	5,2
 # [255] spi_transceiver();
 	ldi	r26,-1
 	mov	r24,r26
 	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
-	mov	r24,r3
+	mov	r24,r8
 	pop	r2
 	pop	r3
 	pop	r4
@@ -610,30 +607,218 @@ DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT:
 	ret
 .Lc5:
 .Le2:
-	.size	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT, .Le2 - DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	.size	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT, .Le2 - DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 
 .section .text.n_disk_io_ss_disk_writepspointerslongwordssdresult,"ax"
 .globl	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
 DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT:
 .Lc8:
+# [267] begin
+	push	r10
+	push	r9
+	push	r8
+	push	r7
+	push	r6
+	push	r5
+	push	r4
+	push	r3
+	push	r2
 # Var $result located in register r18
-# Var res located in register r24
+# Var bc located in register r5
+# Var rc located in register r2
+# Var bp located in register r7
 # Var buff located in register r24
-# Var sc located in register r20
-# [262] begin
-# [263] if buff = nil then
+	movw	r2,r20
+	mov	r9,r22
+	mov	r4,r23
+# Var sc located in register r2
+# Var $result located in register r10
+# [268] Result := RES_ERROR;
+	ldi	r26,1
+	mov	r10,r26
+# [269] if buff <> nil then
 	cp	r24,r1
 	cpc	r25,r1
-	brne	.Lj97
-# [265] if sc <> 0 then
-	cp	r20,r1
-	cpc	r21,r1
-	cpc	r22,r1
-	cpc	r23,r1
-.Lj97:
-# Var $result located in register r24
-# Var res located in register r24
-# [280] end;
+	brne	.Lj120
+# [334] end;
+	rjmp	.Lj93
+.Lj120:
+# [272] bc := sc;
+	mov	r5,r2
+	mov	r6,r3
+# [273] bp := PByte(buff);
+	mov	r7,r24
+	mov	r8,r25
+# [274] while (bc > 0) and (wc > 0) do
+	rjmp	.Lj95
+.Lj94:
+# [276] spi_transceiver(bp^);
+	mov	r30,r7
+	mov	r31,r8
+	ld	r24,Z
+	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
+# [277] bp := bp + 1;
+	ldi	r20,1
+	add	r7,r20
+	adc	r8,r1
+# [278] bc := bc - 1;
+	ldi	r26,1
+	sub	r5,r26
+	sbc	r6,r1
+# [279] wc := wc - 1;
+	ldi	r18,lo8(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC)
+	ldi	r19,hi8(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC)
+	movw	r30,r18
+	ld	r21,Z
+	ldd	r20,Z+1
+	subi	r21,1
+	sbc	r20,r1
+	movw	r30,r18
+	st	Z,r21
+	std	Z+1,r20
+.Lj95:
+	cp	r1,r5
+	cpc	r1,r6
+	brsh	.Lj98
+	lds	r19,(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC)
+	lds	r18,(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC+1)
+	cp	r1,r19
+	cpc	r1,r18
+	brlo	.Lj94
+.Lj98:
+# [281] Result := RES_OK;
+	mov	r10,r1
+	rjmp	.Lj100
+.Lj93:
+# [285] if sc > 0 then
+	cp	r1,r2
+	cpc	r1,r3
+	cpc	r1,r9
+	cpc	r1,r4
+	brlo	.Lj121
+	rjmp	.Lj102
+.Lj121:
+# [288] if (CardType and CT_BLOCK) = 0 then
+	lds	r18,(U_sDISK_IO_ss_CARDTYPE)
+	andi	r18,8
+	brne	.Lj104
+# [290] sc := sc * 512;
+	mov	r19,r2
+	mov	r20,r3
+	mov	r21,r9
+	lsl	r19
+	rol	r20
+	rol	r21
+	mov	r2,r1
+	mov	r3,r19
+	mov	r9,r20
+	mov	r4,r21
+.Lj104:
+# [292] if send_cmd(CMD24, sc) = 0 then
+	movw	r20,r2
+	mov	r22,r9
+	mov	r23,r4
+	ldi	r26,88
+	mov	r24,r26
+	call	DISK_IO_ss_SEND_CMDsBYTEsLONGWORDssBYTE
+	cp	r24,r1
+	breq	.Lj122
+	rjmp	.Lj100
+.Lj122:
+# [295] spi_transceiver($FF);
+	ldi	r26,-1
+	mov	r24,r26
+	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
+# [296] spi_transceiver($FE);
+	ldi	r26,-2
+	mov	r24,r26
+	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
+# [298] wc := 512;
+	ldi	r19,2
+	sts	(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC),r1
+	sts	(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC+1),r19
+# [299] Result := RES_OK;
+	mov	r10,r1
+	rjmp	.Lj100
+.Lj102:
+# [305] bc := wc + 2;
+	lds	r20,(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC)
+	lds	r21,(TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC+1)
+	mov	r19,r1
+	mov	r18,r1
+	ldi	r22,2
+	add	r20,r22
+	adc	r21,r1
+	adc	r19,r1
+	adc	r18,r1
+	mov	r5,r20
+	mov	r6,r21
+# [306] while bc > 0 do
+	rjmp	.Lj109
+.Lj108:
+# [309] spi_transceiver(0);
+	mov	r24,r1
+	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
+# [310] bc := bc - 1;
+	ldi	r26,1
+	sub	r5,r26
+	sbc	r6,r1
+.Lj109:
+	cp	r1,r5
+	cpc	r1,r6
+	brlo	.Lj108
+# [313] if (spi_transceiver() and $1F) = $05 then
+	ldi	r26,-1
+	mov	r24,r26
+	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
+	andi	r24,31
+	cpi	r24,5
+	brne	.Lj112
+# [316] for bc := 40000 downto 0 do
+	ldi	r26,65
+	mov	r5,r26
+	ldi	r26,-100
+	mov	r6,r26
+.Lj113:
+	ldi	r26,1
+	sub	r5,r26
+	sbc	r6,r1
+# [318] rc := spi_transceiver();
+	ldi	r26,-1
+	mov	r24,r26
+	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
+	mov	r2,r24
+# [321] if rc = $FF then
+	ldi	r26,-1
+	cp	r2,r26
+	breq	.Lj115
+	cp	r1,r5
+	cpc	r1,r6
+	brlo	.Lj113
+.Lj115:
+# [325] if bc <> 0 then
+	cp	r5,r1
+	cpc	r6,r1
+	breq	.Lj112
+# [326] Result := RES_OK;
+	mov	r10,r1
+.Lj112:
+	sbi	5,2
+# [329] spi_transceiver();;
+	ldi	r26,-1
+	mov	r24,r26
+	call	SPI_ss_SPI_TRANSCEIVERsBYTEssBYTE
+.Lj100:
+	mov	r24,r10
+	pop	r2
+	pop	r3
+	pop	r4
+	pop	r5
+	pop	r6
+	pop	r7
+	pop	r8
+	pop	r9
+	pop	r10
 	ret
 .Lc7:
 .Le3:
@@ -647,13 +832,22 @@ DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT:
 U_sDISK_IO_ss_CARDTYPE:
 	.zero 1
 # End asmlist al_globals
+# Begin asmlist al_typedconsts
+
+.section .data.n_TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC
+TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC:
+	.short	0
+# [262] var
+.Le4:
+	.size	TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC, .Le4 - TC_sDISK_IOs_sDISK_WRITEPsPOINTERsLONGWORDssDRESULT_ss_WC
+# End asmlist al_typedconsts
 # Begin asmlist al_rtti
 
 .section .data.n_RTTI_sDISK_IO_ss_DRESULT
 .globl	RTTI_sDISK_IO_ss_DRESULT
 RTTI_sDISK_IO_ss_DRESULT:
 	.byte	3,7
-# [283] 
+# [337] 
 	.ascii	"DRESULT"
 	.short	0
 	.byte	1
@@ -670,8 +864,8 @@ RTTI_sDISK_IO_ss_DRESULT:
 	.byte	7
 	.ascii	"disk_io"
 	.byte	0
-.Le4:
-	.size	RTTI_sDISK_IO_ss_DRESULT, .Le4 - RTTI_sDISK_IO_ss_DRESULT
+.Le5:
+	.size	RTTI_sDISK_IO_ss_DRESULT, .Le5 - RTTI_sDISK_IO_ss_DRESULT
 
 .section .data.n_RTTI_sDISK_IO_ss_DRESULT_s2o
 	.balign 2
@@ -685,8 +879,8 @@ RTTI_sDISK_IO_ss_DRESULT_s2o:
 	.short	RTTI_sDISK_IO_ss_DRESULT+22
 	.long	3
 	.short	RTTI_sDISK_IO_ss_DRESULT+50
-.Le5:
-	.size	RTTI_sDISK_IO_ss_DRESULT_s2o, .Le5 - RTTI_sDISK_IO_ss_DRESULT_s2o
+.Le6:
+	.size	RTTI_sDISK_IO_ss_DRESULT_s2o, .Le6 - RTTI_sDISK_IO_ss_DRESULT_s2o
 
 .section .data.n_RTTI_sDISK_IO_ss_DRESULT_o2s
 	.balign 2
@@ -697,8 +891,8 @@ RTTI_sDISK_IO_ss_DRESULT_o2s:
 	.short	RTTI_sDISK_IO_ss_DRESULT+29
 	.short	RTTI_sDISK_IO_ss_DRESULT+39
 	.short	RTTI_sDISK_IO_ss_DRESULT+50
-.Le6:
-	.size	RTTI_sDISK_IO_ss_DRESULT_o2s, .Le6 - RTTI_sDISK_IO_ss_DRESULT_o2s
+.Le7:
+	.size	RTTI_sDISK_IO_ss_DRESULT_o2s, .Le7 - RTTI_sDISK_IO_ss_DRESULT_o2s
 
 .section .data.n_RTTI_sDISK_IO_ss_PUINT
 .globl	RTTI_sDISK_IO_ss_PUINT
@@ -707,8 +901,8 @@ RTTI_sDISK_IO_ss_PUINT:
 	.ascii	"PUINT"
 	.short	0
 	.short	RTTI_sSYSTEM_ss_NATIVEUINTsindirect
-.Le7:
-	.size	RTTI_sDISK_IO_ss_PUINT, .Le7 - RTTI_sDISK_IO_ss_PUINT
+.Le8:
+	.size	RTTI_sDISK_IO_ss_PUINT, .Le8 - RTTI_sDISK_IO_ss_PUINT
 # End asmlist al_rtti
 # Begin asmlist al_indirectglobals
 
@@ -717,32 +911,32 @@ RTTI_sDISK_IO_ss_PUINT:
 .globl	RTTI_sDISK_IO_ss_DRESULTsindirect
 RTTI_sDISK_IO_ss_DRESULTsindirect:
 	.short	RTTI_sDISK_IO_ss_DRESULT
-.Le8:
-	.size	RTTI_sDISK_IO_ss_DRESULTsindirect, .Le8 - RTTI_sDISK_IO_ss_DRESULTsindirect
+.Le9:
+	.size	RTTI_sDISK_IO_ss_DRESULTsindirect, .Le9 - RTTI_sDISK_IO_ss_DRESULTsindirect
 
 .section .data.n_RTTI_sDISK_IO_ss_DRESULT_s2o
 	.balign 2
 .globl	RTTI_sDISK_IO_ss_DRESULT_s2osindirect
 RTTI_sDISK_IO_ss_DRESULT_s2osindirect:
 	.short	RTTI_sDISK_IO_ss_DRESULT_s2o
-.Le9:
-	.size	RTTI_sDISK_IO_ss_DRESULT_s2osindirect, .Le9 - RTTI_sDISK_IO_ss_DRESULT_s2osindirect
+.Le10:
+	.size	RTTI_sDISK_IO_ss_DRESULT_s2osindirect, .Le10 - RTTI_sDISK_IO_ss_DRESULT_s2osindirect
 
 .section .data.n_RTTI_sDISK_IO_ss_DRESULT_o2s
 	.balign 2
 .globl	RTTI_sDISK_IO_ss_DRESULT_o2ssindirect
 RTTI_sDISK_IO_ss_DRESULT_o2ssindirect:
 	.short	RTTI_sDISK_IO_ss_DRESULT_o2s
-.Le10:
-	.size	RTTI_sDISK_IO_ss_DRESULT_o2ssindirect, .Le10 - RTTI_sDISK_IO_ss_DRESULT_o2ssindirect
+.Le11:
+	.size	RTTI_sDISK_IO_ss_DRESULT_o2ssindirect, .Le11 - RTTI_sDISK_IO_ss_DRESULT_o2ssindirect
 
 .section .data.n_RTTI_sDISK_IO_ss_PUINT
 	.balign 2
 .globl	RTTI_sDISK_IO_ss_PUINTsindirect
 RTTI_sDISK_IO_ss_PUINTsindirect:
 	.short	RTTI_sDISK_IO_ss_PUINT
-.Le11:
-	.size	RTTI_sDISK_IO_ss_PUINTsindirect, .Le11 - RTTI_sDISK_IO_ss_PUINTsindirect
+.Le12:
+	.size	RTTI_sDISK_IO_ss_PUINTsindirect, .Le12 - RTTI_sDISK_IO_ss_PUINTsindirect
 # End asmlist al_indirectglobals
 # Begin asmlist al_dwarf_frame
 

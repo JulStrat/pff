@@ -1,14 +1,114 @@
 	.file "pff_ard.pas"
 # Begin asmlist al_procedures
 
-.section .text.n_pspff_ard_ss_t_catspcharssboolean,"ax"
-.globl	PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN
-PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN:
+.section .text.n_pspff_ard_ss_t_dirspcharssboolean,"ax"
+.globl	PsPFF_ARD_ss_T_DIRsPCHARssBOOLEAN
+PsPFF_ARD_ss_T_DIRsPCHARssBOOLEAN:
 .Lc2:
 # [pff_ard.pas]
-# [20] begin
+# [39] begin
 	push	r29
 	push	r28
+	push	r3
+	push	r2
+	in	r28,61
+	in	r29,62
+	subi	r28,3
+	sbci	r29,2
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+# Var $result located in register r2
+# Var bfl located at r28+2, size=OS_NO
+# Var brl located in register r18
+# Var cntl located in register r18
+	movw	r2,r24
+# Var fname located in register r2
+# [40] uart_puts(DIR_F); uart_puts(fname); uart_puts(''#13#10);
+	lds	r24,(TC_sPsPFF_ARD_ss_DIR_F)
+	lds	r25,(TC_sPsPFF_ARD_ss_DIR_F+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# Var fname located in register r2
+	movw	r24,r2
+	call	UART_ss_UART_PUTSsPCHAR
+	ldi	r24,lo8(_sPFF_ARDs_Ld14)
+	ldi	r25,hi8(_sPFF_ARDs_Ld14)
+	call	UART_ss_UART_PUTSsPCHAR
+# [41] if pf_opendir(dr, fname) <> FR_OK then
+	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
+	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
+	movw	r22,r2
+	call	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
+	cp	r24,r1
+	breq	.Lj7
+# [43] uart_puts(DIR_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_DIR_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_DIR_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [44] Exit(false);
+	mov	r2,r1
+	rjmp	.Lj3
+.Lj7:
+# [49] fr := pf_readdir(dr, fi);
+	ldi	r22,lo8(U_sPsPFF_ARD_ss_FI)
+	ldi	r23,hi8(U_sPsPFF_ARD_ss_FI)
+	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
+	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
+	call	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
+	sts	(U_sPsPFF_ARD_ss_FR),r24
+# [50] uart_puts('> '); uart_puts(fi.fname); uart_puts(''#13#10);
+	ldi	r24,lo8(_sPFF_ARDs_Ld15)
+	ldi	r25,hi8(_sPFF_ARDs_Ld15)
+	call	UART_ss_UART_PUTSsPCHAR
+	ldi	r24,lo8(U_sPsPFF_ARD_ss_FI+9)
+	ldi	r25,hi8(U_sPsPFF_ARD_ss_FI+9)
+	call	UART_ss_UART_PUTSsPCHAR
+	ldi	r24,lo8(_sPFF_ARDs_Ld14)
+	ldi	r25,hi8(_sPFF_ARDs_Ld14)
+	call	UART_ss_UART_PUTSsPCHAR
+# [52] until fi.fname[0] = char(#0);
+	lds	r18,(U_sPsPFF_ARD_ss_FI+9)
+	cp	r18,r1
+	brne	.Lj7
+# [53] uart_puts(DIR_OK);
+	lds	r24,(TC_sPsPFF_ARD_ss_DIR_OK)
+	lds	r25,(TC_sPsPFF_ARD_ss_DIR_OK+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [54] Result := true
+	ldi	r26,1
+	mov	r2,r26
+.Lj3:
+# [55] end;
+	mov	r24,r2
+	subi	r28,-3
+	sbci	r29,-3
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+	pop	r2
+	pop	r3
+	pop	r28
+	pop	r29
+	ret
+.Lc1:
+.Le0:
+	.size	PsPFF_ARD_ss_T_DIRsPCHARssBOOLEAN, .Le0 - PsPFF_ARD_ss_T_DIRsPCHARssBOOLEAN
+
+.section .text.n_pspff_ard_ss_t_catspcharslongwordssboolean,"ax"
+.globl	PsPFF_ARD_ss_T_CATsPCHARsLONGWORDssBOOLEAN
+PsPFF_ARD_ss_T_CATsPCHARsLONGWORDssBOOLEAN:
+.Lc4:
+# [62] begin
+	push	r29
+	push	r28
+	push	r10
+	push	r9
+	push	r8
+	push	r7
 	push	r6
 	push	r5
 	push	r4
@@ -23,58 +123,113 @@ PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN:
 	out	62,r29
 	out	63,r0
 	out	61,r28
-# Var $result located in register r6
+# Var $result located in register r5
 # Var bfl located at r28+2, size=OS_NO
 # Var brl located at r28+515, size=OS_16
 # Var cntl located in register r18
-# Var fname located in register r24
-# [21] if pf_open(fname) <> FR_OK then
+	movw	r2,r24
+# Var fname located in register r2
+	mov	r10,r20
+	mov	r7,r21
+	movw	r8,r22
+# Var off located in register r10
+# [63] uart_puts(CAT_F); uart_puts(fname); uart_puts(''#13#10);
+	lds	r24,(TC_sPsPFF_ARD_ss_CAT_F)
+	lds	r25,(TC_sPsPFF_ARD_ss_CAT_F+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# Var fname located in register r2
+	movw	r24,r2
+	call	UART_ss_UART_PUTSsPCHAR
+	ldi	r24,lo8(_sPFF_ARDs_Ld14)
+	ldi	r25,hi8(_sPFF_ARDs_Ld14)
+	call	UART_ss_UART_PUTSsPCHAR
+# [64] if pf_open(fname) <> FR_OK then
+	movw	r24,r2
 	call	PFF_ss_PF_OPENsPCHARssFRESULT
 	cp	r24,r1
-	breq	.Lj6
-# [22] Exit(false);
-	mov	r6,r1
-	rjmp	.Lj3
-.Lj6:
-# Var cntl located in register r2
-# [24] cntl := 0;
-	mov	r2,r1
-	mov	r3,r1
-	mov	r4,r1
+	breq	.Lj13
+# [66] uart_puts(CAT_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_CAT_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_CAT_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [67] Exit(false);
 	mov	r5,r1
-# [25] while pf_read(@bfl, 512, brl) = FR_OK do
-	rjmp	.Lj8
-.Lj7:
-# [27] bfl[brl] := #0;
-	ldi	r30,lo8(515)
-	ldi	r31,hi8(515)
-	add	r30,r28
-	adc	r31,r29
-	ld	r19,Z+
-	ld	r20,Z
-	movw	r30,r28
-	add	r30,r19
-	adc	r31,r20
-	adiw	r30,2
-	st	Z,r1
+	rjmp	.Lj10
+.Lj13:
+# Var cntl located in register r3
+# [70] cntl := 0;
+	mov	r3,r1
+	mov	r6,r1
+	mov	r2,r1
+	mov	r4,r1
+# [71] if pf_lseek(off) <> FR_OK then
+	mov	r22,r10
+	mov	r23,r7
+	movw	r24,r8
+	call	PFF_ss_PF_LSEEKsLONGWORDssFRESULT
+	cp	r24,r1
+	breq	.Lj15
+# [73] uart_puts(CAT_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_CAT_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_CAT_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [74] Exit(false);
+	mov	r5,r1
+	rjmp	.Lj10
+.Lj15:
+# [77] cntl := cntl + fs.fptr;
+	lds	r18,(U_sPsPFF_ARD_ss_FS+24)
+	lds	r19,(U_sPsPFF_ARD_ss_FS+25)
+	lds	r20,(U_sPsPFF_ARD_ss_FS+26)
+	lds	r21,(U_sPsPFF_ARD_ss_FS+27)
+	add	r3,r18
+	adc	r6,r19
+	adc	r2,r20
+	adc	r4,r21
+# [78] while pf_read(@bfl, 512, brl) = FR_OK do
+	rjmp	.Lj17
+.Lj16:
 	ldi	r30,lo8(515)
 	ldi	r31,hi8(515)
 	add	r30,r28
 	adc	r31,r29
 	ld	r20,Z+
 	ld	r21,Z
-# [28] cntl := cntl + brl;
-	add	r2,r20
-	adc	r3,r21
+# [80] cntl := cntl + brl;
+	add	r3,r20
+	adc	r6,r21
+	adc	r2,r1
 	adc	r4,r1
-	adc	r5,r1
-# [29] uart_puts(bfl);
+# [81] bfl[brl] := #0;
+	ldi	r30,lo8(515)
+	ldi	r31,hi8(515)
+	add	r30,r28
+	adc	r31,r29
+	ld	r20,Z+
+	ld	r19,Z
+	movw	r30,r28
+	add	r30,r20
+	adc	r31,r19
+	adiw	r30,2
+	st	Z,r1
+# [82] uart_puts(bfl);
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
 	adc	r25,r29
 	call	UART_ss_UART_PUTSsPCHAR
-.Lj8:
+# [83] if brl < 512 then break;
+	ldi	r30,lo8(515)
+	ldi	r31,hi8(515)
+	add	r30,r28
+	adc	r31,r29
+	ld	r18,Z+
+	ld	r19,Z
+	cp	r18,r1
+	ldi	r18,2
+	cpc	r19,r18
+	brlo	.Lj18
+.Lj17:
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -88,29 +243,38 @@ PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN:
 	mov	r23,r26
 	call	PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
 	cp	r24,r1
-	brne	.Lj13
-# [36] end;
-	rjmp	.Lj7
-.Lj13:
-# [32] if cntl = fs.fsize then
+	brne	.Lj24
+# [96] end;
+	rjmp	.Lj16
+.Lj24:
+.Lj18:
+# [86] if cntl = fs.fsize then
 	lds	r18,(U_sPsPFF_ARD_ss_FS+28)
 	lds	r19,(U_sPsPFF_ARD_ss_FS+29)
 	lds	r20,(U_sPsPFF_ARD_ss_FS+30)
 	lds	r21,(U_sPsPFF_ARD_ss_FS+31)
-	cp	r18,r2
-	cpc	r19,r3
-	cpc	r20,r4
-	cpc	r21,r5
-	brne	.Lj11
-# [33] Result := true
+	cp	r18,r3
+	cpc	r19,r6
+	cpc	r20,r2
+	cpc	r21,r4
+	brne	.Lj22
+# [88] uart_puts(CAT_OK);
+	lds	r24,(TC_sPsPFF_ARD_ss_CAT_OK)
+	lds	r25,(TC_sPsPFF_ARD_ss_CAT_OK+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [89] Result := true
 	ldi	r26,1
-	mov	r6,r26
-	rjmp	.Lj3
-.Lj11:
-# [35] Result := false;
-	mov	r6,r1
-.Lj3:
-	mov	r24,r6
+	mov	r5,r26
+	rjmp	.Lj10
+.Lj22:
+# [93] uart_puts(CAT_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_CAT_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_CAT_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [94] Result := false;
+	mov	r5,r1
+.Lj10:
+	mov	r24,r5
 	subi	r28,-5
 	sbci	r29,-3
 	in	r0,63
@@ -123,18 +287,22 @@ PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN:
 	pop	r4
 	pop	r5
 	pop	r6
+	pop	r7
+	pop	r8
+	pop	r9
+	pop	r10
 	pop	r28
 	pop	r29
 	ret
-.Lc1:
-.Le0:
-	.size	PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN, .Le0 - PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN
+.Lc3:
+.Le1:
+	.size	PsPFF_ARD_ss_T_CATsPCHARsLONGWORDssBOOLEAN, .Le1 - PsPFF_ARD_ss_T_CATsPCHARsLONGWORDssBOOLEAN
 
-.section .text.n_pspff_ard_ss_t_readspcharsbytessboolean,"ax"
-.globl	PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN
-PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN:
-.Lc4:
-# [43] begin
+.section .text.n_pspff_ard_ss_t_readspcharssboolean,"ax"
+.globl	PsPFF_ARD_ss_T_READsPCHARssBOOLEAN
+PsPFF_ARD_ss_T_READsPCHARssBOOLEAN:
+.Lc6:
+# [103] begin
 	push	r29
 	push	r28
 	push	r6
@@ -155,37 +323,63 @@ PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN:
 # Var bfl located at r28+2, size=OS_NO
 # Var brl located at r28+515, size=OS_16
 # Var cntl located in register r18
-# Var fname located in register r24
-# Var sig located in register r22
-# [44] if pf_open(fname) <> FR_OK then
+	movw	r2,r24
+# Var fname located in register r2
+# [104] uart_puts(READ_F); uart_puts(fname); uart_puts(''#13#10);
+	lds	r24,(TC_sPsPFF_ARD_ss_READ_F)
+	lds	r25,(TC_sPsPFF_ARD_ss_READ_F+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# Var fname located in register r2
+	movw	r24,r2
+	call	UART_ss_UART_PUTSsPCHAR
+	ldi	r24,lo8(_sPFF_ARDs_Ld14)
+	ldi	r25,hi8(_sPFF_ARDs_Ld14)
+	call	UART_ss_UART_PUTSsPCHAR
+# [105] if pf_open(fname) <> FR_OK then
+	movw	r24,r2
 	call	PFF_ss_PF_OPENsPCHARssFRESULT
 	cp	r24,r1
-	breq	.Lj17
-# [45] Exit(false);
+	breq	.Lj28
+# [107] uart_puts(READ_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_READ_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_READ_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [108] Exit(false);
 	mov	r2,r1
-	rjmp	.Lj14
-.Lj17:
+	rjmp	.Lj25
+.Lj28:
 # Var cntl located in register r3
-# [47] cntl := 0;
+# [111] cntl := 0;
 	mov	r3,r1
 	mov	r4,r1
 	mov	r5,r1
 	mov	r6,r1
-# [48] while pf_read(@bfl, 512, brl) = FR_OK do
-	rjmp	.Lj19
-.Lj18:
+# [112] while pf_read(@bfl, 512, brl) = FR_OK do
+	rjmp	.Lj30
+.Lj29:
 	ldi	r30,lo8(515)
 	ldi	r31,hi8(515)
 	add	r30,r28
 	adc	r31,r29
 	ld	r20,Z+
 	ld	r21,Z
-# [50] cntl := cntl + brl;
+# [114] cntl := cntl + brl;
 	add	r3,r20
 	adc	r4,r21
 	adc	r5,r1
 	adc	r6,r1
-.Lj19:
+# [115] if brl < 512 then break;
+	ldi	r30,lo8(515)
+	ldi	r31,hi8(515)
+	add	r30,r28
+	adc	r31,r29
+	ld	r18,Z+
+	ld	r19,Z
+	cp	r18,r1
+	ldi	r18,2
+	cpc	r19,r18
+	brlo	.Lj31
+.Lj30:
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -199,8 +393,12 @@ PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN:
 	mov	r23,r26
 	call	PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
 	cp	r24,r1
-	breq	.Lj18
-# [53] if cntl = fs.fsize then
+	brne	.Lj37
+# [128] end;
+	rjmp	.Lj29
+.Lj37:
+.Lj31:
+# [118] if cntl = fs.fsize then
 	lds	r18,(U_sPsPFF_ARD_ss_FS+28)
 	lds	r19,(U_sPsPFF_ARD_ss_FS+29)
 	lds	r20,(U_sPsPFF_ARD_ss_FS+30)
@@ -209,16 +407,23 @@ PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN:
 	cpc	r19,r4
 	cpc	r20,r5
 	cpc	r21,r6
-	brne	.Lj22
-# [54] Result := true
+	brne	.Lj35
+# [120] uart_puts(READ_OK);
+	lds	r24,(TC_sPsPFF_ARD_ss_READ_OK)
+	lds	r25,(TC_sPsPFF_ARD_ss_READ_OK+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [121] Result := true
 	ldi	r26,1
 	mov	r2,r26
-	rjmp	.Lj14
-.Lj22:
-# [56] Result := false;
+	rjmp	.Lj25
+.Lj35:
+# [125] uart_puts(READ_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_READ_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_READ_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [126] Result := false;
 	mov	r2,r1
-.Lj14:
-# [57] end;
+.Lj25:
 	mov	r24,r2
 	subi	r28,-5
 	sbci	r29,-3
@@ -235,217 +440,263 @@ PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN:
 	pop	r28
 	pop	r29
 	ret
-.Lc3:
-.Le1:
-	.size	PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN, .Le1 - PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN
+.Lc5:
+.Le2:
+	.size	PsPFF_ARD_ss_T_READsPCHARssBOOLEAN, .Le2 - PsPFF_ARD_ss_T_READsPCHARssBOOLEAN
+
+.section .text.n_pspff_ard_ss_t_writespcharssboolean,"ax"
+.globl	PsPFF_ARD_ss_T_WRITEsPCHARssBOOLEAN
+PsPFF_ARD_ss_T_WRITEsPCHARssBOOLEAN:
+.Lc8:
+# [135] begin
+	push	r29
+	push	r28
+	push	r8
+	push	r7
+	push	r6
+	push	r5
+	push	r4
+	push	r3
+	push	r2
+	in	r28,61
+	in	r29,62
+	subi	r28,4
+	sbci	r29,0
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+# Var $result located in register r8
+# Var bfl located in register r18
+# Var bwl located at r28+2, size=OS_16
+# Var cntl located in register r18
+	movw	r2,r24
+# Var fname located in register r2
+# [136] uart_puts(WRITE_F); uart_puts(fname); uart_puts(''#13#10);
+	lds	r24,(TC_sPsPFF_ARD_ss_WRITE_F)
+	lds	r25,(TC_sPsPFF_ARD_ss_WRITE_F+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# Var fname located in register r2
+	movw	r24,r2
+	call	UART_ss_UART_PUTSsPCHAR
+	ldi	r24,lo8(_sPFF_ARDs_Ld14)
+	ldi	r25,hi8(_sPFF_ARDs_Ld14)
+	call	UART_ss_UART_PUTSsPCHAR
+# [137] if pf_open(fname) <> FR_OK then
+	movw	r24,r2
+	call	PFF_ss_PF_OPENsPCHARssFRESULT
+	cp	r24,r1
+	breq	.Lj41
+# [139] uart_puts(WRITE_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_WRITE_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_WRITE_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [140] Exit(false);
+	mov	r8,r1
+	rjmp	.Lj38
+.Lj41:
+# Var bfl located in register r2
+# [143] bfl := WRITE_PATTERN;
+	lds	r2,(TC_sPsPFF_ARD_ss_WRITE_PATTERN)
+	lds	r3,(TC_sPsPFF_ARD_ss_WRITE_PATTERN+1)
+# Var cntl located in register r4
+# [144] cntl := 0;
+	mov	r4,r1
+	mov	r5,r1
+	mov	r6,r1
+	mov	r7,r1
+# [145] while pf_write(bfl, StrLen(bfl), bwl) = FR_OK do
+	rjmp	.Lj43
+.Lj42:
+	ldd	r20,Y+2
+	ldd	r21,Y+3
+# [147] cntl := cntl + bwl;
+	add	r4,r20
+	adc	r5,r21
+	adc	r6,r1
+	adc	r7,r1
+# [148] if bwl < StrLen(bfl) then
+	movw	r24,r2
+	call	FPC_PCHAR_LENGTH
+	mov	r21,r25
+	mov	r19,r1
+	sbrc	r25,7
+	com	r19
+	ldd	r25,Y+2
+	ldd	r23,Y+3
+	cp	r25,r24
+	cpc	r23,r21
+	cpc	r1,r19
+	cpc	r1,r19
+	brge	.Lj43
+# [150] pf_write(nil, 0, bwl);
+	ldi	r20,lo8(2)
+	ldi	r21,hi8(2)
+	add	r20,r28
+	adc	r21,r29
+	mov	r22,r1
+	mov	r23,r1
+	mov	r24,r1
+	mov	r25,r1
+	call	PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
+# [151] break;
+	rjmp	.Lj44
+.Lj43:
+	movw	r24,r2
+	call	FPC_PCHAR_LENGTH
+	movw	r22,r24
+	ldi	r20,lo8(2)
+	ldi	r21,hi8(2)
+	add	r20,r28
+	adc	r21,r29
+	movw	r24,r2
+	call	PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
+	cp	r24,r1
+	brne	.Lj50
+# [165] end;
+	rjmp	.Lj42
+.Lj50:
+.Lj44:
+# [155] if cntl = fs.fsize then
+	lds	r20,(U_sPsPFF_ARD_ss_FS+28)
+	lds	r19,(U_sPsPFF_ARD_ss_FS+29)
+	lds	r18,(U_sPsPFF_ARD_ss_FS+30)
+	lds	r21,(U_sPsPFF_ARD_ss_FS+31)
+	cp	r20,r4
+	cpc	r19,r5
+	cpc	r18,r6
+	cpc	r21,r7
+	brne	.Lj48
+# [157] uart_puts(WRITE_OK);
+	lds	r24,(TC_sPsPFF_ARD_ss_WRITE_OK)
+	lds	r25,(TC_sPsPFF_ARD_ss_WRITE_OK+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [158] Result := true
+	ldi	r26,1
+	mov	r8,r26
+	rjmp	.Lj38
+.Lj48:
+# [162] uart_puts(WRITE_ERR);
+	lds	r24,(TC_sPsPFF_ARD_ss_WRITE_ERR)
+	lds	r25,(TC_sPsPFF_ARD_ss_WRITE_ERR+1)
+	call	UART_ss_UART_PUTSsPCHAR
+# [163] Result := false;
+	mov	r8,r1
+.Lj38:
+	mov	r24,r8
+	subi	r28,-4
+	sbci	r29,-1
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+	pop	r2
+	pop	r3
+	pop	r4
+	pop	r5
+	pop	r6
+	pop	r7
+	pop	r8
+	pop	r28
+	pop	r29
+	ret
+.Lc7:
+.Le3:
+	.size	PsPFF_ARD_ss_T_WRITEsPCHARssBOOLEAN, .Le3 - PsPFF_ARD_ss_T_WRITEsPCHARssBOOLEAN
 
 .section .text.n_main,"ax"
 .globl	main
 main:
 .globl	PASCALMAIN
 PASCALMAIN:
-.Lc6:
-.Lc7:
-# Var fr located in register r18
-# [59] begin
+.Lc10:
+.Lc11:
+# [167] begin
 	call	FPC_INIT_FUNC_TABLE
-# [61] uart_init();
+# [169] uart_init();
 	call	UART_ss_UART_INIT
-# [62] uart_puts('*** PetitFS test. ***'#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld1)
-	ldi	r25,hi8(_sPFF_ARDs_Ld1)
+# [170] uart_puts('<<< PetitFS TEST >>>'#13#10);
+	ldi	r18,lo8(_sPFF_ARDs_Ld16)
+	ldi	r25,hi8(_sPFF_ARDs_Ld16)
+	mov	r24,r18
 	call	UART_ss_UART_PUTSsPCHAR
-# [63] fr := pf_mount(fs);
+# [172] fr := pf_mount(fs);
 	ldi	r24,lo8(U_sPsPFF_ARD_ss_FS)
 	ldi	r25,hi8(U_sPsPFF_ARD_ss_FS)
 	call	PFF_ss_PF_MOUNTsFATFSssFRESULT
-# Var fr located in register r24
-# [65] fr := pf_opendir(dr, '');
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
-	ldi	r22,lo8(_sPFF_ARDs_Ld2)
-	ldi	r23,hi8(_sPFF_ARDs_Ld2)
-	call	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
-	mov	r2,r24
-# Var fr located in register r2
-# [66] uart_puts('*** List root directory'#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld3)
-	ldi	r25,hi8(_sPFF_ARDs_Ld3)
-	call	UART_ss_UART_PUTSsPCHAR
-.Lj24:
-# [70] fr := pf_readdir(dr, fi);
-	ldi	r22,lo8(U_sPsPFF_ARD_ss_FI)
-	ldi	r23,hi8(U_sPsPFF_ARD_ss_FI)
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
-	call	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
-	mov	r2,r24
-# [71] uart_puts(fi.fname);
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_FI+9)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_FI+9)
-	call	UART_ss_UART_PUTSsPCHAR
-# [72] uart_puts(''#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld4)
-	ldi	r25,hi8(_sPFF_ARDs_Ld4)
-	call	UART_ss_UART_PUTSsPCHAR
-# [74] until fi.fname[0] = char(#0);
-	lds	r18,(U_sPsPFF_ARD_ss_FI+9)
-	cp	r18,r1
-	brne	.Lj24
-# [76] fr := pf_rewinddir(dr);
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
-	call	PFF_ss_PF_REWINDDIRsDIRssFRESULT
-	mov	r2,r24
-# Var fr located in register r2
-# [77] uart_puts('*** Rewind and read ... '#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld5)
-	ldi	r25,hi8(_sPFF_ARDs_Ld5)
-	call	UART_ss_UART_PUTSsPCHAR
-.Lj27:
-# [81] fr := pf_readdir(dr, fi);
-	ldi	r22,lo8(U_sPsPFF_ARD_ss_FI)
-	ldi	r23,hi8(U_sPsPFF_ARD_ss_FI)
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
-	call	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
-	mov	r2,r24
-# [82] uart_puts(fi.fname);
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_FI+9)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_FI+9)
-	call	UART_ss_UART_PUTSsPCHAR
-# [83] uart_puts(''#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld4)
-	ldi	r25,hi8(_sPFF_ARDs_Ld4)
-	call	UART_ss_UART_PUTSsPCHAR
-# [85] until fi.fname[0] = char(#0);
-	lds	r18,(U_sPsPFF_ARD_ss_FI+9)
-	cp	r18,r1
-	brne	.Lj27
-# [87] fr := pf_opendir(dr, 'RASPI');
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
-	ldi	r22,lo8(_sPFF_ARDs_Ld6)
-	ldi	r23,hi8(_sPFF_ARDs_Ld6)
-	call	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
-	mov	r2,r24
-# Var fr located in register r2
-# [88] uart_puts('*** List RASPI directory - '#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld7)
-	ldi	r25,hi8(_sPFF_ARDs_Ld7)
-	call	UART_ss_UART_PUTSsPCHAR
-.Lj30:
-# [91] fr := pf_readdir(dr, fi);
-	ldi	r22,lo8(U_sPsPFF_ARD_ss_FI)
-	ldi	r23,hi8(U_sPsPFF_ARD_ss_FI)
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_DR)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_DR)
-	call	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
-	mov	r2,r24
-# [92] uart_puts(fi.fname);
-	ldi	r24,lo8(U_sPsPFF_ARD_ss_FI+9)
-	ldi	r25,hi8(U_sPsPFF_ARD_ss_FI+9)
-	call	UART_ss_UART_PUTSsPCHAR
-# [93] uart_puts(''#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld4)
-	ldi	r25,hi8(_sPFF_ARDs_Ld4)
-	call	UART_ss_UART_PUTSsPCHAR
-# [95] until fi.fname[0] = char(#0);
-	lds	r18,(U_sPsPFF_ARD_ss_FI+9)
-	cp	r18,r1
-	brne	.Lj30
-# [97] t_cat('00README.TXT');
-	ldi	r24,lo8(_sPFF_ARDs_Ld8)
-	ldi	r25,hi8(_sPFF_ARDs_Ld8)
-	call	PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN
-# [98] uart_puts(''#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld4)
-	ldi	r25,hi8(_sPFF_ARDs_Ld4)
-	call	UART_ss_UART_PUTSsPCHAR
-# [100] t_cat('LICENSE.TXT');
-	ldi	r24,lo8(_sPFF_ARDs_Ld9)
-	ldi	r25,hi8(_sPFF_ARDs_Ld9)
-	call	PsPFF_ARD_ss_T_CATsPCHARssBOOLEAN
-# [101] uart_puts(''#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld4)
-	ldi	r25,hi8(_sPFF_ARDs_Ld4)
-	call	UART_ss_UART_PUTSsPCHAR
-# [103] uart_puts('Try read RW.TXT (1M)...'#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld10)
-	ldi	r25,hi8(_sPFF_ARDs_Ld10)
-	call	UART_ss_UART_PUTSsPCHAR
-# [104] if t_read('RW.TXT', Ord('A')) then
-	ldi	r22,65
-	ldi	r24,lo8(_sPFF_ARDs_Ld11)
-	ldi	r25,hi8(_sPFF_ARDs_Ld11)
-	call	PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN
-	cp	r24,r1
-	breq	.Lj34
-# [105] uart_puts('Done reading RW.TXT!'#13#10)
-	ldi	r24,lo8(_sPFF_ARDs_Ld12)
-	ldi	r25,hi8(_sPFF_ARDs_Ld12)
-	call	UART_ss_UART_PUTSsPCHAR
-	rjmp	.Lj35
-.Lj34:
-# [107] uart_puts('Error reading RW.TXT.'#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld13)
-	ldi	r25,hi8(_sPFF_ARDs_Ld13)
-	call	UART_ss_UART_PUTSsPCHAR
-.Lj35:
-# [109] uart_puts('Try read RW2.TXT (2M)...'#13#10);
+	sts	(U_sPsPFF_ARD_ss_FR),r24
+# [173] t_dir('');
+	ldi	r24,lo8(_sPFF_ARDs_Ld17)
+	ldi	r25,hi8(_sPFF_ARDs_Ld17)
+	call	PsPFF_ARD_ss_T_DIRsPCHARssBOOLEAN
+# [174] t_dir('RASPI');
+	ldi	r24,lo8(_sPFF_ARDs_Ld18)
+	ldi	r25,hi8(_sPFF_ARDs_Ld18)
+	call	PsPFF_ARD_ss_T_DIRsPCHARssBOOLEAN
+# [176] t_cat('00README.TXT');
+	mov	r20,r1
+	mov	r21,r1
+	mov	r22,r1
+	mov	r23,r1
+	ldi	r24,lo8(_sPFF_ARDs_Ld19)
+	ldi	r25,hi8(_sPFF_ARDs_Ld19)
+	call	PsPFF_ARD_ss_T_CATsPCHARsLONGWORDssBOOLEAN
+# [177] uart_puts(''#13#10);
 	ldi	r24,lo8(_sPFF_ARDs_Ld14)
 	ldi	r25,hi8(_sPFF_ARDs_Ld14)
 	call	UART_ss_UART_PUTSsPCHAR
-# [110] if t_read('RW2.TXT', Ord('B')) then
-	ldi	r22,66
-	ldi	r24,lo8(_sPFF_ARDs_Ld15)
-	ldi	r25,hi8(_sPFF_ARDs_Ld15)
-	call	PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN
-	cp	r24,r1
-	breq	.Lj37
-# [111] uart_puts('Done reading RW2.TXT!'#13#10)
-	ldi	r24,lo8(_sPFF_ARDs_Ld16)
-	ldi	r25,hi8(_sPFF_ARDs_Ld16)
-	call	UART_ss_UART_PUTSsPCHAR
-	rjmp	.Lj38
-.Lj37:
-# [113] uart_puts('Error reading RW2.TXT.'#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld17)
-	ldi	r25,hi8(_sPFF_ARDs_Ld17)
-	call	UART_ss_UART_PUTSsPCHAR
-.Lj38:
-# [115] uart_puts('Try read RW4.TXT (4M)...'#13#10);
-	ldi	r24,lo8(_sPFF_ARDs_Ld18)
-	ldi	r25,hi8(_sPFF_ARDs_Ld18)
-	call	UART_ss_UART_PUTSsPCHAR
-# [116] if t_read('RW4.TXT', Ord('C')) then
-	ldi	r22,67
-	ldi	r24,lo8(_sPFF_ARDs_Ld19)
-	ldi	r25,hi8(_sPFF_ARDs_Ld19)
-	call	PsPFF_ARD_ss_T_READsPCHARsBYTEssBOOLEAN
-	cp	r24,r1
-	breq	.Lj40
-# [117] uart_puts('Done reading RW4.TXT!'#13#10)
+# [179] t_cat('LICENSE.TXT');
+	mov	r20,r1
+	mov	r21,r1
+	mov	r22,r1
+	mov	r23,r1
 	ldi	r24,lo8(_sPFF_ARDs_Ld20)
 	ldi	r25,hi8(_sPFF_ARDs_Ld20)
+	call	PsPFF_ARD_ss_T_CATsPCHARsLONGWORDssBOOLEAN
+# [180] uart_puts(''#13#10);
+	ldi	r24,lo8(_sPFF_ARDs_Ld14)
+	ldi	r25,hi8(_sPFF_ARDs_Ld14)
 	call	UART_ss_UART_PUTSsPCHAR
-	rjmp	.Lj41
-.Lj40:
-# [119] uart_puts('Error reading RW4.TXT.'#13#10);
+# [182] t_read('RW.TXT');
 	ldi	r24,lo8(_sPFF_ARDs_Ld21)
 	ldi	r25,hi8(_sPFF_ARDs_Ld21)
+	call	PsPFF_ARD_ss_T_READsPCHARssBOOLEAN
+# [183] t_read('RW2.TXT');
+	ldi	r24,lo8(_sPFF_ARDs_Ld22)
+	ldi	r25,hi8(_sPFF_ARDs_Ld22)
+	call	PsPFF_ARD_ss_T_READsPCHARssBOOLEAN
+# [184] t_read('RW4.TXT');
+	ldi	r24,lo8(_sPFF_ARDs_Ld23)
+	ldi	r25,hi8(_sPFF_ARDs_Ld23)
+	call	PsPFF_ARD_ss_T_READsPCHARssBOOLEAN
+# [192] t_write('RW.TXT');
+	ldi	r24,lo8(_sPFF_ARDs_Ld21)
+	ldi	r25,hi8(_sPFF_ARDs_Ld21)
+	call	PsPFF_ARD_ss_T_WRITEsPCHARssBOOLEAN
+# [193] t_write('RW2.TXT');
+	ldi	r24,lo8(_sPFF_ARDs_Ld22)
+	ldi	r25,hi8(_sPFF_ARDs_Ld22)
+	call	PsPFF_ARD_ss_T_WRITEsPCHARssBOOLEAN
+# [194] t_write('RW4.TXT');
+	ldi	r24,lo8(_sPFF_ARDs_Ld23)
+	ldi	r25,hi8(_sPFF_ARDs_Ld23)
+	call	PsPFF_ARD_ss_T_WRITEsPCHARssBOOLEAN
+# [196] uart_puts('<<< FINISH >>>');
+	ldi	r24,lo8(_sPFF_ARDs_Ld24)
+	ldi	r25,hi8(_sPFF_ARDs_Ld24)
 	call	UART_ss_UART_PUTSsPCHAR
-.Lj41:
-# [121] end.
+# [197] end.
 	call	fpc_do_exit
-.Lc5:
-.Le2:
-	.size	main, .Le2 - main
+.Lc9:
+.Le4:
+	.size	main, .Le4 - main
 
 .section .text.n_FPC_INIT_FUNC_TABLE,"ax"
 .globl	FPC_INIT_FUNC_TABLE
 FPC_INIT_FUNC_TABLE:
-# [122] 
+# [198] 
 	ret
 
 .section .text.n_FPC_FINALIZE_FUNC_TABLE,"ax"
@@ -456,25 +707,25 @@ FPC_FINALIZE_FUNC_TABLE:
 # Begin asmlist al_globals
 
 .section .bss.n_u_spspff_ard_ss_fs,"aw",%nobits
-# [10] fs: FATFS;
+# [29] fs: FATFS;
 	.size U_sPsPFF_ARD_ss_FS,44
 U_sPsPFF_ARD_ss_FS:
 	.zero 44
 
 .section .bss.n_u_spspff_ard_ss_dr,"aw",%nobits
-# [11] dr: DIR;
+# [30] dr: DIR;
 	.size U_sPsPFF_ARD_ss_DR,16
 U_sPsPFF_ARD_ss_DR:
 	.zero 16
 
 .section .bss.n_u_spspff_ard_ss_fi,"aw",%nobits
-# [12] fi: FILINFO;
+# [31] fi: FILINFO;
 	.size U_sPsPFF_ARD_ss_FI,24
 U_sPsPFF_ARD_ss_FI:
 	.zero 24
 
 .section .bss.n_u_spspff_ard_ss_fr,"aw",%nobits
-# [13] fr: FRESULT;
+# [32] fr: FRESULT;
 	.size U_sPsPFF_ARD_ss_FR,1
 U_sPsPFF_ARD_ss_FR:
 	.zero 1
@@ -484,62 +735,62 @@ U_sPsPFF_ARD_ss_FR:
 .globl	INITFINAL
 INITFINAL:
 	.byte	0,0
-.Le3:
-	.size	INITFINAL, .Le3 - INITFINAL
+.Le5:
+	.size	INITFINAL, .Le5 - INITFINAL
 
 .section .data.n_FPC_THREADVARTABLES
 	.balign 2
 .globl	FPC_THREADVARTABLES
 FPC_THREADVARTABLES:
 	.long	0
-.Le4:
-	.size	FPC_THREADVARTABLES, .Le4 - FPC_THREADVARTABLES
+.Le6:
+	.size	FPC_THREADVARTABLES, .Le6 - FPC_THREADVARTABLES
 
 .section .data.n_FPC_RESOURCESTRINGTABLES
 	.balign 2
 .globl	FPC_RESOURCESTRINGTABLES
 FPC_RESOURCESTRINGTABLES:
 	.short	0
-.Le5:
-	.size	FPC_RESOURCESTRINGTABLES, .Le5 - FPC_RESOURCESTRINGTABLES
+.Le7:
+	.size	FPC_RESOURCESTRINGTABLES, .Le7 - FPC_RESOURCESTRINGTABLES
 
 .section .data.n_FPC_WIDEINITTABLES
 	.balign 2
 .globl	FPC_WIDEINITTABLES
 FPC_WIDEINITTABLES:
 	.short	0
-.Le6:
-	.size	FPC_WIDEINITTABLES, .Le6 - FPC_WIDEINITTABLES
+.Le8:
+	.size	FPC_WIDEINITTABLES, .Le8 - FPC_WIDEINITTABLES
 
 .section .data.n_FPC_RESSTRINITTABLES
 	.balign 2
 .globl	FPC_RESSTRINITTABLES
 FPC_RESSTRINITTABLES:
 	.short	0
-.Le7:
-	.size	FPC_RESSTRINITTABLES, .Le7 - FPC_RESSTRINITTABLES
+.Le9:
+	.size	FPC_RESSTRINITTABLES, .Le9 - FPC_RESSTRINITTABLES
 
 .section .fpc.n_version,"aw"
 __fpc_ident:
 	.ascii	"FPC 3.3.1 [2020/01/18] for avr - embedded"
-.Le8:
-	.size	__fpc_ident, .Le8 - __fpc_ident
+.Le10:
+	.size	__fpc_ident, .Le10 - __fpc_ident
 
 .section .data.n___stklen
 	.balign 2
 .globl	__stklen
 __stklen:
 	.short	1024
-.Le9:
-	.size	__stklen, .Le9 - __stklen
+.Le11:
+	.size	__stklen, .Le11 - __stklen
 
 .section .data.n___heapsize
 	.balign 2
 .globl	__heapsize
 __heapsize:
 	.short	128
-.Le10:
-	.size	__heapsize, .Le10 - __heapsize
+.Le12:
+	.size	__heapsize, .Le12 - __heapsize
 
 .section .bss.n___fpc_initialheap,"aw",%nobits
 	.globl __fpc_initialheap
@@ -552,164 +803,266 @@ __fpc_initialheap:
 .globl	__fpc_valgrind
 __fpc_valgrind:
 	.byte	0
-.Le11:
-	.size	__fpc_valgrind, .Le11 - __fpc_valgrind
+.Le13:
+	.size	__fpc_valgrind, .Le13 - __fpc_valgrind
 # End asmlist al_globals
+# Begin asmlist al_const
+
+.section .rodata.n_.Ld1
+.Ld1:
+# [10] DIR_F: PChar = 'DIR list - ';
+	.ascii	"DIR list - \000"
+.Le14:
+	.size	.Ld1, .Le14 - .Ld1
+
+.section .rodata.n_.Ld2
+.Ld2:
+# [11] DIR_OK: PChar = 'DIR - OK'#13#10;
+	.ascii	"DIR - OK\015\012\000"
+.Le15:
+	.size	.Ld2, .Le15 - .Ld2
+
+.section .rodata.n_.Ld3
+.Ld3:
+# [12] DIR_ERR: PChar = 'DIR - ERR'#13#10;
+	.ascii	"DIR - ERR\015\012\000"
+.Le16:
+	.size	.Ld3, .Le16 - .Ld3
+
+.section .rodata.n_.Ld4
+.Ld4:
+# [14] CAT_F: PChar = 'CAT file - ';
+	.ascii	"CAT file - \000"
+.Le17:
+	.size	.Ld4, .Le17 - .Ld4
+
+.section .rodata.n_.Ld5
+.Ld5:
+# [15] CAT_OK: PChar = 'CAT - OK'#13#10;
+	.ascii	"CAT - OK\015\012\000"
+.Le18:
+	.size	.Ld5, .Le18 - .Ld5
+
+.section .rodata.n_.Ld6
+.Ld6:
+# [16] CAT_ERR: PChar = 'CAT - ERR'#13#10;
+	.ascii	"CAT - ERR\015\012\000"
+.Le19:
+	.size	.Ld6, .Le19 - .Ld6
+
+.section .rodata.n_.Ld7
+.Ld7:
+# [18] READ_F: PChar = 'READ file - ';
+	.ascii	"READ file - \000"
+.Le20:
+	.size	.Ld7, .Le20 - .Ld7
+
+.section .rodata.n_.Ld8
+.Ld8:
+# [19] READ_OK: PChar = 'READ - OK'#13#10;
+	.ascii	"READ - OK\015\012\000"
+.Le21:
+	.size	.Ld8, .Le21 - .Ld8
+
+.section .rodata.n_.Ld9
+.Ld9:
+# [20] READ_ERR: PChar = 'READ - ERR'#13#10;
+	.ascii	"READ - ERR\015\012\000"
+.Le22:
+	.size	.Ld9, .Le22 - .Ld9
+
+.section .rodata.n_.Ld10
+.Ld10:
+# [22] WRITE_F: PChar = 'WRITE file - ';
+	.ascii	"WRITE file - \000"
+.Le23:
+	.size	.Ld10, .Le23 - .Ld10
+
+.section .rodata.n_.Ld11
+.Ld11:
+# [23] WRITE_OK: PChar = 'WRITE - OK'#13#10;
+	.ascii	"WRITE - OK\015\012\000"
+.Le24:
+	.size	.Ld11, .Le24 - .Ld11
+
+.section .rodata.n_.Ld12
+.Ld12:
+# [24] WRITE_ERR: PChar = 'WRITE - ERR'#13#10;
+	.ascii	"WRITE - ERR\015\012\000"
+.Le25:
+	.size	.Ld12, .Le25 - .Ld12
+
+.section .rodata.n_.Ld13
+.Ld13:
+# [26] WRITE_PATTERN: PChar = '_0123456789ABCDEF';
+	.ascii	"_0123456789ABCDEF\000"
+.Le26:
+	.size	.Ld13, .Le26 - .Ld13
+# End asmlist al_const
 # Begin asmlist al_typedconsts
 
-.section .rodata.n__sPFF_ARDs_Ld1
-.globl	_sPFF_ARDs_Ld1
-_sPFF_ARDs_Ld1:
-	.ascii	"*** PetitFS test. ***\015\012\000"
-.Le12:
-	.size	_sPFF_ARDs_Ld1, .Le12 - _sPFF_ARDs_Ld1
+.section .data.n_TC_sPsPFF_ARD_ss_DIR_F
+TC_sPsPFF_ARD_ss_DIR_F:
+	.short	.Ld1
+.Le27:
+	.size	TC_sPsPFF_ARD_ss_DIR_F, .Le27 - TC_sPsPFF_ARD_ss_DIR_F
 
-.section .rodata.n__sPFF_ARDs_Ld2
-.globl	_sPFF_ARDs_Ld2
-_sPFF_ARDs_Ld2:
-	.ascii	"\000"
-.Le13:
-	.size	_sPFF_ARDs_Ld2, .Le13 - _sPFF_ARDs_Ld2
+.section .data.n_TC_sPsPFF_ARD_ss_DIR_OK
+TC_sPsPFF_ARD_ss_DIR_OK:
+	.short	.Ld2
+.Le28:
+	.size	TC_sPsPFF_ARD_ss_DIR_OK, .Le28 - TC_sPsPFF_ARD_ss_DIR_OK
 
-.section .rodata.n__sPFF_ARDs_Ld3
-.globl	_sPFF_ARDs_Ld3
-_sPFF_ARDs_Ld3:
-	.ascii	"*** List root directory\015\012\000"
-.Le14:
-	.size	_sPFF_ARDs_Ld3, .Le14 - _sPFF_ARDs_Ld3
+.section .data.n_TC_sPsPFF_ARD_ss_DIR_ERR
+TC_sPsPFF_ARD_ss_DIR_ERR:
+	.short	.Ld3
+.Le29:
+	.size	TC_sPsPFF_ARD_ss_DIR_ERR, .Le29 - TC_sPsPFF_ARD_ss_DIR_ERR
 
-.section .rodata.n__sPFF_ARDs_Ld4
-.globl	_sPFF_ARDs_Ld4
-_sPFF_ARDs_Ld4:
-	.ascii	"\015\012\000"
-.Le15:
-	.size	_sPFF_ARDs_Ld4, .Le15 - _sPFF_ARDs_Ld4
+.section .data.n_TC_sPsPFF_ARD_ss_CAT_F
+TC_sPsPFF_ARD_ss_CAT_F:
+	.short	.Ld4
+.Le30:
+	.size	TC_sPsPFF_ARD_ss_CAT_F, .Le30 - TC_sPsPFF_ARD_ss_CAT_F
 
-.section .rodata.n__sPFF_ARDs_Ld5
-.globl	_sPFF_ARDs_Ld5
-_sPFF_ARDs_Ld5:
-	.ascii	"*** Rewind and read ... \015\012\000"
-.Le16:
-	.size	_sPFF_ARDs_Ld5, .Le16 - _sPFF_ARDs_Ld5
+.section .data.n_TC_sPsPFF_ARD_ss_CAT_OK
+TC_sPsPFF_ARD_ss_CAT_OK:
+	.short	.Ld5
+.Le31:
+	.size	TC_sPsPFF_ARD_ss_CAT_OK, .Le31 - TC_sPsPFF_ARD_ss_CAT_OK
 
-.section .rodata.n__sPFF_ARDs_Ld6
-.globl	_sPFF_ARDs_Ld6
-_sPFF_ARDs_Ld6:
-	.ascii	"RASPI\000"
-.Le17:
-	.size	_sPFF_ARDs_Ld6, .Le17 - _sPFF_ARDs_Ld6
+.section .data.n_TC_sPsPFF_ARD_ss_CAT_ERR
+TC_sPsPFF_ARD_ss_CAT_ERR:
+	.short	.Ld6
+.Le32:
+	.size	TC_sPsPFF_ARD_ss_CAT_ERR, .Le32 - TC_sPsPFF_ARD_ss_CAT_ERR
 
-.section .rodata.n__sPFF_ARDs_Ld7
-.globl	_sPFF_ARDs_Ld7
-_sPFF_ARDs_Ld7:
-	.ascii	"*** List RASPI directory - \015\012\000"
-.Le18:
-	.size	_sPFF_ARDs_Ld7, .Le18 - _sPFF_ARDs_Ld7
+.section .data.n_TC_sPsPFF_ARD_ss_READ_F
+TC_sPsPFF_ARD_ss_READ_F:
+	.short	.Ld7
+.Le33:
+	.size	TC_sPsPFF_ARD_ss_READ_F, .Le33 - TC_sPsPFF_ARD_ss_READ_F
 
-.section .rodata.n__sPFF_ARDs_Ld8
-.globl	_sPFF_ARDs_Ld8
-_sPFF_ARDs_Ld8:
-	.ascii	"00README.TXT\000"
-.Le19:
-	.size	_sPFF_ARDs_Ld8, .Le19 - _sPFF_ARDs_Ld8
+.section .data.n_TC_sPsPFF_ARD_ss_READ_OK
+TC_sPsPFF_ARD_ss_READ_OK:
+	.short	.Ld8
+.Le34:
+	.size	TC_sPsPFF_ARD_ss_READ_OK, .Le34 - TC_sPsPFF_ARD_ss_READ_OK
 
-.section .rodata.n__sPFF_ARDs_Ld9
-.globl	_sPFF_ARDs_Ld9
-_sPFF_ARDs_Ld9:
-	.ascii	"LICENSE.TXT\000"
-.Le20:
-	.size	_sPFF_ARDs_Ld9, .Le20 - _sPFF_ARDs_Ld9
+.section .data.n_TC_sPsPFF_ARD_ss_READ_ERR
+TC_sPsPFF_ARD_ss_READ_ERR:
+	.short	.Ld9
+.Le35:
+	.size	TC_sPsPFF_ARD_ss_READ_ERR, .Le35 - TC_sPsPFF_ARD_ss_READ_ERR
 
-.section .rodata.n__sPFF_ARDs_Ld10
-.globl	_sPFF_ARDs_Ld10
-_sPFF_ARDs_Ld10:
-	.ascii	"Try read RW.TXT (1M)...\015\012\000"
-.Le21:
-	.size	_sPFF_ARDs_Ld10, .Le21 - _sPFF_ARDs_Ld10
+.section .data.n_TC_sPsPFF_ARD_ss_WRITE_F
+TC_sPsPFF_ARD_ss_WRITE_F:
+	.short	.Ld10
+.Le36:
+	.size	TC_sPsPFF_ARD_ss_WRITE_F, .Le36 - TC_sPsPFF_ARD_ss_WRITE_F
 
-.section .rodata.n__sPFF_ARDs_Ld11
-.globl	_sPFF_ARDs_Ld11
-_sPFF_ARDs_Ld11:
-	.ascii	"RW.TXT\000"
-.Le22:
-	.size	_sPFF_ARDs_Ld11, .Le22 - _sPFF_ARDs_Ld11
+.section .data.n_TC_sPsPFF_ARD_ss_WRITE_OK
+TC_sPsPFF_ARD_ss_WRITE_OK:
+	.short	.Ld11
+.Le37:
+	.size	TC_sPsPFF_ARD_ss_WRITE_OK, .Le37 - TC_sPsPFF_ARD_ss_WRITE_OK
 
-.section .rodata.n__sPFF_ARDs_Ld12
-.globl	_sPFF_ARDs_Ld12
-_sPFF_ARDs_Ld12:
-	.ascii	"Done reading RW.TXT!\015\012\000"
-.Le23:
-	.size	_sPFF_ARDs_Ld12, .Le23 - _sPFF_ARDs_Ld12
+.section .data.n_TC_sPsPFF_ARD_ss_WRITE_ERR
+TC_sPsPFF_ARD_ss_WRITE_ERR:
+	.short	.Ld12
+.Le38:
+	.size	TC_sPsPFF_ARD_ss_WRITE_ERR, .Le38 - TC_sPsPFF_ARD_ss_WRITE_ERR
 
-.section .rodata.n__sPFF_ARDs_Ld13
-.globl	_sPFF_ARDs_Ld13
-_sPFF_ARDs_Ld13:
-	.ascii	"Error reading RW.TXT.\015\012\000"
-.Le24:
-	.size	_sPFF_ARDs_Ld13, .Le24 - _sPFF_ARDs_Ld13
+.section .data.n_TC_sPsPFF_ARD_ss_WRITE_PATTERN
+TC_sPsPFF_ARD_ss_WRITE_PATTERN:
+	.short	.Ld13
+# [28] var
+.Le39:
+	.size	TC_sPsPFF_ARD_ss_WRITE_PATTERN, .Le39 - TC_sPsPFF_ARD_ss_WRITE_PATTERN
 
 .section .rodata.n__sPFF_ARDs_Ld14
 .globl	_sPFF_ARDs_Ld14
 _sPFF_ARDs_Ld14:
-	.ascii	"Try read RW2.TXT (2M)...\015\012\000"
-.Le25:
-	.size	_sPFF_ARDs_Ld14, .Le25 - _sPFF_ARDs_Ld14
+	.ascii	"\015\012\000"
+.Le40:
+	.size	_sPFF_ARDs_Ld14, .Le40 - _sPFF_ARDs_Ld14
 
 .section .rodata.n__sPFF_ARDs_Ld15
 .globl	_sPFF_ARDs_Ld15
 _sPFF_ARDs_Ld15:
-	.ascii	"RW2.TXT\000"
-.Le26:
-	.size	_sPFF_ARDs_Ld15, .Le26 - _sPFF_ARDs_Ld15
+	.ascii	"> \000"
+.Le41:
+	.size	_sPFF_ARDs_Ld15, .Le41 - _sPFF_ARDs_Ld15
 
 .section .rodata.n__sPFF_ARDs_Ld16
 .globl	_sPFF_ARDs_Ld16
 _sPFF_ARDs_Ld16:
-	.ascii	"Done reading RW2.TXT!\015\012\000"
-.Le27:
-	.size	_sPFF_ARDs_Ld16, .Le27 - _sPFF_ARDs_Ld16
+	.ascii	"<<< PetitFS TEST >>>\015\012\000"
+.Le42:
+	.size	_sPFF_ARDs_Ld16, .Le42 - _sPFF_ARDs_Ld16
 
 .section .rodata.n__sPFF_ARDs_Ld17
 .globl	_sPFF_ARDs_Ld17
 _sPFF_ARDs_Ld17:
-	.ascii	"Error reading RW2.TXT.\015\012\000"
-.Le28:
-	.size	_sPFF_ARDs_Ld17, .Le28 - _sPFF_ARDs_Ld17
+	.ascii	"\000"
+.Le43:
+	.size	_sPFF_ARDs_Ld17, .Le43 - _sPFF_ARDs_Ld17
 
 .section .rodata.n__sPFF_ARDs_Ld18
 .globl	_sPFF_ARDs_Ld18
 _sPFF_ARDs_Ld18:
-	.ascii	"Try read RW4.TXT (4M)...\015\012\000"
-.Le29:
-	.size	_sPFF_ARDs_Ld18, .Le29 - _sPFF_ARDs_Ld18
+	.ascii	"RASPI\000"
+.Le44:
+	.size	_sPFF_ARDs_Ld18, .Le44 - _sPFF_ARDs_Ld18
 
 .section .rodata.n__sPFF_ARDs_Ld19
 .globl	_sPFF_ARDs_Ld19
 _sPFF_ARDs_Ld19:
-	.ascii	"RW4.TXT\000"
-.Le30:
-	.size	_sPFF_ARDs_Ld19, .Le30 - _sPFF_ARDs_Ld19
+	.ascii	"00README.TXT\000"
+.Le45:
+	.size	_sPFF_ARDs_Ld19, .Le45 - _sPFF_ARDs_Ld19
 
 .section .rodata.n__sPFF_ARDs_Ld20
 .globl	_sPFF_ARDs_Ld20
 _sPFF_ARDs_Ld20:
-	.ascii	"Done reading RW4.TXT!\015\012\000"
-.Le31:
-	.size	_sPFF_ARDs_Ld20, .Le31 - _sPFF_ARDs_Ld20
+	.ascii	"LICENSE.TXT\000"
+.Le46:
+	.size	_sPFF_ARDs_Ld20, .Le46 - _sPFF_ARDs_Ld20
 
 .section .rodata.n__sPFF_ARDs_Ld21
 .globl	_sPFF_ARDs_Ld21
 _sPFF_ARDs_Ld21:
-	.ascii	"Error reading RW4.TXT.\015\012\000"
-.Le32:
-	.size	_sPFF_ARDs_Ld21, .Le32 - _sPFF_ARDs_Ld21
+	.ascii	"RW.TXT\000"
+.Le47:
+	.size	_sPFF_ARDs_Ld21, .Le47 - _sPFF_ARDs_Ld21
+
+.section .rodata.n__sPFF_ARDs_Ld22
+.globl	_sPFF_ARDs_Ld22
+_sPFF_ARDs_Ld22:
+	.ascii	"RW2.TXT\000"
+.Le48:
+	.size	_sPFF_ARDs_Ld22, .Le48 - _sPFF_ARDs_Ld22
+
+.section .rodata.n__sPFF_ARDs_Ld23
+.globl	_sPFF_ARDs_Ld23
+_sPFF_ARDs_Ld23:
+	.ascii	"RW4.TXT\000"
+.Le49:
+	.size	_sPFF_ARDs_Ld23, .Le49 - _sPFF_ARDs_Ld23
+
+.section .rodata.n__sPFF_ARDs_Ld24
+.globl	_sPFF_ARDs_Ld24
+_sPFF_ARDs_Ld24:
+	.ascii	"<<< FINISH >>>\000"
+.Le50:
+	.size	_sPFF_ARDs_Ld24, .Le50 - _sPFF_ARDs_Ld24
 # End asmlist al_typedconsts
 # Begin asmlist al_dwarf_frame
 
 .section .debug_frame
-.Lc8:
-	.long	.Lc10-.Lc9
-.Lc9:
+.Lc12:
+	.long	.Lc14-.Lc13
+.Lc13:
 	.long	-1
 	.byte	1
 	.byte	0
@@ -723,31 +1076,45 @@ _sPFF_ARDs_Ld21:
 	.uleb128	24
 	.uleb128	0
 	.balign 4,0
-.Lc10:
-	.long	.Lc12-.Lc11
-.Lc11:
-	.short	.Lc8
+.Lc14:
+	.long	.Lc16-.Lc15
+.Lc15:
+	.short	.Lc12
 	.short	.Lc2
 	.short	.Lc1-.Lc2
 	.balign 4,0
-.Lc12:
-	.long	.Lc15-.Lc14
-.Lc14:
-	.short	.Lc8
+.Lc16:
+	.long	.Lc19-.Lc18
+.Lc18:
+	.short	.Lc12
 	.short	.Lc4
 	.short	.Lc3-.Lc4
 	.balign 4,0
-.Lc15:
-	.long	.Lc18-.Lc17
-.Lc17:
-	.short	.Lc8
+.Lc19:
+	.long	.Lc22-.Lc21
+.Lc21:
+	.short	.Lc12
 	.short	.Lc6
 	.short	.Lc5-.Lc6
+	.balign 4,0
+.Lc22:
+	.long	.Lc25-.Lc24
+.Lc24:
+	.short	.Lc12
+	.short	.Lc8
+	.short	.Lc7-.Lc8
+	.balign 4,0
+.Lc25:
+	.long	.Lc28-.Lc27
+.Lc27:
+	.short	.Lc12
+	.short	.Lc10
+	.short	.Lc9-.Lc10
 	.byte	4
-	.long	.Lc7-.Lc6
+	.long	.Lc11-.Lc10
 	.byte	7
 	.uleb128	24
 	.balign 4,0
-.Lc18:
+.Lc28:
 # End asmlist al_dwarf_frame
 

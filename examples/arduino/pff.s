@@ -313,7 +313,7 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 	adc	r25,r29
 	ldi	r16,4
 	mov	r17,r1
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	brne	.Lj30
 # [515] Result := ld_dword(buf) and $0FFFFFFF;
@@ -865,7 +865,7 @@ PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT:
 	ldi	r16,32
 	mov	r17,r1
 	movw	r24,r4
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	breq	.Lj86
 # [641] Exit(FRESULT.FR_DISK_ERR);
@@ -988,7 +988,7 @@ PFF_ss_DIR_READsDIRsPBYTEssFRESULT:
 	mov	r17,r1
 	mov	r24,r8
 	mov	r25,r5
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	breq	.Lj101
 # [676] Result := FR_DISK_ERR;
@@ -1611,7 +1611,7 @@ PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE:
 	movw	r20,r4
 	movw	r22,r6
 	movw	r24,r2
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	breq	.Lj184
 # [891] Exit(3);
@@ -1642,7 +1642,7 @@ PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE:
 	movw	r20,r4
 	movw	r22,r6
 	movw	r24,r2
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	brne	.Lj195
 # [901] if (buf[0] = $46) and (buf[1] = $41) then
@@ -1770,7 +1770,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r21,r8
 	mov	r22,r7
 	mov	r23,r6
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	breq	.Lj207
 # [928] fmt := 3
@@ -1834,7 +1834,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r21,r8
 	mov	r22,r7
 	mov	r23,r6
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	breq	.Lj216
 # [947] Exit(FR_DISK_ERR);
@@ -2672,7 +2672,7 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r24,r25
 	ldd	r15,Y+8
 	mov	r25,r15
-	call	DISK_IO_ss_DISK_READPsPOINTERsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
+	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	mov	r4,r24
 # [1086] if dr <> RES_OK then
 	cp	r4,r1
@@ -2781,10 +2781,1176 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 .Le21:
 	.size	PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT, .Le21 - PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
 
+.section .text.n_pff_ss_pf_lseekslongwordssfresult,"ax"
+.globl	PFF_ss_PF_LSEEKsLONGWORDssFRESULT
+PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
+.Lc46:
+# Temps allocated between r28+2 and r28+15
+# [1105] begin
+	push	r29
+	push	r28
+	push	r17
+	push	r16
+	push	r15
+	push	r14
+	push	r13
+	push	r12
+	push	r11
+	push	r10
+	push	r9
+	push	r8
+	push	r7
+	push	r6
+	push	r5
+	push	r4
+	push	r3
+	push	r2
+	in	r28,61
+	in	r29,62
+	subi	r28,15
+	sbci	r29,0
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+# Var $result located in register r18
+# Var clst located in register r3
+# Var bcs located in register r18
+# Var sect located in register r22
+# Var ifptr located in register r18
+	std	Y+3,r22
+	std	Y+4,r23
+	std	Y+5,r24
+	std	Y+6,r25
+# Var ofs located in register r18
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	cp	r18,r1
+	cpc	r19,r1
+	brne	.Lj273
+	ldi	r26,5
+	std	Y+2,r26
+	rjmp	.Lj270
+.Lj273:
+# [1109] if (iFatFs.flag and FA_OPENED) = 0 then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+1
+	andi	r18,1
+	brne	.Lj275
+# [1110] Exit(FR_NOT_OPENED);
+	ldi	r26,4
+	std	Y+2,r26
+	rjmp	.Lj270
+.Lj275:
+# [1112] if ofs > iFatFs.fsize then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r19,Z+28
+	ldd	r20,Z+29
+	ldd	r21,Z+30
+	ldd	r22,Z+31
+	ldd	r18,Y+3
+	cp	r19,r18
+	ldd	r18,Y+4
+	cpc	r20,r18
+	ldd	r18,Y+5
+	cpc	r21,r18
+	ldd	r18,Y+6
+	cpc	r22,r18
+	brsh	.Lj277
+# [1114] ofs := iFatFs.fsize;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+28
+	std	Y+3,r18
+	ldd	r18,Z+29
+	std	Y+4,r18
+	ldd	r18,Z+30
+	std	Y+5,r18
+	ldd	r18,Z+31
+	std	Y+6,r18
+.Lj277:
+# [1115] ifptr := iFatFs.fptr;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+# Var ifptr located in register r18
+	movw	r30,r18
+	ldd	r18,Z+24
+	std	Y+14,r18
+	ldd	r18,Z+25
+	std	Y+13,r18
+	ldd	r18,Z+26
+	std	Y+12,r18
+	ldd	r18,Z+27
+	std	Y+11,r18
+# [1116] iFatFs.fptr := 0;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+24,r1
+	std	Z+25,r1
+	std	Z+26,r1
+	std	Z+27,r1
+# [1117] if ofs > 0 then
+	ldd	r18,Y+3
+	cp	r1,r18
+	ldd	r18,Y+4
+	cpc	r1,r18
+	ldd	r18,Y+5
+	cpc	r1,r18
+	ldd	r18,Y+6
+	cpc	r1,r18
+	brlo	.Lj292
+# [1155] end;
+	rjmp	.Lj279
+.Lj292:
+# [1120] bcs := DWORD(iFatFs.csize) shl SECTOR_SIZE_BP;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r20,Z+2
+	mov	r21,r1
+	mov	r22,r1
+	lsl	r20
+	rol	r21
+	rol	r22
+	std	Y+7,r1
+	std	Y+8,r20
+	std	Y+9,r21
+	std	Y+10,r22
+# [1121] if (ifptr > 0) and (((ofs - 1) div bcs) >= ((ifptr - 1) div bcs)) then
+	ldd	r18,Y+14
+	cp	r1,r18
+	ldd	r18,Y+13
+	cpc	r1,r18
+	ldd	r18,Y+12
+	cpc	r1,r18
+	ldd	r18,Y+11
+	cpc	r1,r18
+	brlo	.Lj293
+	rjmp	.Lj281
+.Lj293:
+	ldd	r18,Y+3
+	mov	r24,r18
+	ldd	r18,Y+4
+	mov	r20,r18
+	ldd	r18,Y+5
+	mov	r21,r18
+	ldd	r18,Y+6
+	mov	r19,r18
+	mov	r18,r1
+	mov	r25,r1
+	mov	r2,r1
+	mov	r23,r20
+	mov	r20,r19
+	mov	r19,r1
+	subi	r24,1
+	sbc	r23,r1
+	sbc	r21,r1
+	sbc	r20,r1
+	sbc	r18,r1
+	sbc	r19,r1
+	sbc	r25,r1
+	sbc	r2,r1
+	movw	r14,r18
+	mov	r16,r25
+	mov	r17,r2
+	mov	r10,r24
+	mov	r11,r23
+	mov	r12,r21
+	mov	r13,r20
+	ldd	r19,Y+7
+	mov	r18,r19
+	ldd	r20,Y+8
+	mov	r19,r20
+	ldd	r21,Y+9
+	mov	r20,r21
+	ldd	r22,Y+10
+	mov	r21,r22
+	mov	r22,r1
+	mov	r23,r1
+	mov	r24,r1
+	mov	r25,r1
+	call	fpc_div_int64
+	mov	r9,r18
+	mov	r8,r19
+	mov	r7,r20
+	mov	r6,r21
+	mov	r5,r22
+	mov	r4,r23
+	mov	r3,r24
+	mov	r2,r25
+	ldd	r18,Y+14
+	mov	r20,r18
+	ldd	r18,Y+13
+	mov	r21,r18
+	ldd	r18,Y+12
+	mov	r22,r18
+	ldd	r18,Y+11
+	mov	r23,r20
+	mov	r20,r22
+	mov	r19,r1
+	mov	r22,r1
+	mov	r24,r1
+	mov	r25,r1
+	subi	r23,1
+	sbc	r21,r1
+	sbc	r20,r1
+	sbc	r18,r1
+	sbc	r19,r1
+	sbc	r22,r1
+	sbc	r24,r1
+	sbc	r25,r1
+	mov	r14,r19
+	mov	r15,r22
+	movw	r16,r24
+	mov	r10,r23
+	mov	r11,r21
+	mov	r12,r20
+	mov	r13,r18
+	ldd	r19,Y+7
+	mov	r18,r19
+	ldd	r20,Y+8
+	mov	r19,r20
+	ldd	r21,Y+9
+	mov	r20,r21
+	ldd	r22,Y+10
+	mov	r21,r22
+	mov	r22,r1
+	mov	r23,r1
+	mov	r24,r1
+	mov	r25,r1
+	call	fpc_div_int64
+	cp	r9,r18
+	cpc	r8,r19
+	cpc	r7,r20
+	cpc	r6,r21
+	cpc	r5,r22
+	cpc	r4,r23
+	cpc	r3,r24
+	cpc	r2,r25
+	brge	.Lj294
+	rjmp	.Lj281
+.Lj294:
+# [1125] iFatFs.fptr := (ifptr - 1) and (not (bcs - 1));
+	ldd	r18,Y+7
+	mov	r25,r18
+	ldd	r18,Y+8
+	mov	r2,r18
+	ldd	r18,Y+9
+	mov	r20,r18
+	ldd	r18,Y+10
+	mov	r19,r18
+	mov	r22,r1
+	mov	r24,r1
+	mov	r18,r1
+	mov	r21,r1
+	subi	r25,1
+	sbc	r2,r1
+	sbc	r20,r1
+	sbc	r19,r1
+	sbc	r24,r1
+	sbc	r18,r1
+	sbc	r22,r1
+	sbc	r21,r1
+	mov	r3,r25
+	com	r3
+	mov	r4,r2
+	com	r4
+	mov	r5,r20
+	com	r5
+	mov	r6,r19
+	com	r6
+	mov	r8,r24
+	com	r8
+	mov	r2,r18
+	com	r2
+	mov	r7,r22
+	com	r7
+	mov	r24,r21
+	com	r24
+	ldd	r18,Y+14
+	mov	r25,r18
+	ldd	r18,Y+13
+	mov	r21,r18
+	ldd	r18,Y+12
+	mov	r20,r18
+	ldd	r18,Y+11
+	mov	r23,r1
+	mov	r9,r1
+	mov	r10,r21
+	mov	r11,r20
+	mov	r12,r18
+	mov	r14,r1
+	mov	r15,r1
+	subi	r25,1
+	sbc	r10,r1
+	sbc	r11,r1
+	sbc	r12,r1
+	sbc	r14,r1
+	sbc	r15,r1
+	sbc	r23,r1
+	sbc	r9,r1
+	mov	r22,r3
+	mov	r3,r5
+	mov	r5,r6
+	mov	r21,r8
+	mov	r20,r2
+	mov	r19,r7
+	mov	r18,r24
+	and	r22,r25
+	and	r4,r10
+	and	r3,r11
+	and	r5,r12
+	and	r21,r14
+	and	r20,r15
+	and	r19,r23
+	and	r18,r9
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+24,r22
+	std	Z+25,r4
+	std	Z+26,r3
+	std	Z+27,r5
+# [1126] ofs := ofs - iFatFs.fptr;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r19,Z+24
+	ldd	r20,Z+25
+	ldd	r21,Z+26
+	ldd	r22,Z+27
+	ldd	r18,Y+3
+	sub	r18,r19
+	std	Y+3,r18
+	ldd	r18,Y+4
+	sbc	r18,r20
+	std	Y+4,r18
+	ldd	r18,Y+5
+	sbc	r18,r21
+	std	Y+5,r18
+	ldd	r18,Y+6
+	sbc	r18,r22
+	std	Y+6,r18
+# [1127] clst := iFatFs.curr_clust;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r3,Z+36
+	ldd	r2,Z+37
+	ldd	r4,Z+38
+	ldd	r5,Z+39
+	rjmp	.Lj285
+.Lj281:
+# [1133] clst := iFatFs.org_clust;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r3,Z+32
+	ldd	r2,Z+33
+	ldd	r4,Z+34
+	ldd	r5,Z+35
+# [1134] iFatFs.curr_clust := clst;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+36,r3
+	std	Z+37,r2
+	std	Z+38,r4
+	std	Z+39,r5
+# [1136] while ofs > bcs do
+	rjmp	.Lj285
+.Lj284:
+# [1140] clst := get_fat(clst);
+	mov	r22,r3
+	mov	r23,r2
+	movw	r24,r4
+	call	PFF_ss_GET_FATsLONGWORDssLONGWORD
+	mov	r3,r22
+	mov	r2,r23
+	movw	r4,r24
+# [1141] if (clst <= 1) or (clst >= iFatFs.n_fatent) then
+	ldi	r21,1
+	cp	r21,r3
+	cpc	r1,r2
+	cpc	r1,r4
+	cpc	r1,r5
+	brsh	.Lj287
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r20,Z+8
+	ldd	r18,Z+9
+	ldd	r19,Z+10
+	ldd	r21,Z+11
+	cp	r3,r20
+	cpc	r2,r18
+	cpc	r4,r19
+	cpc	r5,r21
+	brlo	.Lj289
+.Lj287:
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj270
+.Lj289:
+# [1143] iFatFs.curr_clust := clst;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+36,r3
+	std	Z+37,r2
+	std	Z+38,r4
+	std	Z+39,r5
+# [1144] iFatFs.fptr := iFatFs.fptr + bcs;
+	lds	r24,(U_sPFF_ss_IFATFS)
+	lds	r20,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r24
+	mov	r31,r20
+	ldd	r21,Z+24
+	ldd	r22,Z+25
+	ldd	r23,Z+26
+	ldd	r19,Z+27
+	ldd	r18,Y+7
+	add	r21,r18
+	ldd	r18,Y+8
+	adc	r22,r18
+	ldd	r18,Y+9
+	adc	r23,r18
+	ldd	r18,Y+10
+	adc	r19,r18
+	mov	r30,r24
+	mov	r31,r20
+	std	Z+24,r21
+	std	Z+25,r22
+	std	Z+26,r23
+	std	Z+27,r19
+# [1145] ofs := ofs - bcs;
+	ldd	r18,Y+3
+	ldd	r19,Y+7
+	sub	r18,r19
+	std	Y+3,r18
+	ldd	r19,Y+4
+	ldd	r18,Y+8
+	sbc	r19,r18
+	std	Y+4,r19
+	ldd	r18,Y+5
+	ldd	r19,Y+9
+	sbc	r18,r19
+	std	Y+5,r18
+	ldd	r19,Y+6
+	ldd	r18,Y+10
+	sbc	r19,r18
+	std	Y+6,r19
+.Lj285:
+	ldd	r18,Y+7
+	ldd	r19,Y+3
+	cp	r18,r19
+	ldd	r19,Y+8
+	ldd	r18,Y+4
+	cpc	r19,r18
+	ldd	r18,Y+9
+	ldd	r19,Y+5
+	cpc	r18,r19
+	ldd	r18,Y+10
+	ldd	r19,Y+6
+	cpc	r18,r19
+	brsh	.Lj295
+	rjmp	.Lj284
+.Lj295:
+# [1147] iFatFs.fptr := iFatFs.fptr + ofs;
+	lds	r19,(U_sPFF_ss_IFATFS)
+	lds	r23,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r19
+	mov	r31,r23
+	ldd	r24,Z+24
+	ldd	r22,Z+25
+	ldd	r20,Z+26
+	ldd	r21,Z+27
+	ldd	r18,Y+3
+	add	r24,r18
+	ldd	r18,Y+4
+	adc	r22,r18
+	ldd	r18,Y+5
+	adc	r20,r18
+	ldd	r18,Y+6
+	adc	r21,r18
+	mov	r30,r19
+	mov	r31,r23
+	std	Z+24,r24
+	std	Z+25,r22
+	std	Z+26,r20
+	std	Z+27,r21
+# [1149] sect := clust2sect(clst);
+	mov	r22,r3
+	mov	r23,r2
+	movw	r24,r4
+	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
+# [1150] if sect = 0 then
+	cp	r22,r1
+	cpc	r23,r1
+	cpc	r24,r1
+	cpc	r25,r1
+	brne	.Lj291
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj270
+.Lj291:
+# [1152] iFatFs.dsect := sect + ((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r3,Z+2
+	mov	r20,r1
+	ldi	r26,1
+	sub	r3,r26
+	sbc	r20,r1
+	mov	r19,r1
+	sbrc	r20,7
+	com	r19
+	lds	r21,(U_sPFF_ss_IFATFS)
+	lds	r2,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r21
+	mov	r31,r2
+	ldd	r21,Z+24
+	ldd	r5,Z+25
+	ldd	r4,Z+26
+	ldd	r2,Z+27
+	lsr	r2
+	ror	r4
+	ror	r5
+	mov	r21,r1
+	and	r5,r3
+	and	r4,r20
+	and	r2,r19
+	and	r21,r19
+	add	r22,r5
+	adc	r23,r4
+	adc	r24,r2
+	adc	r25,r21
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+40,r22
+	std	Z+41,r23
+	std	Z+42,r24
+	std	Z+43,r25
+.Lj279:
+# [1154] Result := FR_OK;
+	std	Y+2,r1
+.Lj270:
+	ldd	r18,Y+2
+	mov	r24,r18
+	subi	r28,-15
+	sbci	r29,-1
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+	pop	r2
+	pop	r3
+	pop	r4
+	pop	r5
+	pop	r6
+	pop	r7
+	pop	r8
+	pop	r9
+	pop	r10
+	pop	r11
+	pop	r12
+	pop	r13
+	pop	r14
+	pop	r15
+	pop	r16
+	pop	r17
+	pop	r28
+	pop	r29
+	ret
+.Lc45:
+.Le22:
+	.size	PFF_ss_PF_LSEEKsLONGWORDssFRESULT, .Le22 - PFF_ss_PF_LSEEKsLONGWORDssFRESULT
+
+.section .text.n_pff_ss_pf_writespointersnativeuintsnativeuintssfresult,"ax"
+.globl	PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
+PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
+.Lc48:
+# Temps allocated between r28+2 and r28+7
+# [1168] begin
+	push	r29
+	push	r28
+	push	r17
+	push	r16
+	push	r15
+	push	r14
+	push	r12
+	push	r11
+	push	r10
+	push	r9
+	push	r8
+	push	r7
+	push	r6
+	push	r5
+	push	r4
+	push	r3
+	push	r2
+	in	r28,61
+	in	r29,62
+	subi	r28,7
+	sbci	r29,0
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+# Var $result located in register r18
+# Var p located in register r18
+# Var clst located in register r12
+# Var sect located in register r8
+# Var remain located in register r18
+# Var cs located in register r5
+# Var wcnt located in register r3
+# Var buff located in register r24
+	std	Y+4,r22
+	std	Y+5,r23
+# Var btw located in register r18
+	std	Y+2,r20
+	std	Y+3,r21
+# Var bw located in register r18
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	cp	r18,r1
+	cpc	r19,r1
+	brne	.Lj299
+	ldi	r26,5
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj299:
+# Var p located in register r17
+# Var buff located in register r24
+# [1172] p := buff;
+	mov	r17,r24
+	mov	r14,r25
+# [1173] bw := 0;
+	ldd	r18,Y+2
+	mov	r30,r18
+	ldd	r18,Y+3
+	mov	r31,r18
+	st	Z,r1
+	std	Z+1,r1
+# [1175] if (iFatFs.flag and FA_OPENED) = 0 then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+1
+	andi	r18,1
+	brne	.Lj301
+# [1176] Exit(FR_NOT_OPENED);
+	ldi	r26,4
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj301:
+# [1178] if btw = 0 then
+	ldd	r18,Y+4
+	cp	r18,r1
+	ldd	r18,Y+5
+	cpc	r18,r1
+	breq	.Lj336
+# [1254] end;
+	rjmp	.Lj303
+.Lj336:
+# [1181] if ((iFatFs.flag and FA__WIP) <> 0) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+1
+	andi	r18,64
+	breq	.Lj305
+	mov	r20,r1
+	mov	r21,r1
+	mov	r22,r1
+	mov	r23,r1
+	mov	r24,r1
+	mov	r25,r1
+	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
+	cp	r24,r1
+	breq	.Lj305
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj305:
+# [1183] iFatFs.flag := iFatFs.flag and (not FA__WIP);
+	lds	r20,(U_sPFF_ss_IFATFS)
+	lds	r18,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r20
+	mov	r31,r18
+	ldd	r19,Z+1
+	andi	r19,-65
+	mov	r30,r20
+	mov	r31,r18
+	std	Z+1,r19
+# [1184] Exit(FR_OK);
+	std	Y+6,r1
+	rjmp	.Lj296
+.Lj303:
+# [1188] if (iFatFs.flag and FA__WIP) = 0 then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+1
+	andi	r18,64
+	brne	.Lj309
+# [1190] iFatFs.fptr := iFatFs.fptr and $FFFFFE00;
+	lds	r19,(U_sPFF_ss_IFATFS)
+	lds	r18,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r23,Z+24
+	ldd	r20,Z+25
+	ldd	r21,Z+26
+	ldd	r22,Z+27
+	andi	r20,-2
+	mov	r30,r19
+	mov	r31,r18
+	std	Z+24,r1
+	std	Z+25,r20
+	std	Z+26,r21
+	std	Z+27,r22
+.Lj309:
+# [1192] remain := iFatFs.fsize - iFatFs.fptr;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	lds	r21,(U_sPFF_ss_IFATFS)
+	lds	r20,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r22,Z+28
+	ldd	r25,Z+29
+	ldd	r23,Z+30
+	ldd	r24,Z+31
+	mov	r30,r21
+	mov	r31,r20
+	ldd	r20,Z+24
+	ldd	r21,Z+25
+	ldd	r18,Z+26
+	ldd	r19,Z+27
+	sub	r22,r20
+	sbc	r25,r21
+	sbc	r23,r18
+	sbc	r24,r19
+# Var remain located in register r22
+# [1193] if btw > remain then
+	ldd	r18,Y+4
+	mov	r21,r18
+	ldd	r18,Y+5
+	cp	r22,r21
+	cpc	r25,r18
+	cpc	r23,r1
+	cpc	r24,r1
+	brlo	.Lj337
+	rjmp	.Lj313
+.Lj337:
+# [1194] btw := UINT(remain); { Truncate btw by remaining bytes }
+	std	Y+4,r22
+	std	Y+5,r25
+# [1196] while btw <> 0 do
+	rjmp	.Lj313
+.Lj312:
+# [1199] if UINT(iFatFs.fptr) and (SECTOR_SIZE - 1) = 0 then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+24
+	ldd	r19,Z+25
+	andi	r19,1
+	cp	r18,r1
+	cpc	r19,r1
+	breq	.Lj338
+	rjmp	.Lj316
+.Lj338:
+# [1203] cs := byte((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r19,Z+2
+	mov	r18,r1
+	subi	r19,1
+	sbc	r18,r1
+	mov	r21,r19
+	mov	r22,r18
+	mov	r20,r1
+	sbrc	r18,7
+	com	r20
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+24
+	ldd	r18,Z+25
+	ldd	r19,Z+26
+	ldd	r25,Z+27
+	mov	r24,r18
+	mov	r18,r19
+	mov	r19,r25
+	lsr	r19
+	ror	r18
+	ror	r24
+	mov	r15,r24
+	mov	r24,r18
+	mov	r18,r1
+	and	r15,r21
+	and	r24,r22
+	and	r19,r20
+	and	r18,r20
+	mov	r5,r15
+# [1205] if cs = 0 then
+	cp	r5,r1
+	breq	.Lj339
+	rjmp	.Lj318
+.Lj339:
+# [1208] if iFatFs.fptr = 0 then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r20,Z+24
+	ldd	r21,Z+25
+	ldd	r19,Z+26
+	ldd	r18,Z+27
+	cp	r20,r1
+	cpc	r21,r1
+	cpc	r19,r1
+	cpc	r18,r1
+	brne	.Lj320
+# [1210] clst := iFatFs.org_clust
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r12,Z+32
+	ldd	r11,Z+33
+	ldd	r10,Z+34
+	ldd	r9,Z+35
+	rjmp	.Lj321
+.Lj320:
+# [1212] clst := get_fat(iFatFs.curr_clust);
+	lds	r19,(U_sPFF_ss_IFATFS)
+	lds	r18,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r22,Z+36
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r23,Z+37
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r24,Z+38
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r25,Z+39
+	call	PFF_ss_GET_FATsLONGWORDssLONGWORD
+	mov	r12,r22
+	mov	r11,r23
+	mov	r10,r24
+	mov	r9,r25
+.Lj321:
+# [1213] if clst <= 1 then
+	ldi	r21,1
+	cp	r21,r12
+	cpc	r1,r11
+	cpc	r1,r10
+	cpc	r1,r9
+	brlo	.Lj323
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj323:
+# [1216] iFatFs.curr_clust := clst;
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+36,r12
+	std	Z+37,r11
+	std	Z+38,r10
+	std	Z+39,r9
+.Lj318:
+# [1219] sect := clust2sect(iFatFs.curr_clust);
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r22,Z+36
+	movw	r30,r18
+	ldd	r23,Z+37
+	movw	r30,r18
+	ldd	r24,Z+38
+	movw	r30,r18
+	ldd	r25,Z+39
+	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
+	mov	r8,r22
+	mov	r7,r23
+	mov	r6,r24
+	mov	r4,r25
+# [1220] if sect = 0 then
+	cp	r8,r1
+	cpc	r7,r1
+	cpc	r6,r1
+	cpc	r4,r1
+	brne	.Lj325
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj325:
+# [1222] iFatFs.dsect := sect + cs;
+	mov	r22,r8
+	mov	r21,r7
+	mov	r23,r6
+	mov	r20,r4
+	add	r22,r5
+	adc	r21,r1
+	adc	r23,r1
+	adc	r20,r1
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+40,r22
+	std	Z+41,r21
+	std	Z+42,r23
+	std	Z+43,r20
+# [1225] if disk_writep(nil, iFatFs.dsect) <> DRESULT.RES_OK then
+	lds	r19,(U_sPFF_ss_IFATFS)
+	lds	r18,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r20,Z+40
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r21,Z+41
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r22,Z+42
+	mov	r30,r19
+	mov	r31,r18
+	ldd	r23,Z+43
+	mov	r24,r1
+	mov	r25,r1
+	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
+	cp	r24,r1
+	breq	.Lj327
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj327:
+# [1227] iFatFs.flag := iFatFs.flag or FA__WIP;
+	lds	r20,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r20
+	mov	r31,r19
+	ldd	r18,Z+1
+	ori	r18,64
+	mov	r30,r20
+	mov	r31,r19
+	std	Z+1,r18
+.Lj316:
+# [1230] wcnt := SECTOR_SIZE - (UINT(iFatFs.fptr) and (SECTOR_SIZE - 1));
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+24
+	ldd	r19,Z+25
+	andi	r19,1
+	mov	r22,r18
+	mov	r21,r19
+	mov	r16,r1
+	ldi	r25,2
+	mov	r19,r1
+	mov	r18,r1
+	sub	r16,r22
+	sbc	r25,r21
+	sbc	r19,r1
+	sbc	r18,r1
+	mov	r3,r16
+	mov	r2,r25
+# [1231] if wcnt > btw then
+	ldd	r18,Y+4
+	cp	r18,r3
+	ldd	r18,Y+5
+	cpc	r18,r2
+	brsh	.Lj329
+# [1232] wcnt := btw;
+	ldd	r18,Y+4
+	mov	r3,r18
+	ldd	r18,Y+5
+	mov	r2,r18
+.Lj329:
+# [1235] if disk_writep(p, wcnt) <> DRESULT.RES_OK then
+	mov	r22,r1
+	mov	r23,r1
+	mov	r20,r3
+	mov	r21,r2
+	mov	r24,r17
+	mov	r25,r14
+	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
+	cp	r24,r1
+	breq	.Lj331
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj331:
+# [1239] iFatFs.fptr := iFatFs.fptr + wcnt;
+	lds	r16,(U_sPFF_ss_IFATFS)
+	lds	r18,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r16
+	mov	r31,r18
+	ldd	r23,Z+24
+	ldd	r24,Z+25
+	ldd	r25,Z+26
+	ldd	r15,Z+27
+	add	r23,r3
+	adc	r24,r2
+	adc	r25,r1
+	adc	r15,r1
+	mov	r30,r16
+	mov	r31,r18
+	std	Z+24,r23
+	std	Z+25,r24
+	std	Z+26,r25
+	std	Z+27,r15
+# [1240] p := p + wcnt;
+	add	r17,r3
+	adc	r14,r2
+# [1241] btw := btw - wcnt;
+	ldd	r18,Y+4
+	sub	r18,r3
+	std	Y+4,r18
+	ldd	r18,Y+5
+	sbc	r18,r2
+	std	Y+5,r18
+# [1242] bw := bw + wcnt;
+	ldd	r18,Y+2
+	mov	r30,r18
+	ldd	r18,Y+3
+	mov	r31,r18
+	ld	r19,Z
+	ldd	r20,Z+1
+	add	r19,r3
+	adc	r20,r2
+	ldd	r18,Y+2
+	mov	r30,r18
+	ldd	r18,Y+3
+	mov	r31,r18
+	st	Z,r19
+	std	Z+1,r20
+# [1244] if UINT(iFatFs.fptr) and (SECTOR_SIZE - 1) = 0 then
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r18,Z+24
+	ldd	r19,Z+25
+	andi	r19,1
+	cp	r18,r1
+	cpc	r19,r1
+	brne	.Lj313
+# [1247] if disk_writep(nil, 0) <> DRESULT.RES_OK then
+	mov	r20,r1
+	mov	r21,r1
+	mov	r22,r1
+	mov	r23,r1
+	mov	r24,r1
+	mov	r25,r1
+	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
+	cp	r24,r1
+	breq	.Lj335
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	ldi	r26,1
+	std	Y+6,r26
+	rjmp	.Lj296
+.Lj335:
+# [1249] iFatFs.flag := iFatFs.flag and (not FA__WIP);
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	ldd	r20,Z+1
+	andi	r20,-65
+	movw	r30,r18
+	std	Z+1,r20
+.Lj313:
+	ldd	r18,Y+4
+	cp	r18,r1
+	ldd	r18,Y+5
+	cpc	r18,r1
+	breq	.Lj340
+	rjmp	.Lj312
+.Lj340:
+# [1253] Result := FR_OK;
+	std	Y+6,r1
+.Lj296:
+	ldd	r18,Y+6
+	mov	r24,r18
+	subi	r28,-7
+	sbci	r29,-1
+	in	r0,63
+	cli
+	out	62,r29
+	out	63,r0
+	out	61,r28
+	pop	r2
+	pop	r3
+	pop	r4
+	pop	r5
+	pop	r6
+	pop	r7
+	pop	r8
+	pop	r9
+	pop	r10
+	pop	r11
+	pop	r12
+	pop	r14
+	pop	r15
+	pop	r16
+	pop	r17
+	pop	r28
+	pop	r29
+	ret
+.Lc47:
+.Le23:
+	.size	PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT, .Le23 - PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT
+
 .section .text.n_pff_ss_pf_opendirsdirspcharssfresult,"ax"
 .globl	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
 PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
-.Lc46:
+.Lc50:
 # [1263] begin
 	push	r29
 	push	r28
@@ -2811,11 +3977,11 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	cp	r18,r1
 	cpc	r19,r1
-	brne	.Lj273
+	brne	.Lj344
 	ldi	r26,5
 	mov	r4,r26
-	rjmp	.Lj270
-.Lj273:
+	rjmp	.Lj341
+.Lj344:
 # [1267] dj.fn := sp;
 	ldi	r19,lo8(2)
 	ldi	r18,hi8(2)
@@ -2835,15 +4001,15 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 	mov	r4,r24
 # [1270] if Result = FR_OK then
 	cp	r4,r1
-	brne	.Lj270
+	brne	.Lj341
 # [1273] if dir[0] <> 0 then
 	ldd	r18,Y+14
 	cp	r18,r1
-	breq	.Lj277
+	breq	.Lj348
 # [1275] if (dir[DIR_Attr] and AM_DIR) <> 0 then
 	ldd	r18,Y+25
 	andi	r18,16
-	breq	.Lj279
+	breq	.Lj350
 # [1277] dj.sclust := get_clust(dir)
 	ldi	r24,lo8(14)
 	ldi	r25,hi8(14)
@@ -2855,20 +4021,20 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 	std	Z+5,r23
 	std	Z+6,r24
 	std	Z+7,r25
-	rjmp	.Lj277
-.Lj279:
+	rjmp	.Lj348
+.Lj350:
 # [1280] Result := FR_NO_FILE;
 	ldi	r26,3
 	mov	r4,r26
-.Lj277:
+.Lj348:
 # [1281] if Result = FR_OK then
 	cp	r4,r1
-	brne	.Lj270
+	brne	.Lj341
 # [1283] Result := dir_rewind(dj);
 	movw	r24,r2
 	call	PFF_ss_DIR_REWINDsDIRssFRESULT
 	mov	r4,r24
-.Lj270:
+.Lj341:
 # [1285] end;
 	mov	r24,r4
 	subi	r28,-46
@@ -2884,14 +4050,14 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 	pop	r28
 	pop	r29
 	ret
-.Lc45:
-.Le22:
-	.size	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT, .Le22 - PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
+.Lc49:
+.Le24:
+	.size	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT, .Le24 - PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
 
 .section .text.n_pff_ss_pf_readdirsdirsfilinfossfresult,"ax"
 .globl	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
 PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
-.Lc48:
+.Lc52:
 # [1291] begin
 	push	r29
 	push	r28
@@ -2920,11 +4086,11 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	cp	r19,r1
 	cpc	r18,r1
-	brne	.Lj286
+	brne	.Lj357
 	ldi	r26,5
 	mov	r6,r26
-	rjmp	.Lj283
-.Lj286:
+	rjmp	.Lj354
+.Lj357:
 # [1295] dj.fn := sp;
 	ldi	r19,lo8(2)
 	ldi	r18,hi8(2)
@@ -2944,13 +4110,13 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 # [1298] if Result = FR_NO_FILE then
 	ldi	r26,3
 	cp	r6,r26
-	brne	.Lj288
+	brne	.Lj359
 # [1299] Result := FR_OK;
 	mov	r6,r1
-.Lj288:
+.Lj359:
 # [1300] if Result = FR_OK then
 	cp	r6,r1
-	brne	.Lj283
+	brne	.Lj354
 # [1304] get_fileinfo(dj, dir, fno);
 	ldi	r22,lo8(14)
 	ldi	r23,hi8(14)
@@ -2966,10 +4132,10 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 # [1307] if Result = FR_NO_FILE then
 	ldi	r26,3
 	cp	r6,r26
-	brne	.Lj283
+	brne	.Lj354
 # [1308] Result := FR_OK;
 	mov	r6,r1
-.Lj283:
+.Lj354:
 # [1310] end;
 	mov	r24,r6
 	subi	r28,-46
@@ -2987,14 +4153,14 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 	pop	r28
 	pop	r29
 	ret
-.Lc47:
-.Le23:
-	.size	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT, .Le23 - PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
+.Lc51:
+.Le25:
+	.size	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT, .Le25 - PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
 
 .section .text.n_pff_ss_pf_rewinddirsdirssfresult,"ax"
 .globl	PFF_ss_PF_REWINDDIRsDIRssFRESULT
 PFF_ss_PF_REWINDDIRsDIRssFRESULT:
-.Lc50:
+.Lc54:
 # [1315] begin
 	push	r29
 	push	r28
@@ -3015,11 +4181,11 @@ PFF_ss_PF_REWINDDIRsDIRssFRESULT:
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	cp	r19,r1
 	cpc	r18,r1
-	brne	.Lj296
+	brne	.Lj367
 	ldi	r26,5
 	mov	r2,r26
-	rjmp	.Lj293
-.Lj296:
+	rjmp	.Lj364
+.Lj367:
 # [1319] dj.fn := sp;
 	ldi	r19,lo8(2)
 	ldi	r18,hi8(2)
@@ -3031,7 +4197,7 @@ PFF_ss_PF_REWINDDIRsDIRssFRESULT:
 # [1320] Result := dir_rewind(dj);
 	call	PFF_ss_DIR_REWINDsDIRssFRESULT
 	mov	r2,r24
-.Lj293:
+.Lj364:
 # [1321] end;
 	mov	r24,r2
 	subi	r28,-14
@@ -3045,9 +4211,9 @@ PFF_ss_PF_REWINDDIRsDIRssFRESULT:
 	pop	r28
 	pop	r29
 	ret
-.Lc49:
-.Le24:
-	.size	PFF_ss_PF_REWINDDIRsDIRssFRESULT, .Le24 - PFF_ss_PF_REWINDDIRsDIRssFRESULT
+.Lc53:
+.Le26:
+	.size	PFF_ss_PF_REWINDDIRsDIRssFRESULT, .Le26 - PFF_ss_PF_REWINDDIRsDIRssFRESULT
 # End asmlist al_procedures
 # Begin asmlist al_globals
 
@@ -3067,8 +4233,8 @@ RTTI_sPFF_ss_PUINT:
 	.ascii	"PUINT"
 	.short	0
 	.short	RTTI_sSYSTEM_ss_NATIVEUINTsindirect
-.Le25:
-	.size	RTTI_sPFF_ss_PUINT, .Le25 - RTTI_sPFF_ss_PUINT
+.Le27:
+	.size	RTTI_sPFF_ss_PUINT, .Le27 - RTTI_sPFF_ss_PUINT
 
 .section .data.n_INIT_sPFF_ss_FATFS
 .globl	INIT_sPFF_ss_FATFS
@@ -3079,8 +4245,8 @@ INIT_sPFF_ss_FATFS:
 	.long	44
 	.short	0,0
 	.long	0
-.Le26:
-	.size	INIT_sPFF_ss_FATFS, .Le26 - INIT_sPFF_ss_FATFS
+.Le28:
+	.size	INIT_sPFF_ss_FATFS, .Le28 - INIT_sPFF_ss_FATFS
 
 .section .data.n_RTTI_sPFF_ss_FATFS
 .globl	RTTI_sPFF_ss_FATFS
@@ -3118,8 +4284,8 @@ RTTI_sPFF_ss_FATFS:
 	.short	36
 	.short	RTTI_sSYSTEM_ss_LONGWORDsindirect
 	.short	40
-.Le27:
-	.size	RTTI_sPFF_ss_FATFS, .Le27 - RTTI_sPFF_ss_FATFS
+.Le29:
+	.size	RTTI_sPFF_ss_FATFS, .Le29 - RTTI_sPFF_ss_FATFS
 
 .section .data.n_RTTI_sPFF_ss_PFATFS
 .globl	RTTI_sPFF_ss_PFATFS
@@ -3128,8 +4294,8 @@ RTTI_sPFF_ss_PFATFS:
 	.ascii	"PFATFS"
 	.short	0
 	.short	RTTI_sPFF_ss_FATFSsindirect
-.Le28:
-	.size	RTTI_sPFF_ss_PFATFS, .Le28 - RTTI_sPFF_ss_PFATFS
+.Le30:
+	.size	RTTI_sPFF_ss_PFATFS, .Le30 - RTTI_sPFF_ss_PFATFS
 
 .section .data.n_INIT_sPFF_ss_DIR
 .globl	INIT_sPFF_ss_DIR
@@ -3140,8 +4306,8 @@ INIT_sPFF_ss_DIR:
 	.long	16
 	.short	0,0
 	.long	0
-.Le29:
-	.size	INIT_sPFF_ss_DIR, .Le29 - INIT_sPFF_ss_DIR
+.Le31:
+	.size	INIT_sPFF_ss_DIR, .Le31 - INIT_sPFF_ss_DIR
 
 .section .data.n_RTTI_sPFF_ss_DIR
 .globl	RTTI_sPFF_ss_DIR
@@ -3161,8 +4327,8 @@ RTTI_sPFF_ss_DIR:
 	.short	8
 	.short	RTTI_sSYSTEM_ss_LONGWORDsindirect
 	.short	12
-.Le30:
-	.size	RTTI_sPFF_ss_DIR, .Le30 - RTTI_sPFF_ss_DIR
+.Le32:
+	.size	RTTI_sPFF_ss_DIR, .Le32 - RTTI_sPFF_ss_DIR
 
 .section .data.n_RTTI_sPFF_ss_PDIR
 .globl	RTTI_sPFF_ss_PDIR
@@ -3171,8 +4337,8 @@ RTTI_sPFF_ss_PDIR:
 	.ascii	"PDIR"
 	.short	0
 	.short	RTTI_sPFF_ss_DIRsindirect
-.Le31:
-	.size	RTTI_sPFF_ss_PDIR, .Le31 - RTTI_sPFF_ss_PDIR
+.Le33:
+	.size	RTTI_sPFF_ss_PDIR, .Le33 - RTTI_sPFF_ss_PDIR
 
 .section .data.n_INIT_sPFF_ss_FILINFO
 .globl	INIT_sPFF_ss_FILINFO
@@ -3183,8 +4349,8 @@ INIT_sPFF_ss_FILINFO:
 	.long	24
 	.short	0,0
 	.long	0
-.Le32:
-	.size	INIT_sPFF_ss_FILINFO, .Le32 - INIT_sPFF_ss_FILINFO
+.Le34:
+	.size	INIT_sPFF_ss_FILINFO, .Le34 - INIT_sPFF_ss_FILINFO
 
 .section .data.n_RTTI_sPFF_ss_def00000006
 .globl	RTTI_sPFF_ss_def00000006
@@ -3194,8 +4360,8 @@ RTTI_sPFF_ss_def00000006:
 	.short	RTTI_sSYSTEM_ss_CHARsindirect
 	.byte	1
 	.short	RTTI_sSYSTEM_ss_SHORTINTsindirect
-.Le33:
-	.size	RTTI_sPFF_ss_def00000006, .Le33 - RTTI_sPFF_ss_def00000006
+.Le35:
+	.size	RTTI_sPFF_ss_def00000006, .Le35 - RTTI_sPFF_ss_def00000006
 
 .section .data.n_RTTI_sPFF_ss_FILINFO
 .globl	RTTI_sPFF_ss_FILINFO
@@ -3215,8 +4381,8 @@ RTTI_sPFF_ss_FILINFO:
 	.short	8
 	.short	RTTI_sPFF_ss_def00000006sindirect
 	.short	9
-.Le34:
-	.size	RTTI_sPFF_ss_FILINFO, .Le34 - RTTI_sPFF_ss_FILINFO
+.Le36:
+	.size	RTTI_sPFF_ss_FILINFO, .Le36 - RTTI_sPFF_ss_FILINFO
 
 .section .data.n_RTTI_sPFF_ss_PFILINFO
 .globl	RTTI_sPFF_ss_PFILINFO
@@ -3225,8 +4391,8 @@ RTTI_sPFF_ss_PFILINFO:
 	.ascii	"PFILINFO"
 	.short	0
 	.short	RTTI_sPFF_ss_FILINFOsindirect
-.Le35:
-	.size	RTTI_sPFF_ss_PFILINFO, .Le35 - RTTI_sPFF_ss_PFILINFO
+.Le37:
+	.size	RTTI_sPFF_ss_PFILINFO, .Le37 - RTTI_sPFF_ss_PFILINFO
 
 .section .data.n_RTTI_sPFF_ss_FRESULT
 .globl	RTTI_sPFF_ss_FRESULT
@@ -3254,8 +4420,8 @@ RTTI_sPFF_ss_FRESULT:
 	.byte	3
 	.ascii	"pff"
 	.byte	0
-.Le36:
-	.size	RTTI_sPFF_ss_FRESULT, .Le36 - RTTI_sPFF_ss_FRESULT
+.Le38:
+	.size	RTTI_sPFF_ss_FRESULT, .Le38 - RTTI_sPFF_ss_FRESULT
 
 .section .data.n_RTTI_sPFF_ss_FRESULT_s2o
 	.balign 2
@@ -3275,8 +4441,8 @@ RTTI_sPFF_ss_FRESULT_s2o:
 	.short	RTTI_sPFF_ss_FRESULT+93
 	.long	0
 	.short	RTTI_sPFF_ss_FRESULT+22
-.Le37:
-	.size	RTTI_sPFF_ss_FRESULT_s2o, .Le37 - RTTI_sPFF_ss_FRESULT_s2o
+.Le39:
+	.size	RTTI_sPFF_ss_FRESULT_s2o, .Le39 - RTTI_sPFF_ss_FRESULT_s2o
 
 .section .data.n_RTTI_sPFF_ss_FRESULT_o2s
 	.balign 2
@@ -3290,8 +4456,8 @@ RTTI_sPFF_ss_FRESULT_o2s:
 	.short	RTTI_sPFF_ss_FRESULT+64
 	.short	RTTI_sPFF_ss_FRESULT+78
 	.short	RTTI_sPFF_ss_FRESULT+93
-.Le38:
-	.size	RTTI_sPFF_ss_FRESULT_o2s, .Le38 - RTTI_sPFF_ss_FRESULT_o2s
+.Le40:
+	.size	RTTI_sPFF_ss_FRESULT_o2s, .Le40 - RTTI_sPFF_ss_FRESULT_o2s
 # End asmlist al_rtti
 # Begin asmlist al_indirectglobals
 
@@ -3300,119 +4466,119 @@ RTTI_sPFF_ss_FRESULT_o2s:
 .globl	RTTI_sPFF_ss_PUINTsindirect
 RTTI_sPFF_ss_PUINTsindirect:
 	.short	RTTI_sPFF_ss_PUINT
-.Le39:
-	.size	RTTI_sPFF_ss_PUINTsindirect, .Le39 - RTTI_sPFF_ss_PUINTsindirect
+.Le41:
+	.size	RTTI_sPFF_ss_PUINTsindirect, .Le41 - RTTI_sPFF_ss_PUINTsindirect
 
 .section .data.n_INIT_sPFF_ss_FATFS
 	.balign 2
 .globl	INIT_sPFF_ss_FATFSsindirect
 INIT_sPFF_ss_FATFSsindirect:
 	.short	INIT_sPFF_ss_FATFS
-.Le40:
-	.size	INIT_sPFF_ss_FATFSsindirect, .Le40 - INIT_sPFF_ss_FATFSsindirect
+.Le42:
+	.size	INIT_sPFF_ss_FATFSsindirect, .Le42 - INIT_sPFF_ss_FATFSsindirect
 
 .section .data.n_RTTI_sPFF_ss_FATFS
 	.balign 2
 .globl	RTTI_sPFF_ss_FATFSsindirect
 RTTI_sPFF_ss_FATFSsindirect:
 	.short	RTTI_sPFF_ss_FATFS
-.Le41:
-	.size	RTTI_sPFF_ss_FATFSsindirect, .Le41 - RTTI_sPFF_ss_FATFSsindirect
+.Le43:
+	.size	RTTI_sPFF_ss_FATFSsindirect, .Le43 - RTTI_sPFF_ss_FATFSsindirect
 
 .section .data.n_RTTI_sPFF_ss_PFATFS
 	.balign 2
 .globl	RTTI_sPFF_ss_PFATFSsindirect
 RTTI_sPFF_ss_PFATFSsindirect:
 	.short	RTTI_sPFF_ss_PFATFS
-.Le42:
-	.size	RTTI_sPFF_ss_PFATFSsindirect, .Le42 - RTTI_sPFF_ss_PFATFSsindirect
+.Le44:
+	.size	RTTI_sPFF_ss_PFATFSsindirect, .Le44 - RTTI_sPFF_ss_PFATFSsindirect
 
 .section .data.n_INIT_sPFF_ss_DIR
 	.balign 2
 .globl	INIT_sPFF_ss_DIRsindirect
 INIT_sPFF_ss_DIRsindirect:
 	.short	INIT_sPFF_ss_DIR
-.Le43:
-	.size	INIT_sPFF_ss_DIRsindirect, .Le43 - INIT_sPFF_ss_DIRsindirect
+.Le45:
+	.size	INIT_sPFF_ss_DIRsindirect, .Le45 - INIT_sPFF_ss_DIRsindirect
 
 .section .data.n_RTTI_sPFF_ss_DIR
 	.balign 2
 .globl	RTTI_sPFF_ss_DIRsindirect
 RTTI_sPFF_ss_DIRsindirect:
 	.short	RTTI_sPFF_ss_DIR
-.Le44:
-	.size	RTTI_sPFF_ss_DIRsindirect, .Le44 - RTTI_sPFF_ss_DIRsindirect
+.Le46:
+	.size	RTTI_sPFF_ss_DIRsindirect, .Le46 - RTTI_sPFF_ss_DIRsindirect
 
 .section .data.n_RTTI_sPFF_ss_PDIR
 	.balign 2
 .globl	RTTI_sPFF_ss_PDIRsindirect
 RTTI_sPFF_ss_PDIRsindirect:
 	.short	RTTI_sPFF_ss_PDIR
-.Le45:
-	.size	RTTI_sPFF_ss_PDIRsindirect, .Le45 - RTTI_sPFF_ss_PDIRsindirect
+.Le47:
+	.size	RTTI_sPFF_ss_PDIRsindirect, .Le47 - RTTI_sPFF_ss_PDIRsindirect
 
 .section .data.n_INIT_sPFF_ss_FILINFO
 	.balign 2
 .globl	INIT_sPFF_ss_FILINFOsindirect
 INIT_sPFF_ss_FILINFOsindirect:
 	.short	INIT_sPFF_ss_FILINFO
-.Le46:
-	.size	INIT_sPFF_ss_FILINFOsindirect, .Le46 - INIT_sPFF_ss_FILINFOsindirect
+.Le48:
+	.size	INIT_sPFF_ss_FILINFOsindirect, .Le48 - INIT_sPFF_ss_FILINFOsindirect
 
 .section .data.n_RTTI_sPFF_ss_def00000006
 	.balign 2
 .globl	RTTI_sPFF_ss_def00000006sindirect
 RTTI_sPFF_ss_def00000006sindirect:
 	.short	RTTI_sPFF_ss_def00000006
-.Le47:
-	.size	RTTI_sPFF_ss_def00000006sindirect, .Le47 - RTTI_sPFF_ss_def00000006sindirect
+.Le49:
+	.size	RTTI_sPFF_ss_def00000006sindirect, .Le49 - RTTI_sPFF_ss_def00000006sindirect
 
 .section .data.n_RTTI_sPFF_ss_FILINFO
 	.balign 2
 .globl	RTTI_sPFF_ss_FILINFOsindirect
 RTTI_sPFF_ss_FILINFOsindirect:
 	.short	RTTI_sPFF_ss_FILINFO
-.Le48:
-	.size	RTTI_sPFF_ss_FILINFOsindirect, .Le48 - RTTI_sPFF_ss_FILINFOsindirect
+.Le50:
+	.size	RTTI_sPFF_ss_FILINFOsindirect, .Le50 - RTTI_sPFF_ss_FILINFOsindirect
 
 .section .data.n_RTTI_sPFF_ss_PFILINFO
 	.balign 2
 .globl	RTTI_sPFF_ss_PFILINFOsindirect
 RTTI_sPFF_ss_PFILINFOsindirect:
 	.short	RTTI_sPFF_ss_PFILINFO
-.Le49:
-	.size	RTTI_sPFF_ss_PFILINFOsindirect, .Le49 - RTTI_sPFF_ss_PFILINFOsindirect
+.Le51:
+	.size	RTTI_sPFF_ss_PFILINFOsindirect, .Le51 - RTTI_sPFF_ss_PFILINFOsindirect
 
 .section .data.n_RTTI_sPFF_ss_FRESULT
 	.balign 2
 .globl	RTTI_sPFF_ss_FRESULTsindirect
 RTTI_sPFF_ss_FRESULTsindirect:
 	.short	RTTI_sPFF_ss_FRESULT
-.Le50:
-	.size	RTTI_sPFF_ss_FRESULTsindirect, .Le50 - RTTI_sPFF_ss_FRESULTsindirect
+.Le52:
+	.size	RTTI_sPFF_ss_FRESULTsindirect, .Le52 - RTTI_sPFF_ss_FRESULTsindirect
 
 .section .data.n_RTTI_sPFF_ss_FRESULT_s2o
 	.balign 2
 .globl	RTTI_sPFF_ss_FRESULT_s2osindirect
 RTTI_sPFF_ss_FRESULT_s2osindirect:
 	.short	RTTI_sPFF_ss_FRESULT_s2o
-.Le51:
-	.size	RTTI_sPFF_ss_FRESULT_s2osindirect, .Le51 - RTTI_sPFF_ss_FRESULT_s2osindirect
+.Le53:
+	.size	RTTI_sPFF_ss_FRESULT_s2osindirect, .Le53 - RTTI_sPFF_ss_FRESULT_s2osindirect
 
 .section .data.n_RTTI_sPFF_ss_FRESULT_o2s
 	.balign 2
 .globl	RTTI_sPFF_ss_FRESULT_o2ssindirect
 RTTI_sPFF_ss_FRESULT_o2ssindirect:
 	.short	RTTI_sPFF_ss_FRESULT_o2s
-.Le52:
-	.size	RTTI_sPFF_ss_FRESULT_o2ssindirect, .Le52 - RTTI_sPFF_ss_FRESULT_o2ssindirect
+.Le54:
+	.size	RTTI_sPFF_ss_FRESULT_o2ssindirect, .Le54 - RTTI_sPFF_ss_FRESULT_o2ssindirect
 # End asmlist al_indirectglobals
 # Begin asmlist al_dwarf_frame
 
 .section .debug_frame
-.Lc51:
-	.long	.Lc53-.Lc52
-.Lc52:
+.Lc55:
+	.long	.Lc57-.Lc56
+.Lc56:
 	.long	-1
 	.byte	1
 	.byte	0
@@ -3426,181 +4592,195 @@ RTTI_sPFF_ss_FRESULT_o2ssindirect:
 	.uleb128	24
 	.uleb128	0
 	.balign 4,0
-.Lc53:
-	.long	.Lc55-.Lc54
-.Lc54:
-	.short	.Lc51
+.Lc57:
+	.long	.Lc59-.Lc58
+.Lc58:
+	.short	.Lc55
 	.short	.Lc2
 	.short	.Lc1-.Lc2
 	.balign 4,0
-.Lc55:
-	.long	.Lc58-.Lc57
-.Lc57:
-	.short	.Lc51
+.Lc59:
+	.long	.Lc62-.Lc61
+.Lc61:
+	.short	.Lc55
 	.short	.Lc4
 	.short	.Lc3-.Lc4
 	.balign 4,0
-.Lc58:
-	.long	.Lc61-.Lc60
-.Lc60:
-	.short	.Lc51
+.Lc62:
+	.long	.Lc65-.Lc64
+.Lc64:
+	.short	.Lc55
 	.short	.Lc6
 	.short	.Lc5-.Lc6
 	.balign 4,0
-.Lc61:
-	.long	.Lc64-.Lc63
-.Lc63:
-	.short	.Lc51
+.Lc65:
+	.long	.Lc68-.Lc67
+.Lc67:
+	.short	.Lc55
 	.short	.Lc8
 	.short	.Lc7-.Lc8
 	.balign 4,0
-.Lc64:
-	.long	.Lc67-.Lc66
-.Lc66:
-	.short	.Lc51
+.Lc68:
+	.long	.Lc71-.Lc70
+.Lc70:
+	.short	.Lc55
 	.short	.Lc10
 	.short	.Lc9-.Lc10
 	.balign 4,0
-.Lc67:
-	.long	.Lc70-.Lc69
-.Lc69:
-	.short	.Lc51
+.Lc71:
+	.long	.Lc74-.Lc73
+.Lc73:
+	.short	.Lc55
 	.short	.Lc12
 	.short	.Lc11-.Lc12
 	.balign 4,0
-.Lc70:
-	.long	.Lc73-.Lc72
-.Lc72:
-	.short	.Lc51
+.Lc74:
+	.long	.Lc77-.Lc76
+.Lc76:
+	.short	.Lc55
 	.short	.Lc14
 	.short	.Lc13-.Lc14
 	.balign 4,0
-.Lc73:
-	.long	.Lc76-.Lc75
-.Lc75:
-	.short	.Lc51
+.Lc77:
+	.long	.Lc80-.Lc79
+.Lc79:
+	.short	.Lc55
 	.short	.Lc16
 	.short	.Lc15-.Lc16
 	.balign 4,0
-.Lc76:
-	.long	.Lc79-.Lc78
-.Lc78:
-	.short	.Lc51
+.Lc80:
+	.long	.Lc83-.Lc82
+.Lc82:
+	.short	.Lc55
 	.short	.Lc18
 	.short	.Lc17-.Lc18
 	.balign 4,0
-.Lc79:
-	.long	.Lc82-.Lc81
-.Lc81:
-	.short	.Lc51
+.Lc83:
+	.long	.Lc86-.Lc85
+.Lc85:
+	.short	.Lc55
 	.short	.Lc20
 	.short	.Lc19-.Lc20
 	.balign 4,0
-.Lc82:
-	.long	.Lc85-.Lc84
-.Lc84:
-	.short	.Lc51
+.Lc86:
+	.long	.Lc89-.Lc88
+.Lc88:
+	.short	.Lc55
 	.short	.Lc22
 	.short	.Lc21-.Lc22
 	.balign 4,0
-.Lc85:
-	.long	.Lc88-.Lc87
-.Lc87:
-	.short	.Lc51
+.Lc89:
+	.long	.Lc92-.Lc91
+.Lc91:
+	.short	.Lc55
 	.short	.Lc24
 	.short	.Lc23-.Lc24
 	.balign 4,0
-.Lc88:
-	.long	.Lc91-.Lc90
-.Lc90:
-	.short	.Lc51
+.Lc92:
+	.long	.Lc95-.Lc94
+.Lc94:
+	.short	.Lc55
 	.short	.Lc26
 	.short	.Lc25-.Lc26
 	.balign 4,0
-.Lc91:
-	.long	.Lc94-.Lc93
-.Lc93:
-	.short	.Lc51
+.Lc95:
+	.long	.Lc98-.Lc97
+.Lc97:
+	.short	.Lc55
 	.short	.Lc28
 	.short	.Lc27-.Lc28
 	.balign 4,0
-.Lc94:
-	.long	.Lc97-.Lc96
-.Lc96:
-	.short	.Lc51
+.Lc98:
+	.long	.Lc101-.Lc100
+.Lc100:
+	.short	.Lc55
 	.short	.Lc30
 	.short	.Lc29-.Lc30
 	.balign 4,0
-.Lc97:
-	.long	.Lc100-.Lc99
-.Lc99:
-	.short	.Lc51
+.Lc101:
+	.long	.Lc104-.Lc103
+.Lc103:
+	.short	.Lc55
 	.short	.Lc32
 	.short	.Lc31-.Lc32
 	.balign 4,0
-.Lc100:
-	.long	.Lc103-.Lc102
-.Lc102:
-	.short	.Lc51
+.Lc104:
+	.long	.Lc107-.Lc106
+.Lc106:
+	.short	.Lc55
 	.short	.Lc34
 	.short	.Lc33-.Lc34
 	.balign 4,0
-.Lc103:
-	.long	.Lc106-.Lc105
-.Lc105:
-	.short	.Lc51
+.Lc107:
+	.long	.Lc110-.Lc109
+.Lc109:
+	.short	.Lc55
 	.short	.Lc36
 	.short	.Lc35-.Lc36
 	.balign 4,0
-.Lc106:
-	.long	.Lc109-.Lc108
-.Lc108:
-	.short	.Lc51
+.Lc110:
+	.long	.Lc113-.Lc112
+.Lc112:
+	.short	.Lc55
 	.short	.Lc38
 	.short	.Lc37-.Lc38
 	.balign 4,0
-.Lc109:
-	.long	.Lc112-.Lc111
-.Lc111:
-	.short	.Lc51
+.Lc113:
+	.long	.Lc116-.Lc115
+.Lc115:
+	.short	.Lc55
 	.short	.Lc40
 	.short	.Lc39-.Lc40
 	.balign 4,0
-.Lc112:
-	.long	.Lc115-.Lc114
-.Lc114:
-	.short	.Lc51
+.Lc116:
+	.long	.Lc119-.Lc118
+.Lc118:
+	.short	.Lc55
 	.short	.Lc42
 	.short	.Lc41-.Lc42
 	.balign 4,0
-.Lc115:
-	.long	.Lc118-.Lc117
-.Lc117:
-	.short	.Lc51
+.Lc119:
+	.long	.Lc122-.Lc121
+.Lc121:
+	.short	.Lc55
 	.short	.Lc44
 	.short	.Lc43-.Lc44
 	.balign 4,0
-.Lc118:
-	.long	.Lc121-.Lc120
-.Lc120:
-	.short	.Lc51
+.Lc122:
+	.long	.Lc125-.Lc124
+.Lc124:
+	.short	.Lc55
 	.short	.Lc46
 	.short	.Lc45-.Lc46
 	.balign 4,0
-.Lc121:
-	.long	.Lc124-.Lc123
-.Lc123:
-	.short	.Lc51
+.Lc125:
+	.long	.Lc128-.Lc127
+.Lc127:
+	.short	.Lc55
 	.short	.Lc48
 	.short	.Lc47-.Lc48
 	.balign 4,0
-.Lc124:
-	.long	.Lc127-.Lc126
-.Lc126:
-	.short	.Lc51
+.Lc128:
+	.long	.Lc131-.Lc130
+.Lc130:
+	.short	.Lc55
 	.short	.Lc50
 	.short	.Lc49-.Lc50
 	.balign 4,0
-.Lc127:
+.Lc131:
+	.long	.Lc134-.Lc133
+.Lc133:
+	.short	.Lc55
+	.short	.Lc52
+	.short	.Lc51-.Lc52
+	.balign 4,0
+.Lc134:
+	.long	.Lc137-.Lc136
+.Lc136:
+	.short	.Lc55
+	.short	.Lc54
+	.short	.Lc53-.Lc54
+	.balign 4,0
+.Lc137:
 # End asmlist al_dwarf_frame
 

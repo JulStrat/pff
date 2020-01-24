@@ -6,8 +6,8 @@ const
 
   {$define PF_USE_READ}
   {$define PF_USE_DIR}
-  {$undef PF_USE_LSEEK}
-  {$undef PF_USE_WRITE}
+  {$define PF_USE_LSEEK}
+  {$define PF_USE_WRITE}
 
   PF_FS_FAT12 = False;
   PF_FS_FAT16 = False;
