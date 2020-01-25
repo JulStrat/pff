@@ -65,7 +65,7 @@ begin
 
 ## Testing
 
-7.86GB SD card content - 
+7.86GB SD card content (FAT32) - 
 ```
 root@raspberrypi:/mnt/SD# ls -al
 total 7196
@@ -84,7 +84,6 @@ drwxr-xr-x 2 root root    4096 Dec 11 13:02 System Volume Information
 ### Arduino UNO R3
 
 #### Connectar
-
 ```
 PIN 4: CS     <---  Arduino DIO 10 PB2 SS
 PIN 5: MOSI   <---  Arduino DIO 11 PB3 MOSI
@@ -93,106 +92,18 @@ PIN 7: MISO   --->  Arduino DIO 12 PB4 MISO
 ```
 
 #### Build
+Cross compiler built with disabled EXCEPTIONS, CLASSES, EXITCODE.
 ```
 $ ppcrossavr.exe -Tembedded -Cpavr5 -Wpatmega328p -vi -aln -Xm -B -O3 pff_ard.pas
-Target OS: Embedded
-Compiling pff_ard.pas
-Compiling pff.pas
-Compiling disk_io.pas
-Compiling spi.pas
-Assembling spi
-Compiling uart.pas
-Assembling uart
-Assembling disk_io
-User defined: PF_USE_READ enabled
-User defined: PF_USE_DIR enabled
-User defined: ENDIAN_LITTLE
-User defined: ENDIAN_LITTLE
-Assembling pff
-User defined: PetitFS test
-Assembling pff_ard
-Linking pff_ard
-2066 lines compiled, 0.3 sec, 8276 bytes code, 410 bytes data
 ```
 
 #### Upload
 ```
 $ /E/Arduino/hardware/tools/avr/bin/avrdude.exe -C/E/Arduino/hardware/tools/avr/etc/avrdude.conf -v -patmega328p -carduino -PCOM5 -b115200 -D -Uflash:w:pff_ard.hex:i
-
-avrdude.exe: Version 6.3-20190619
-             Copyright (c) 2000-2005 Brian Dean, http://www.bdmicro.com/
-             Copyright (c) 2007-2014 Joerg Wunsch
-
-             System wide configuration file is "E:/Arduino/hardware/tools/avr/etc/avrdude.conf"
-
-             Using Port                    : COM5
-             Using Programmer              : arduino
-             Overriding Baud Rate          : 115200
-             AVR Part                      : ATmega328P
-             Chip Erase delay              : 9000 us
-             PAGEL                         : PD7
-             BS2                           : PC2
-             RESET disposition             : dedicated
-             RETRY pulse                   : SCK
-             serial program mode           : yes
-             parallel program mode         : yes
-             Timeout                       : 200
-             StabDelay                     : 100
-             CmdexeDelay                   : 25
-             SyncLoops                     : 32
-             ByteDelay                     : 0
-             PollIndex                     : 3
-             PollValue                     : 0x53
-             Memory Detail                 :
-
-                                      Block Poll               Page                       Polled
-               Memory Type Mode Delay Size  Indx Paged  Size   Size #Pages MinW  MaxW   ReadBack
-               ----------- ---- ----- ----- ---- ------ ------ ---- ------ ----- ----- ---------
-               eeprom        65    20     4    0 no       1024    4      0  3600  3600 0xff 0xff
-               flash         65     6   128    0 yes     32768  128    256  4500  4500 0xff 0xff
-               lfuse          0     0     0    0 no          1    0      0  4500  4500 0x00 0x00
-               hfuse          0     0     0    0 no          1    0      0  4500  4500 0x00 0x00
-               efuse          0     0     0    0 no          1    0      0  4500  4500 0x00 0x00
-               lock           0     0     0    0 no          1    0      0  4500  4500 0x00 0x00
-               calibration    0     0     0    0 no          1    0      0     0     0 0x00 0x00
-               signature      0     0     0    0 no          3    0      0     0     0 0x00 0x00
-
-             Programmer Type : Arduino
-             Description     : Arduino
-             Hardware Version: 3
-             Firmware Version: 4.4
-             Vtarget         : 0.3 V
-             Varef           : 0.3 V
-             Oscillator      : 28.800 kHz
-             SCK period      : 3.3 us
-
-avrdude.exe: AVR device initialized and ready to accept instructions
-
-Reading | ################################################## | 100% 0.00s
-
-avrdude.exe: Device signature = 0x1e950f (probably m328p)
-avrdude.exe: reading input file "pff_ard.hex"
-avrdude.exe: writing flash (8458 bytes):
-
-Writing | ################################################## | 100% 1.39s
-
-avrdude.exe: 8458 bytes of flash written
-avrdude.exe: verifying flash memory against pff_ard.hex:
-avrdude.exe: load data flash data from input file pff_ard.hex:
-avrdude.exe: input file pff_ard.hex contains 8458 bytes
-avrdude.exe: reading on-chip flash data:
-
-Reading | ################################################## | 100% 1.09s
-
-avrdude.exe: verifying ...
-avrdude.exe: 8458 bytes of flash verified
-
-avrdude.exe done.  Thank you.
 ```
 
 #### Connect putty to COM5 (your Arduino COM port)
-
-pff-ard output - 
+```pff-ard``` output - 
 
 ```
 <<< PetitFS TEST >>>

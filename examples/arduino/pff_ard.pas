@@ -1,10 +1,11 @@
 program pff_ard;
-
 {$mode delphi}
 
 uses
   pff,
   uart;
+
+{$I pff_cfg.inc}
 
 const
   DIR_F: PChar = 'DIR list - '; 
@@ -127,6 +128,7 @@ begin
   end
 end;  
 
+{$ifdef PF_USE_WRITE}
 function t_write(fname: PChar): boolean;
 var
   bfl: PChar;
@@ -163,6 +165,7 @@ begin
     Result := false;
   end
 end;  
+{$endif}
   
 begin
   {$info PetitFS test}
@@ -189,9 +192,11 @@ begin
   t_cat('TEST.TXT', 2);
 *)  
 
+{$ifdef PF_USE_WRITE}
   t_write('RW.TXT');
   t_write('RW2.TXT');
   t_write('RW4.TXT');
+{$endif}  
 
   uart_puts('<<< FINISH >>>');
 end.

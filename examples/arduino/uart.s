@@ -171,10 +171,10 @@ TC_sUARTs_sUART_XPUTCsBYTE_ss_HEXBYTE:
 	.sleb128	-4
 	.byte	24
 	.byte	12
-	.uleb128	13
-	.uleb128	1
+	.uleb128	32
+	.uleb128	2
 	.byte	5
-	.uleb128	24
+	.uleb128	36
 	.uleb128	0
 	.balign 4,0
 .Lc13:
