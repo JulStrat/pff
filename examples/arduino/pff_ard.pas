@@ -26,19 +26,28 @@ const
   
   WRITE_PATTERN: PChar = '_0123456789ABCDEF';
   
+  CLR_BLUE = #27'[34m';
+  CLR_YELLOW = #27'[33m';
+  CLR_GREEN = #27'[32m';
+  CLR_RESET = #27'[0m';
+  
 var
   fs: FATFS;
   dr: DIR;
   fi: FILINFO;
   fr: FRESULT;
 
+{$ifdef PF_USE_DIR}
 function t_dir(fname: PChar): boolean;
 var
   bfl: array[0..Pred(513)] of char;
   brl: UINT; 
   cntl: DWORD;  
 begin
+  uart_puts(CLR_GREEN);
   uart_puts(DIR_F); uart_puts(fname); uart_puts(''#13#10);
+  uart_puts(CLR_RESET);  
+  
   if pf_opendir(dr, fname) <> FR_OK then
   begin
     uart_puts(DIR_ERR);
@@ -51,9 +60,12 @@ begin
     uart_puts('> '); uart_puts(fi.fname); uart_puts(''#13#10);
   end;
   until fi.fname[0] = char(#0);
+  uart_puts(CLR_GREEN);  
   uart_puts(DIR_OK);
+  uart_puts(CLR_RESET);    
   Result := true
 end;  
+{$endif}
 
 function t_cat(fname: PChar; off: DWORD = 0): boolean;
 var
@@ -61,7 +73,10 @@ var
   brl: UINT; 
   cntl: DWORD;  
 begin
+  uart_puts(CLR_GREEN);
   uart_puts(CAT_F); uart_puts(fname); uart_puts(''#13#10);
+  uart_puts(CLR_RESET);    
+  
   if pf_open(fname) <> FR_OK then
   begin
     uart_puts(CAT_ERR);  
@@ -69,11 +84,13 @@ begin
   end;  
 
   cntl := 0;
+{$ifdef PF_USE_LSEEK}
   if pf_lseek(off) <> FR_OK then
   begin  
     uart_puts(CAT_ERR);    
     Exit(false);
-  end;  
+  end;
+{$endif}  
 
   cntl := cntl + fs.fptr;
   while pf_read(@bfl, 512, brl) = FR_OK do
@@ -86,7 +103,9 @@ begin
   
   if cntl = fs.fsize then 
   begin
-    uart_puts(CAT_OK);    
+    uart_puts(CLR_GREEN);  
+    uart_puts(CAT_OK); 
+    uart_puts(CLR_RESET);        
     Result := true
   end  
   else
@@ -102,7 +121,10 @@ var
   brl: UINT; 
   cntl: DWORD;  
 begin
+  uart_puts(CLR_GREEN);  
   uart_puts(READ_F); uart_puts(fname); uart_puts(''#13#10);
+  uart_puts(CLR_RESET);        
+    
   if pf_open(fname) <> FR_OK then
   begin
     uart_puts(READ_ERR);
@@ -118,7 +140,10 @@ begin
   
   if cntl = fs.fsize then 
   begin
-    uart_puts(READ_OK);  
+    uart_puts(CLR_GREEN);    
+    uart_puts(READ_OK);
+    uart_puts(CLR_RESET);        
+    
     Result := true
   end
   else
@@ -135,7 +160,10 @@ var
   bwl: UINT; 
   cntl: DWORD;  
 begin
+  uart_puts(CLR_GREEN);  
   uart_puts(WRITE_F); uart_puts(fname); uart_puts(''#13#10);
+  uart_puts(CLR_RESET);          
+  
   if pf_open(fname) <> FR_OK then
   begin
     uart_puts(WRITE_ERR);    
@@ -156,7 +184,9 @@ begin
   
   if cntl = fs.fsize then 
   begin
-    uart_puts(WRITE_OK);    
+    uart_puts(CLR_GREEN);    
+    uart_puts(WRITE_OK);   
+    uart_puts(CLR_RESET);            
     Result := true
   end
   else
@@ -170,11 +200,15 @@ end;
 begin
   {$info PetitFS test}
   uart_init();
+  uart_puts(CLR_GREEN);      
   uart_puts('<<< PetitFS TEST >>>'#13#10);
-
+  uart_puts(CLR_RESET); 
+  
   fr := pf_mount(fs);
+{$ifdef PF_USE_DIR}  
   t_dir('');
   t_dir('RASPI');
+{$endif}  
 
   t_cat('00README.TXT');
   uart_puts(''#13#10);
@@ -197,6 +231,7 @@ begin
   t_write('RW2.TXT');
   t_write('RW4.TXT');
 {$endif}  
-
+  uart_puts(CLR_GREEN);    
   uart_puts('<<< FINISH >>>');
+  uart_puts(CLR_RESET);   
 end.

@@ -68,12 +68,13 @@ begin
 7.86GB SD card content (FAT32) - 
 ```
 root@raspberrypi:/mnt/SD# ls -al
-total 7196
-drwxr-xr-x 4 root root    4096 Jan  1  1970 .
+total 7200
+drwxr-xr-x 4 root root    4096 Jan 31 11:40 .
 drwxr-xr-x 5 root root    4096 Dec 19 12:07 ..
 -rwxr-xr-x 1 root root    2078 Jan 30  2019 00readme.txt
 -rwxr-xr-x 1 root root    1961 Dec  4 12:48 LICENSE.txt
 drwxr-xr-x 2 root root    4096 Dec 11 13:01 RASPI
+-rwxr-xr-x 1 root root    2749 Jan 31 11:40 rootdns.cdb
 -rwxr-xr-x 1 root root 2097152 Jan 16 15:32 RW2.TXT
 -rwxr-xr-x 1 root root 4194304 Jan 16 15:32 RW4.TXT
 -rwxr-xr-x 1 root root 1048576 Jan 16 15:28 RW.TXT
@@ -116,6 +117,7 @@ DIR list -
 > RW.TXT
 > RW2.TXT
 > RW4.TXT
+> ROOTDNS.CDB
 >
 DIR - OK
 DIR list - RASPI

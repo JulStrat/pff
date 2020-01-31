@@ -22,7 +22,6 @@
 unit pff;
 
 {$mode delphi}
-{$optimization noloopunroll}
 
 interface
 
@@ -344,7 +343,7 @@ var
   iFatFS: PFATFS;
 
 {$MACRO ON}
-{$define ABORT_DISK_ERR := begin iFatFs.flag := 0; Exit(FR_DISK_ERR); end}
+{$define ABORT_DISK_ERR := begin Result := FR_DISK_ERR; break; end}
 {$define CHECK_FS_ENABLED := begin if iFatFs = nil then Exit(FR_NOT_ENABLED); end}
 
 {$if PF_USE_LCC and (not declared(_EXCVT))}
@@ -464,12 +463,12 @@ var
 {$endif}
 begin
   { Range check }
-  if (clst < 2) or (clst >= iFatFs.n_fatent) then
+  if (clst < 2) or (clst >= iFatFS.n_fatent) then
     Exit(1);
   { Default - An error occured at the disk I/O layer }
   Result := 1;
 
-  case iFatFs.fs_type of
+  case iFatFS.fs_type of
     {$if PF_FS_FAT12}
     FS_FAT12:
     begin
@@ -481,12 +480,12 @@ begin
 
       if ofs <> (SECTOR_SIZE - 1) then
       begin
-        if disk_readp(@buf, iFatFs.fatbase + bc, ofs, 2) = DRESULT.RES_OK then
+        if disk_readp(@buf, iFatFS.fatbase + bc, ofs, 2) = DRESULT.RES_OK then
           Result := 0;
       end
       else
-      if (disk_readp(@buf, iFatFs.fatbase + bc, (SECTOR_SIZE - 1), 1) =
-        DRESULT.RES_OK) and (disk_readp(PByte(@buf) + 1, iFatFs.fatbase + bc + 1, 0, 1) =
+      if (disk_readp(@buf, iFatFS.fatbase + bc, (SECTOR_SIZE - 1), 1) =
+        DRESULT.RES_OK) and (disk_readp(PByte(@buf) + 1, iFatFS.fatbase + bc + 1, 0, 1) =
         DRESULT.RES_OK) then
         Result := 0;
 
@@ -503,14 +502,14 @@ begin
 
     {$if PF_FS_FAT16}
     FS_FAT16:
-      if disk_readp(@buf, iFatFs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) =
+      if disk_readp(@buf, iFatFS.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) =
         RES_OK then
         Result := ld_word(buf);
     {$endif}
 
     {$if PF_FS_FAT32}
     FS_FAT32:
-      if disk_readp(@buf, iFatFs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
+      if disk_readp(@buf, iFatFS.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
         RES_OK then
         Result := ld_dword(buf) and $0FFFFFFF;
     {$endif}
@@ -525,11 +524,11 @@ end;
 function clust2sect(clst: CLUST): DWORD;
 begin
   clst := clst - 2;
-  if clst >= (iFatFs.n_fatent - 2) then
+  if clst >= (iFatFS.n_fatent - 2) then
     { Invalid cluster# }
     Result := 0
   else
-    Result := DWORD(clst * iFatFs.csize + iFatFs.database);
+    Result := DWORD(clst * iFatFS.csize + iFatFS.database);
 end;
 
 { Get cluster field from directory entry
@@ -557,12 +556,12 @@ begin
   dj.index := 0;
   clst := dj.sclust;
   { Check start cluster range }
-  if (clst = 1) or (clst >= iFatFs.n_fatent) then
+  if (clst = 1) or (clst >= iFatFS.n_fatent) then
     Exit(FR_DISK_ERR);
 
-  if PF_FS_FAT32 and (clst = 0) and (_FS_32ONLY or (iFatFs.fs_type = FS_FAT32)) then
+  if PF_FS_FAT32 and (clst = 0) and (_FS_32ONLY or (iFatFS.fs_type = FS_FAT32)) then
     { Replace cluster# 0 with root cluster# if in FAT32 }
-    clst := CLUST(iFatFs.dirbase);
+    clst := CLUST(iFatFS.dirbase);
 
   { Current cluster }
   dj.clust := clst;
@@ -570,7 +569,7 @@ begin
   if _FS_32ONLY or (clst <> 0) then
     dj.sect := clust2sect(clst)
   else
-    dj.sect := iFatFs.dirbase;
+    dj.sect := iFatFS.dirbase;
   { Seek succeeded }
   Result := FR_OK;
 end;
@@ -596,19 +595,19 @@ begin
     Inc(dj.sect);
     { Static table }
     if dj.clust = 0 then
-      if i >= iFatFs.n_rootdir then
+      if i >= iFatFS.n_rootdir then
         { Report EOT when end of table }
         Exit(FR_NO_FILE)
       else
       { Dynamic table }
-      if ((i div 16) and (iFatFs.csize - 1)) = 0 then
+      if ((i div 16) and (iFatFS.csize - 1)) = 0 then
       begin
         { Cluster changed?
           Get next cluster }
         clst := get_fat(dj.clust);
         if clst <= 1 then
           Exit(FR_DISK_ERR);
-        if clst >= iFatFs.n_fatent then
+        if clst >= iFatFS.n_fatent then
           { Report EOT when it reached end of dynamic table }
           Exit(FR_NO_FILE);
         { Initialize data for new cluster }
@@ -1006,7 +1005,7 @@ begin
   { Check file system }
   CHECK_FS_ENABLED;
 
-  iFatFs.flag := 0;
+  iFatFS.flag := 0;
   dj.fn := sp;
   { Follow the file path }
   Result := follow_path(dj, dir, path);
@@ -1018,12 +1017,12 @@ begin
     Exit(FR_NO_FILE);
 
   { File start cluster }
-  iFatFs.org_clust := get_clust(dir);
+  iFatFS.org_clust := get_clust(dir);
   { File size }
-  iFatFs.fsize := ld_dword(PByte(@dir) + DIR_FileSize);
+  iFatFS.fsize := ld_dword(PByte(@dir) + DIR_FileSize);
   { File pointer }
-  iFatFs.fptr := 0;
-  iFatFs.flag := FA_OPENED;
+  iFatFS.fptr := 0;
+  iFatFS.flag := FA_OPENED;
   Result := FR_OK;
 end;
 
@@ -1040,13 +1039,14 @@ begin
   { Check file system }
   CHECK_FS_ENABLED;
 
-  rbuff := buff;
-  br := 0;
   { Check if opened }
-  if (iFatFs.flag and FA_OPENED) = 0 then
+  if (iFatFS.flag and FA_OPENED) = 0 then
     Exit(FR_NOT_OPENED);
 
-  remain := iFatFs.fsize - iFatFs.fptr;
+  rbuff := buff;
+  br := 0;
+
+  remain := iFatFS.fsize - iFatFS.fptr;
   if btr > remain then
     { Truncate btr by remaining bytes }
     btr := UINT(remain);
@@ -1055,38 +1055,38 @@ begin
   while btr <> 0 do
   begin
     { On the sector boundary? }
-    if (iFatFs.fptr and (SECTOR_SIZE - 1)) = 0 then
+    if (iFatFS.fptr and (SECTOR_SIZE - 1)) = 0 then
     begin
       { Sector offset in the cluster }
-      cs := byte((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+      cs := byte((iFatFS.fptr shr SECTOR_SIZE_BP) and (iFatFS.csize - 1));
       { On the cluster boundary? }
       if cs = 0 then
       begin
         { On the top of the file? }
-        if iFatFs.fptr = 0 then
-          clst := iFatFs.org_clust
+        if iFatFS.fptr = 0 then
+          clst := iFatFS.org_clust
         else
-          clst := get_fat(iFatFs.curr_clust);
+          clst := get_fat(iFatFS.curr_clust);
         if clst <= 1 then
           ABORT_DISK_ERR;
         { Update current cluster }
-        iFatFs.curr_clust := clst;
+        iFatFS.curr_clust := clst;
       end;
       { Get current sector }
-      sect := clust2sect(iFatFs.curr_clust);
+      sect := clust2sect(iFatFS.curr_clust);
       if sect = 0 then
         ABORT_DISK_ERR;
-      iFatFs.dsect := sect + cs;
+      iFatFS.dsect := sect + cs;
     end;
     { Get partial sector data from sector buffer }
-    rcnt := SECTOR_SIZE - UINT(iFatFs.fptr and (SECTOR_SIZE - 1));
+    rcnt := SECTOR_SIZE - UINT(iFatFS.fptr and (SECTOR_SIZE - 1));
     if rcnt > btr then
       rcnt := btr;
-    dr := disk_readp(rbuff, iFatFs.dsect, UINT(iFatFs.fptr and (SECTOR_SIZE - 1)), rcnt);
+    dr := disk_readp(rbuff, iFatFS.dsect, UINT(iFatFS.fptr and (SECTOR_SIZE - 1)), rcnt);
     if dr <> RES_OK then
       ABORT_DISK_ERR;
     { Advances file read pointer }
-    iFatFs.fptr := iFatFs.fptr + rcnt;
+    iFatFS.fptr := iFatFS.fptr + rcnt;
     { Update read counter }
     btr := btr - rcnt;
     br := br + rcnt;
@@ -1094,7 +1094,11 @@ begin
     if rbuff <> nil then
       rbuff := rbuff + rcnt;
   end;
-  Result := FR_OK;
+
+  if Result = FR_DISK_ERR then 
+    iFatFS.flag := 0
+  else  
+    Result := FR_OK;
 end;
 
 {$ifdef PF_USE_LSEEK}
@@ -1105,51 +1109,52 @@ var
 begin
   { Check file system }
   CHECK_FS_ENABLED;
+
   { Check if file is opened }
-  if (iFatFs.flag and FA_OPENED) = 0 then
+  if (iFatFS.flag and FA_OPENED) = 0 then
     Exit(FR_NOT_OPENED);
 
-  if ofs > iFatFs.fsize then
+  if ofs > iFatFS.fsize then
     { Clip offset with the file size }
-    ofs := iFatFs.fsize;
-  ifptr := iFatFs.fptr;
-  iFatFs.fptr := 0;
+    ofs := iFatFS.fsize;
+  ifptr := iFatFS.fptr;
+  iFatFS.fptr := 0;
   if ofs > 0 then
   begin
     { Cluster size (byte) }
-    bcs := DWORD(iFatFs.csize) shl SECTOR_SIZE_BP;
+    bcs := DWORD(iFatFS.csize) shl SECTOR_SIZE_BP;
     if (ifptr > 0) and (((ofs - 1) div bcs) >= ((ifptr - 1) div bcs)) then
     begin
       { When seek to same or following cluster, }
       { start from the current cluster }
-      iFatFs.fptr := (ifptr - 1) and (not (bcs - 1));
-      ofs := ofs - iFatFs.fptr;
-      clst := iFatFs.curr_clust;
+      iFatFS.fptr := (ifptr - 1) and (not (bcs - 1));
+      ofs := ofs - iFatFS.fptr;
+      clst := iFatFS.curr_clust;
     end
     else
     begin
       { When seek to back cluster, }
       { start from the first cluster }
-      clst := iFatFs.org_clust;
-      iFatFs.curr_clust := clst;
+      clst := iFatFS.org_clust;
+      iFatFS.curr_clust := clst;
     end;
     while ofs > bcs do
     begin
       { Cluster following loop }
       { Follow cluster chain }
       clst := get_fat(clst);
-      if (clst <= 1) or (clst >= iFatFs.n_fatent) then
-        ABORT_DISK_ERR;
-      iFatFs.curr_clust := clst;
-      iFatFs.fptr := iFatFs.fptr + bcs;
+      if (clst <= 1) or (clst >= iFatFS.n_fatent) then
+        begin iFatFS.flag := 0; Exit(FR_DISK_ERR); end;
+      iFatFS.curr_clust := clst;
+      iFatFS.fptr := iFatFS.fptr + bcs;
       ofs := ofs - bcs;
     end;
-    iFatFs.fptr := iFatFs.fptr + ofs;
+    iFatFS.fptr := iFatFS.fptr + ofs;
     { Current sector }
     sect := clust2sect(clst);
     if sect = 0 then
-      ABORT_DISK_ERR;
-    iFatFs.dsect := sect + ((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+      begin iFatFS.flag := 0; Exit(FR_DISK_ERR); end;
+    iFatFS.dsect := sect + ((iFatFS.fptr shr SECTOR_SIZE_BP) and (iFatFS.csize - 1));
   end;
   Result := FR_OK;
 end;
@@ -1172,62 +1177,62 @@ begin
   p := buff;
   bw := 0;
   { Check if opened }
-  if (iFatFs.flag and FA_OPENED) = 0 then
+  if (iFatFS.flag and FA_OPENED) = 0 then
     Exit(FR_NOT_OPENED);
 
   if btw = 0 then
   begin
     { Finalize request }
-    if ((iFatFs.flag and FA__WIP) <> 0) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
-      ABORT_DISK_ERR;
-    iFatFs.flag := iFatFs.flag and (not FA__WIP);
+    if ((iFatFS.flag and FA__WIP) <> 0) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
+      begin iFatFS.flag := 0; Exit(FR_DISK_ERR); end;
+    iFatFS.flag := iFatFS.flag and (not FA__WIP);
     Exit(FR_OK);
   end
   else
   { Write data request }
-  if (iFatFs.flag and FA__WIP) = 0 then
+  if (iFatFS.flag and FA__WIP) = 0 then
     { Round-down fptr to the sector boundary }
-    iFatFs.fptr := iFatFs.fptr and $FFFFFE00;
+    iFatFS.fptr := iFatFS.fptr and $FFFFFE00;
 
-  remain := iFatFs.fsize - iFatFs.fptr;
+  remain := iFatFS.fsize - iFatFS.fptr;
   if btw > remain then
     btw := UINT(remain); { Truncate btw by remaining bytes }
 
   while btw <> 0 do
   begin
     { Repeat until all data transferred }
-    if UINT(iFatFs.fptr) and (SECTOR_SIZE - 1) = 0 then
+    if UINT(iFatFS.fptr) and (SECTOR_SIZE - 1) = 0 then
     begin
       { On the sector boundary? }
       { Sector offset in the cluster }
-      cs := byte((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+      cs := byte((iFatFS.fptr shr SECTOR_SIZE_BP) and (iFatFS.csize - 1));
       { Sector offset in the cluster }
       if cs = 0 then
       begin
         { On the cluster boundary? }
-        if iFatFs.fptr = 0 then
+        if iFatFS.fptr = 0 then
           { On the top of the file? }
-          clst := iFatFs.org_clust
+          clst := iFatFS.org_clust
         else
-          clst := get_fat(iFatFs.curr_clust);
+          clst := get_fat(iFatFS.curr_clust);
         if clst <= 1 then
           ABORT_DISK_ERR;
         { Update current cluster }
-        iFatFs.curr_clust := clst;
+        iFatFS.curr_clust := clst;
       end;
       { Get current sector }
-      sect := clust2sect(iFatFs.curr_clust);
+      sect := clust2sect(iFatFS.curr_clust);
       if sect = 0 then
         ABORT_DISK_ERR;
-      iFatFs.dsect := sect + cs;
+      iFatFS.dsect := sect + cs;
 
       { Initiate a sector write operation }
-      if disk_writep(nil, iFatFs.dsect) <> DRESULT.RES_OK then
+      if disk_writep(nil, iFatFS.dsect) <> DRESULT.RES_OK then
         ABORT_DISK_ERR;
-      iFatFs.flag := iFatFs.flag or FA__WIP;
+      iFatFS.flag := iFatFS.flag or FA__WIP;
     end;
     { Number of bytes to write to the sector }
-    wcnt := SECTOR_SIZE - (UINT(iFatFs.fptr) and (SECTOR_SIZE - 1));
+    wcnt := SECTOR_SIZE - (UINT(iFatFS.fptr) and (SECTOR_SIZE - 1));
     if wcnt > btw then
       wcnt := btw;
 
@@ -1236,21 +1241,24 @@ begin
       ABORT_DISK_ERR;
 
     { Update pointers and counters }
-    iFatFs.fptr := iFatFs.fptr + wcnt;
+    iFatFS.fptr := iFatFS.fptr + wcnt;
     p := p + wcnt;
     btw := btw - wcnt;
     bw := bw + wcnt;
 
-    if UINT(iFatFs.fptr) and (SECTOR_SIZE - 1) = 0 then
+    if UINT(iFatFS.fptr) and (SECTOR_SIZE - 1) = 0 then
     begin
       { Finalize the current sector write operation }
       if disk_writep(nil, 0) <> DRESULT.RES_OK then
         ABORT_DISK_ERR;
-      iFatFs.flag := iFatFs.flag and (not FA__WIP);
+      iFatFS.flag := iFatFS.flag and (not FA__WIP);
     end;
   end;
 
-  Result := FR_OK;
+  if Result = FR_DISK_ERR then 
+    iFatFS.flag := 0
+  else  
+    Result := FR_OK;
 end;
 
 {$endif}

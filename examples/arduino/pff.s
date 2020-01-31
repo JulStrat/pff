@@ -7,11 +7,11 @@ PFF_ss_ISDBCS1sSMALLINTssBOOLEAN:
 # Var $result located in register r18
 # Var c located in register r24
 # [pff.pas]
-# [385] begin
+# [384] begin
 # Var $result located in register r24
-# [386] Result := False;
+# [385] Result := False;
 	mov	r24,r1
-# [387] end;
+# [386] end;
 	ret
 .Lc1:
 .Le0:
@@ -22,11 +22,11 @@ PFF_ss_ISDBCS2sSMALLINTssBOOLEAN:
 .Lc4:
 # Var $result located in register r18
 # Var c located in register r24
-# [390] begin
+# [389] begin
 # Var $result located in register r24
-# [391] Result := False;
+# [390] Result := False;
 	mov	r24,r1
-# [392] end;
+# [391] end;
 	ret
 .Lc3:
 .Le1:
@@ -37,8 +37,8 @@ PFF_ss_ISUPPERsCHARssBOOLEAN:
 .Lc6:
 # Var $result located in register r18
 # Var c located in register r24
-# [397] begin
-# [398] Result := (c >= 'A') and (c <= 'Z');
+# [396] begin
+# [397] Result := (c >= 'A') and (c <= 'Z');
 	subi	r24,65
 	ldi	r18,25
 	cp	r18,r24
@@ -47,7 +47,7 @@ PFF_ss_ISUPPERsCHARssBOOLEAN:
 	brsh	.Lj9
 	mov	r24,r1
 .Lj9:
-# [399] end;
+# [398] end;
 	ret
 .Lc5:
 .Le2:
@@ -58,8 +58,8 @@ PFF_ss_ISLOWERsCHARssBOOLEAN:
 .Lc8:
 # Var $result located in register r18
 # Var c located in register r24
-# [402] begin
-# [403] Result := (c >= 'a') and (c <= 'z');
+# [401] begin
+# [402] Result := (c >= 'a') and (c <= 'z');
 	subi	r24,97
 	ldi	r18,25
 	cp	r18,r24
@@ -68,7 +68,7 @@ PFF_ss_ISLOWERsCHARssBOOLEAN:
 	brsh	.Lj12
 	mov	r24,r1
 .Lj12:
-# [404] end;
+# [403] end;
 	ret
 .Lc7:
 .Le3:
@@ -79,14 +79,14 @@ PFF_ss_LD_WORDsPBYTEssWORD:
 .Lc10:
 # Var $result located in register r18
 # Var ptr located in register r24
-# [408] begin
+# [407] begin
 # Var ptr located in register r24
 # Var $result located in register r24
-# [411] Result := PWord(ptr)^;
+# [410] Result := PWord(ptr)^;
 	movw	r30,r24
 	ld	r24,Z
 	ldd	r25,Z+1
-# [416] end;
+# [415] end;
 	ret
 .Lc9:
 .Le4:
@@ -97,16 +97,16 @@ PFF_ss_LD_DWORDsPBYTEssLONGWORD:
 .Lc12:
 # Var $result located in register r18
 # Var ptr located in register r24
-# [420] begin
+# [419] begin
 # Var ptr located in register r24
 # Var $result located in register r22
-# [423] Result := PDWord(ptr)^;
+# [422] Result := PDWord(ptr)^;
 	movw	r30,r24
 	ld	r22,Z
 	ldd	r23,Z+1
 	ldd	r24,Z+2
 	ldd	r25,Z+3
-# [430] end;
+# [429] end;
 	ret
 .Lc11:
 .Le5:
@@ -115,19 +115,19 @@ PFF_ss_LD_DWORDsPBYTEssLONGWORD:
 .section .text.n_pff_ss_mem_setspcharscharssmallint,"ax"
 PFF_ss_MEM_SETsPCHARsCHARsSMALLINT:
 .Lc14:
-# [435] begin
+# [434] begin
 	mov	r18,r24
 # Var dst located in register r18
 # Var val located in register r22
 # Var cnt located in register r20
-# [436] while cnt > 0 do
+# [435] while cnt > 0 do
 	rjmp	.Lj20
 .Lj19:
-# [438] dst^ := val;
+# [437] dst^ := val;
 	mov	r30,r18
 	mov	r31,r25
 	st	Z,r22
-# [439] Inc(dst); Dec(cnt);
+# [438] Inc(dst); Dec(cnt);
 	ldi	r19,1
 	add	r18,r19
 	adc	r25,r1
@@ -137,7 +137,7 @@ PFF_ss_MEM_SETsPCHARsCHARsSMALLINT:
 	cp	r1,r20
 	cpc	r1,r21
 	brlt	.Lj19
-# [441] end;
+# [440] end;
 	ret
 .Lc13:
 .Le6:
@@ -146,7 +146,7 @@ PFF_ss_MEM_SETsPCHARsCHARsSMALLINT:
 .section .text.n_pff_ss_mem_cmpspcharspcharssmallintsssmallint,"ax"
 PFF_ss_MEM_CMPsPCHARsPCHARsSMALLINTssSMALLINT:
 .Lc16:
-# [445] begin
+# [444] begin
 	push	r5
 	push	r4
 	push	r3
@@ -157,13 +157,13 @@ PFF_ss_MEM_CMPsPCHARsPCHARsSMALLINTssSMALLINT:
 # Var src located in register r22
 # Var cnt located in register r20
 # Var $result located in register r24
-# [446] Result := 0;
+# [445] Result := 0;
 	mov	r24,r1
 	mov	r25,r1
-# [447] while (cnt > 0) and (Result = 0) do
+# [446] while (cnt > 0) and (Result = 0) do
 	rjmp	.Lj25
 .Lj24:
-# [449] Result := Ord(dst^) - Ord(src^);
+# [448] Result := Ord(dst^) - Ord(src^);
 	movw	r30,r2
 	ld	r4,Z
 	mov	r19,r1
@@ -173,14 +173,14 @@ PFF_ss_MEM_CMPsPCHARsPCHARsSMALLINTssSMALLINT:
 	sbc	r19,r1
 	mov	r24,r4
 	mov	r25,r19
-# [450] Inc(dst); Inc(src);
+# [449] Inc(dst); Inc(src);
 	ldi	r18,1
 	add	r2,r18
 	adc	r3,r1
 	ldi	r18,1
 	add	r22,r18
 	adc	r23,r1
-# [451] Dec(cnt);
+# [450] Dec(cnt);
 	subi	r20,1
 	sbc	r21,r1
 .Lj25:
@@ -191,7 +191,7 @@ PFF_ss_MEM_CMPsPCHARsPCHARsSMALLINTssSMALLINT:
 	cpc	r25,r1
 	breq	.Lj24
 .Lj28:
-# [453] end;
+# [452] end;
 	pop	r2
 	pop	r3
 	pop	r4
@@ -204,17 +204,11 @@ PFF_ss_MEM_CMPsPCHARsPCHARsSMALLINTssSMALLINT:
 .section .text.n_pff_ss_get_fatslongwordsslongword,"ax"
 PFF_ss_GET_FATsLONGWORDssLONGWORD:
 .Lc18:
-# [465] begin
+# [464] begin
 	push	r29
 	push	r28
 	push	r17
 	push	r16
-	push	r13
-	push	r12
-	push	r11
-	push	r10
-	push	r9
-	push	r8
 	push	r7
 	push	r6
 	push	r5
@@ -230,342 +224,89 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 	out	62,r29
 	out	63,r0
 	out	61,r28
-# Var $result located in register r11
+# Var $result located in register r5
 # Var buf located at r28+2, size=OS_32
-# Var wc located in register r24
-# Var bc located in register r6
-# Var ofs located in register r18
-	movw	r2,r22
-	mov	r4,r24
-	mov	r7,r25
-# Var clst located in register r2
-# [467] if (clst < 2) or (clst >= iFatFs.n_fatent) then
-	ldi	r26,2
-	cp	r2,r26
-	cpc	r3,r1
-	cpc	r4,r1
-	cpc	r7,r1
+	movw	r20,r22
+	movw	r22,r24
+# Var clst located in register r20
+# [466] if (clst < 2) or (clst >= iFatFS.n_fatent) then
+	cpi	r20,2
+	cpc	r21,r1
+	cpc	r22,r1
+	cpc	r23,r1
 	brlo	.Lj32
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	ldd	r18,Z+8
-	ldd	r19,Z+9
-	ldd	r20,Z+10
-	ldd	r21,Z+11
-	cp	r2,r18
-	cpc	r3,r19
-	cpc	r4,r20
-	cpc	r7,r21
-	brlo	.Lj34
-.Lj32:
-# [468] Exit(1);
-	ldi	r26,1
-	mov	r11,r26
-	mov	r10,r1
-	mov	r9,r1
-	mov	r8,r1
-	rjmp	.Lj30
-.Lj34:
-# [470] Result := 1;
-	ldi	r26,1
-	mov	r11,r26
-	mov	r10,r1
-	mov	r9,r1
-	mov	r8,r1
-# [472] case iFatFs.fs_type of
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	ld	r19,Z
-	cpi	r19,1
-	brsh	.Lj58
-# [519] end;
-	rjmp	.Lj30
-.Lj58:
-	mov	r18,r19
-	dec	r19
-	cpi	r18,1
-	breq	.Lj36
-	mov	r18,r19
-	dec	r19
-	cpi	r18,1
-	brne	.Lj59
-	rjmp	.Lj37
-.Lj59:
-	mov	r18,r19
-	dec	r19
-	cpi	r18,1
-	brne	.Lj60
-	rjmp	.Lj38
-.Lj60:
-	rjmp	.Lj30
-.Lj36:
-# [476] bc := UINT(clst);
-	mov	r6,r2
-	mov	r5,r3
-	mov	r18,r6
-	mov	r19,r5
-	lsr	r19
-	ror	r18
-# [477] bc := bc + (bc shr 1);
-	add	r6,r18
-	adc	r5,r19
-# [479] ofs := bc and (SECTOR_SIZE - 1);
-	mov	r18,r6
-	mov	r19,r5
-	andi	r19,1
-# [480] bc := bc shr SECTOR_SIZE_BP;
-	mov	r21,r5
-	lsr	r21
-	mov	r6,r21
-	mov	r5,r1
-# [482] if ofs <> (SECTOR_SIZE - 1) then
-	cpi	r18,-1
-	ldi	r20,1
-	cpc	r19,r20
-	brne	.Lj61
-	rjmp	.Lj40
-.Lj61:
-# [484] if disk_readp(@buf, iFatFs.fatbase + bc, ofs, 2) = DRESULT.RES_OK then
-	lds	r20,(U_sPFF_ss_IFATFS)
-	lds	r22,(U_sPFF_ss_IFATFS+1)
-	mov	r23,r6
-	mov	r21,r5
-	mov	r24,r1
-	mov	r30,r20
-	mov	r31,r22
-	ldd	r12,Z+12
-	ldd	r20,Z+13
-	ldd	r22,Z+14
-	ldd	r13,Z+15
-	add	r23,r12
-	adc	r21,r20
-	adc	r22,r1
-	adc	r24,r13
-	mov	r20,r23
-	mov	r23,r24
-	ldi	r24,lo8(2)
-	ldi	r25,hi8(2)
-	add	r24,r28
-	adc	r25,r29
-	ldi	r16,2
-	mov	r17,r1
-	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
-	cp	r24,r1
-	breq	.Lj62
-	rjmp	.Lj43
-.Lj62:
-# [485] Result := 0;
-	mov	r11,r1
-	mov	r10,r1
-	mov	r9,r1
-	mov	r8,r1
-	rjmp	.Lj43
-.Lj40:
-# [488] if (disk_readp(@buf, iFatFs.fatbase + bc, (SECTOR_SIZE - 1), 1) =
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r18,(U_sPFF_ss_IFATFS+1)
-	mov	r20,r6
-	mov	r21,r5
-	mov	r22,r1
-	mov	r23,r1
 	mov	r30,r19
 	mov	r31,r18
-	ldd	r18,Z+12
-	ldd	r19,Z+13
-	ldd	r24,Z+14
-	ldd	r25,Z+15
-	add	r20,r18
-	adc	r21,r19
-	adc	r22,r24
-	adc	r23,r25
-	ldi	r24,lo8(2)
-	ldi	r25,hi8(2)
-	add	r24,r28
-	adc	r25,r29
-	ldi	r16,1
-	mov	r17,r1
-	ldi	r18,-1
+	ldd	r18,Z+8
+	ldd	r19,Z+9
+	ldd	r24,Z+10
+	ldd	r25,Z+11
+	cp	r20,r18
+	cpc	r21,r19
+	cpc	r22,r24
+	cpc	r23,r25
+	brlo	.Lj34
+.Lj32:
+# [467] Exit(1);
 	ldi	r26,1
-	mov	r19,r26
-	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
-	cp	r24,r1
-	breq	.Lj63
-	rjmp	.Lj43
-.Lj63:
-# [489] DRESULT.RES_OK) and (disk_readp(PByte(@buf) + 1, iFatFs.fatbase + bc + 1, 0, 1) =
+	mov	r5,r26
+	mov	r2,r1
+	mov	r3,r1
+	mov	r4,r1
+	rjmp	.Lj30
+.Lj34:
+# [469] Result := 1;
+	ldi	r26,1
+	mov	r5,r26
+	mov	r2,r1
+	mov	r3,r1
+	mov	r4,r1
+# [471] case iFatFS.fs_type of
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
-	mov	r20,r6
-	mov	r21,r5
-	mov	r22,r1
-	mov	r23,r1
 	movw	r30,r18
-	ldd	r18,Z+12
-	ldd	r19,Z+13
-	ldd	r24,Z+14
-	ldd	r25,Z+15
-	add	r20,r18
-	adc	r21,r19
-	adc	r22,r24
-	adc	r23,r25
-	ldi	r18,1
-	add	r20,r18
-	adc	r21,r1
-	adc	r22,r1
-	adc	r23,r1
-	ldi	r24,lo8(2)
-	ldi	r25,hi8(2)
-	add	r24,r28
-	adc	r25,r29
-	ldi	r18,1
-	add	r24,r18
-	adc	r25,r1
-	ldi	r16,1
-	mov	r17,r1
-	mov	r18,r1
-	mov	r19,r1
-	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
-	cp	r24,r1
-	brne	.Lj43
-# [491] Result := 0;
-	mov	r11,r1
-	mov	r10,r1
-	mov	r9,r1
-	mov	r8,r1
-.Lj43:
-# [493] if Result = 0 then
-	cp	r11,r1
-	cpc	r10,r1
-	cpc	r9,r1
-	cpc	r8,r1
-	breq	.Lj64
+	ld	r18,Z
+	cpi	r18,3
+	breq	.Lj40
+# [518] end;
 	rjmp	.Lj30
-.Lj64:
-# [495] wc := ld_word(buf);
-	ldi	r24,lo8(2)
-	ldi	r25,hi8(2)
-	add	r24,r28
-	adc	r25,r29
-	call	PFF_ss_LD_WORDsPBYTEssWORD
-# [496] if (clst and 1) <> 0 then
-	movw	r18,r2
-	mov	r20,r4
-	mov	r21,r7
-	andi	r18,1
-	cp	r18,r1
-	cpc	r1,r1
-	cpc	r1,r1
-	cpc	r1,r1
-	breq	.Lj50
-# [497] Result := wc shr 4
-	movw	r20,r24
-	ldi	r18,4
-.Lj51:
-	lsr	r21
-	ror	r20
-	dec	r18
-	brne	.Lj51
-	mov	r11,r20
-	mov	r10,r21
-	mov	r9,r1
-	mov	r8,r1
-	rjmp	.Lj30
-.Lj50:
-# [499] Result := wc and $FFF;
-	andi	r25,15
-	mov	r11,r24
-	mov	r10,r25
-	mov	r9,r1
-	mov	r8,r1
-	rjmp	.Lj30
-.Lj37:
-# [506] if disk_readp(@buf, iFatFs.fatbase + clst div 256, (UINT(clst) mod 256) * 2, 2) =
-	movw	r18,r2
-	mov	r19,r1
-	mov	r21,r1
-	mov	r20,r1
-	lsl	r18
-	rol	r19
-	rol	r21
-	rol	r20
-	lds	r25,(U_sPFF_ss_IFATFS)
-	lds	r24,(U_sPFF_ss_IFATFS+1)
-	mov	r20,r3
-	mov	r21,r4
-	mov	r22,r7
-	mov	r23,r1
-	mov	r30,r25
-	mov	r31,r24
-	ldd	r24,Z+12
-	ldd	r25,Z+13
-	ldd	r5,Z+14
-	ldd	r6,Z+15
-	add	r20,r24
-	adc	r21,r25
-	adc	r22,r5
-	adc	r23,r6
-	ldi	r24,lo8(2)
-	ldi	r25,hi8(2)
-	add	r24,r28
-	adc	r25,r29
-	ldi	r16,2
-	mov	r17,r1
-	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
-	cp	r24,r1
-	breq	.Lj65
-	rjmp	.Lj30
-.Lj65:
-# [508] Result := ld_word(buf);
-	ldi	r24,lo8(2)
-	ldi	r25,hi8(2)
-	add	r24,r28
-	adc	r25,r29
-	call	PFF_ss_LD_WORDsPBYTEssWORD
-	mov	r11,r24
-	mov	r10,r25
-	mov	r9,r1
-	mov	r8,r1
-	rjmp	.Lj30
-.Lj38:
-# [513] if disk_readp(@buf, iFatFs.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
-	movw	r18,r2
+.Lj40:
+# [512] if disk_readp(@buf, iFatFS.fatbase + clst div 128, (UINT(clst) mod 128) * 4, 4) =
+	movw	r18,r20
 	andi	r18,127
 	mov	r19,r1
-	mov	r20,r1
-	mov	r21,r1
+	mov	r24,r1
+	mov	r25,r1
 	lsl	r18
 	rol	r19
-	rol	r20
-	rol	r21
+	rol	r24
+	rol	r25
 	lsl	r18
 	rol	r19
-	rol	r20
-	rol	r21
+	rol	r24
+	rol	r25
 	lds	r24,(U_sPFF_ss_IFATFS)
 	lds	r25,(U_sPFF_ss_IFATFS+1)
-	movw	r20,r2
-	mov	r22,r4
-	mov	r23,r7
 	ldi	r26,7
-	mov	r2,r26
-.Lj55:
+	mov	r6,r26
+.Lj37:
 	lsr	r23
 	ror	r22
 	ror	r21
 	ror	r20
-	dec	r2
-	brne	.Lj55
+	dec	r6
+	brne	.Lj37
 	movw	r30,r24
 	ldd	r24,Z+12
 	ldd	r25,Z+13
-	ldd	r2,Z+14
-	ldd	r3,Z+15
+	ldd	r6,Z+14
+	ldd	r7,Z+15
 	add	r20,r24
 	adc	r21,r25
-	adc	r22,r2
-	adc	r23,r3
+	adc	r22,r6
+	adc	r23,r7
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -575,22 +316,22 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
 	brne	.Lj30
-# [515] Result := ld_dword(buf) and $0FFFFFFF;
+# [514] Result := ld_dword(buf) and $0FFFFFFF;
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
 	adc	r25,r29
 	call	PFF_ss_LD_DWORDsPBYTEssLONGWORD
 	andi	r25,15
-	mov	r11,r22
-	mov	r10,r23
-	mov	r9,r24
-	mov	r8,r25
+	mov	r5,r22
+	mov	r2,r23
+	mov	r3,r24
+	mov	r4,r25
 .Lj30:
-	mov	r22,r11
-	mov	r23,r10
-	mov	r24,r9
-	mov	r25,r8
+	mov	r22,r5
+	mov	r23,r2
+	mov	r24,r3
+	mov	r25,r4
 	subi	r28,-6
 	sbci	r29,-1
 	in	r0,63
@@ -604,12 +345,6 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 	pop	r5
 	pop	r6
 	pop	r7
-	pop	r8
-	pop	r9
-	pop	r10
-	pop	r11
-	pop	r12
-	pop	r13
 	pop	r16
 	pop	r17
 	pop	r28
@@ -622,7 +357,7 @@ PFF_ss_GET_FATsLONGWORDssLONGWORD:
 .section .text.n_pff_ss_clust2sectslongwordsslongword,"ax"
 PFF_ss_CLUST2SECTsLONGWORDssLONGWORD:
 .Lc20:
-# [526] begin
+# [525] begin
 	push	r13
 	push	r12
 	push	r11
@@ -637,12 +372,12 @@ PFF_ss_CLUST2SECTsLONGWORDssLONGWORD:
 	push	r2
 # Var $result located in register r2
 # Var clst located in register r22
-# [527] clst := clst - 2;
+# [526] clst := clst - 2;
 	subi	r22,2
 	sbc	r23,r1
 	sbc	r24,r1
 	sbc	r25,r1
-# [528] if clst >= (iFatFs.n_fatent - 2) then
+# [527] if clst >= (iFatFS.n_fatent - 2) then
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r19
@@ -672,15 +407,15 @@ PFF_ss_CLUST2SECTsLONGWORDssLONGWORD:
 	cpc	r1,r2
 	cpc	r1,r3
 	cpc	r1,r4
-	brlt	.Lj69
-# [530] Result := 0
+	brlt	.Lj44
+# [529] Result := 0
 	mov	r2,r1
 	mov	r3,r1
 	mov	r4,r1
 	mov	r5,r1
-	rjmp	.Lj70
-.Lj69:
-# [532] Result := DWORD(clst * iFatFs.csize + iFatFs.database);
+	rjmp	.Lj45
+.Lj44:
+# [531] Result := DWORD(clst * iFatFS.csize + iFatFS.database);
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -703,8 +438,8 @@ PFF_ss_CLUST2SECTsLONGWORDssLONGWORD:
 	adc	r21,r25
 	movw	r2,r18
 	movw	r4,r20
-.Lj70:
-# [533] end;
+.Lj45:
+# [532] end;
 	movw	r22,r2
 	movw	r24,r4
 	pop	r2
@@ -727,7 +462,7 @@ PFF_ss_CLUST2SECTsLONGWORDssLONGWORD:
 .section .text.n_pff_ss_get_clustspbytesslongword,"ax"
 PFF_ss_GET_CLUSTsPBYTEssLONGWORD:
 .Lc22:
-# [540] begin
+# [539] begin
 	push	r7
 	push	r6
 	push	r5
@@ -735,51 +470,32 @@ PFF_ss_GET_CLUSTsPBYTEssLONGWORD:
 	push	r3
 	push	r2
 # Var $result located in register r18
-	mov	r7,r24
-	mov	r6,r25
-# Var dir located in register r7
-# Var $result located in register r5
-# [541] Result := 0;
-	mov	r5,r1
-	mov	r2,r1
-	mov	r3,r1
-	mov	r4,r1
-# [542] if _FS_32ONLY or (PF_FS_FAT32 and (iFatFs.fs_type = FS_FAT32)) then
-	lds	r19,(U_sPFF_ss_IFATFS)
-	lds	r18,(U_sPFF_ss_IFATFS+1)
-	mov	r30,r19
-	mov	r31,r18
-	ld	r18,Z
-	cpi	r18,3
-	brne	.Lj74
-# [544] Result := CLUST(ld_word(dir + DIR_FstClusHI)) shl 16;
-	mov	r24,r7
-	mov	r25,r6
+	movw	r2,r24
+# Var dir located in register r2
+# Var $result located in register r18
+# [543] Result := CLUST(ld_word(dir + DIR_FstClusHI)) shl 16;
+	movw	r24,r2
 	ldi	r18,20
 	add	r24,r18
 	adc	r25,r1
 	call	PFF_ss_LD_WORDsPBYTEssWORD
-	mov	r5,r1
-	mov	r2,r1
-	mov	r3,r24
-	mov	r4,r25
-.Lj74:
-# [546] Result := Result or ld_word(dir + DIR_FstClusLO);
-	mov	r24,r7
-	mov	r25,r6
+	movw	r4,r24
+	mov	r6,r1
+	mov	r7,r1
+# Var $result located in register r6
+# [545] Result := Result or ld_word(dir + DIR_FstClusLO);
+	movw	r24,r2
 	ldi	r18,26
 	add	r24,r18
 	adc	r25,r1
 	call	PFF_ss_LD_WORDsPBYTEssWORD
-	or	r5,r24
-	or	r2,r25
-	or	r3,r1
+	or	r6,r24
+	or	r7,r25
 	or	r4,r1
-# [547] end;
-	mov	r22,r5
-	mov	r23,r2
-	mov	r24,r3
-	mov	r25,r4
+	or	r5,r1
+# [546] end;
+	movw	r22,r6
+	movw	r24,r4
 	pop	r2
 	pop	r3
 	pop	r4
@@ -794,66 +510,57 @@ PFF_ss_GET_CLUSTsPBYTEssLONGWORD:
 .section .text.n_pff_ss_dir_rewindsdirssfresult,"ax"
 PFF_ss_DIR_REWINDsDIRssFRESULT:
 .Lc24:
-# [556] begin
+# [555] begin
 	push	r4
 	push	r3
 	push	r2
 # Var $result located in register r4
 # Var clst located in register r18
-	mov	r3,r24
-	mov	r2,r25
-# Var dj located in register r3
-# [557] dj.index := 0;
-	mov	r30,r3
-	mov	r31,r2
+	movw	r2,r24
+# Var dj located in register r2
+# [556] dj.index := 0;
+	movw	r30,r2
 	st	Z,r1
 	std	Z+1,r1
 # Var clst located in register r22
-# [558] clst := dj.sclust;
-	mov	r30,r3
-	mov	r31,r2
+# [557] clst := dj.sclust;
+	movw	r30,r2
 	ldd	r22,Z+4
 	ldd	r23,Z+5
 	ldd	r24,Z+6
 	ldd	r25,Z+7
-# [560] if (clst = 1) or (clst >= iFatFs.n_fatent) then
+# [559] if (clst = 1) or (clst >= iFatFS.n_fatent) then
 	cpi	r22,1
 	cpc	r23,r1
 	cpc	r24,r1
 	cpc	r25,r1
-	breq	.Lj77
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	ldd	r20,Z+8
-	ldd	r19,Z+9
-	ldd	r18,Z+10
-	ldd	r21,Z+11
-	cp	r22,r20
-	cpc	r23,r19
-	cpc	r24,r18
-	cpc	r25,r21
-	brlo	.Lj79
-.Lj77:
-# [561] Exit(FR_DISK_ERR);
-	ldi	r26,1
-	mov	r4,r26
-	rjmp	.Lj75
-.Lj79:
-# [563] if PF_FS_FAT32 and (clst = 0) and (_FS_32ONLY or (iFatFs.fs_type = FS_FAT32)) then
-	cp	r22,r1
-	cpc	r23,r1
-	cpc	r24,r1
-	cpc	r25,r1
-	brne	.Lj81
+	breq	.Lj50
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r19
 	mov	r31,r18
-	ld	r18,Z
-	cpi	r18,3
-	brne	.Lj81
-# [565] clst := CLUST(iFatFs.dirbase);
+	ldd	r21,Z+8
+	ldd	r18,Z+9
+	ldd	r19,Z+10
+	ldd	r20,Z+11
+	cp	r22,r21
+	cpc	r23,r18
+	cpc	r24,r19
+	cpc	r25,r20
+	brlo	.Lj52
+.Lj50:
+# [560] Exit(FR_DISK_ERR);
+	ldi	r26,1
+	mov	r4,r26
+	rjmp	.Lj48
+.Lj52:
+# [562] if PF_FS_FAT32 and (clst = 0) and (_FS_32ONLY or (iFatFS.fs_type = FS_FAT32)) then
+	cp	r22,r1
+	cpc	r23,r1
+	cpc	r24,r1
+	cpc	r25,r1
+	brne	.Lj54
+# [564] clst := CLUST(iFatFS.dirbase);
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -861,55 +568,27 @@ PFF_ss_DIR_REWINDsDIRssFRESULT:
 	ldd	r23,Z+17
 	ldd	r24,Z+18
 	ldd	r25,Z+19
-.Lj81:
+.Lj54:
 # Var clst located in register r22
-# [568] dj.clust := clst;
-	mov	r30,r3
-	mov	r31,r2
+# [567] dj.clust := clst;
+	movw	r30,r2
 	std	Z+8,r22
 	std	Z+9,r23
 	std	Z+10,r24
 	std	Z+11,r25
-# [570] if _FS_32ONLY or (clst <> 0) then
-	cp	r22,r1
-	cpc	r23,r1
-	cpc	r24,r1
-	cpc	r25,r1
-	breq	.Lj84
-# [571] dj.sect := clust2sect(clst)
+# Var clst located in register r22
+# [570] dj.sect := clust2sect(clst)
 	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
-	mov	r30,r3
-	mov	r31,r2
+# [569] if _FS_32ONLY or (clst <> 0) then
+	movw	r30,r2
 	std	Z+12,r22
 	std	Z+13,r23
 	std	Z+14,r24
 	std	Z+15,r25
-	rjmp	.Lj85
-.Lj84:
-# [573] dj.sect := iFatFs.dirbase;
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	adiw	r30,16
-	ldi	r19,lo8(12)
-	ldi	r18,hi8(12)
-	add	r19,r3
-	adc	r18,r2
-	mov	r26,r19
-	mov	r27,r18
-	ld	r0,Z+
-	st	X+,r0
-	ld	r0,Z+
-	st	X+,r0
-	ld	r0,Z+
-	st	X+,r0
-	ld	r0,Z
-	st	X,r0
-.Lj85:
-# [575] Result := FR_OK;
+# [574] Result := FR_OK;
 	mov	r4,r1
-.Lj75:
-# [576] end;
+.Lj48:
+# [575] end;
 	mov	r24,r4
 	pop	r2
 	pop	r3
@@ -922,7 +601,7 @@ PFF_ss_DIR_REWINDsDIRssFRESULT:
 .section .text.n_pff_ss_dir_nextsdirssfresult,"ax"
 PFF_ss_DIR_NEXTsDIRssFRESULT:
 .Lc26:
-# [587] begin
+# [586] begin
 	push	r6
 	push	r5
 	push	r4
@@ -934,7 +613,7 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	mov	r5,r24
 	mov	r2,r25
 # Var dj located in register r5
-# [588] i := dj.index + 1;
+# [587] i := dj.index + 1;
 	mov	r30,r5
 	mov	r31,r2
 	ld	r4,Z
@@ -947,10 +626,10 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	adc	r18,r1
 	adc	r19,r1
 # Var i located in register r4
-# [589] if (i = 0) or (dj.sect = 0) then
+# [588] if (i = 0) or (dj.sect = 0) then
 	cp	r4,r1
 	cpc	r3,r1
-	breq	.Lj88
+	breq	.Lj57
 	mov	r30,r5
 	mov	r31,r2
 	ldd	r19,Z+12
@@ -961,24 +640,24 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	cpc	r20,r1
 	cpc	r21,r1
 	cpc	r18,r1
-	brne	.Lj90
-.Lj88:
-# [591] Exit(FR_NO_FILE);
+	brne	.Lj59
+.Lj57:
+# [590] Exit(FR_NO_FILE);
 	ldi	r26,3
 	mov	r6,r26
-	rjmp	.Lj86
-.Lj90:
-# [593] if (i mod 16) = 0 then
+	rjmp	.Lj55
+.Lj59:
+# [592] if (i mod 16) = 0 then
 	mov	r18,r4
 	mov	r19,r3
 	andi	r18,15
 	cp	r18,r1
 	cpc	r1,r1
-	breq	.Lj105
-# [621] end;
-	rjmp	.Lj92
-.Lj105:
-# [596] Inc(dj.sect);
+	breq	.Lj74
+# [620] end;
+	rjmp	.Lj61
+.Lj74:
+# [595] Inc(dj.sect);
 	mov	r30,r5
 	mov	r31,r2
 	ldd	r20,Z+12
@@ -996,7 +675,7 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	std	Z+13,r21
 	std	Z+14,r22
 	std	Z+15,r19
-# [598] if dj.clust = 0 then
+# [597] if dj.clust = 0 then
 	mov	r30,r5
 	mov	r31,r2
 	ldd	r19,Z+8
@@ -1007,10 +686,10 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	cpc	r20,r1
 	cpc	r21,r1
 	cpc	r18,r1
-	breq	.Lj106
-	rjmp	.Lj92
-.Lj106:
-# [599] if i >= iFatFs.n_rootdir then
+	breq	.Lj75
+	rjmp	.Lj61
+.Lj75:
+# [598] if i >= iFatFS.n_rootdir then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -1018,14 +697,14 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	ldd	r18,Z+5
 	cp	r4,r19
 	cpc	r3,r18
-	brlo	.Lj96
-# [602] else
+	brlo	.Lj65
+# [601] else
 	ldi	r26,3
 	mov	r6,r26
-# [601] Exit(FR_NO_FILE)
-	rjmp	.Lj86
-.Lj96:
-# [604] if ((i div 16) and (iFatFs.csize - 1)) = 0 then
+# [600] Exit(FR_NO_FILE)
+	rjmp	.Lj55
+.Lj65:
+# [603] if ((i div 16) and (iFatFS.csize - 1)) = 0 then
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r19
@@ -1037,19 +716,19 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	mov	r20,r4
 	mov	r21,r3
 	ldi	r22,4
-.Lj98:
+.Lj67:
 	lsr	r21
 	ror	r20
 	dec	r22
-	brne	.Lj98
+	brne	.Lj67
 	and	r20,r19
 	and	r21,r18
 	cp	r20,r1
 	cpc	r21,r1
-	breq	.Lj107
-	rjmp	.Lj92
-.Lj107:
-# [608] clst := get_fat(dj.clust);
+	breq	.Lj76
+	rjmp	.Lj61
+.Lj76:
+# [607] clst := get_fat(dj.clust);
 	mov	r30,r5
 	mov	r31,r2
 	ldd	r22,Z+8
@@ -1063,19 +742,19 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	mov	r31,r2
 	ldd	r25,Z+11
 	call	PFF_ss_GET_FATsLONGWORDssLONGWORD
-# [609] if clst <= 1 then
+# [608] if clst <= 1 then
 	ldi	r21,1
 	cp	r21,r22
 	cpc	r1,r23
 	cpc	r1,r24
 	cpc	r1,r25
-	brlo	.Lj102
-# [610] Exit(FR_DISK_ERR);
+	brlo	.Lj71
+# [609] Exit(FR_DISK_ERR);
 	ldi	r26,1
 	mov	r6,r26
-	rjmp	.Lj86
-.Lj102:
-# [611] if clst >= iFatFs.n_fatent then
+	rjmp	.Lj55
+.Lj71:
+# [610] if clst >= iFatFS.n_fatent then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -1087,20 +766,20 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	cpc	r23,r18
 	cpc	r24,r19
 	cpc	r25,r20
-	brlo	.Lj104
-# [613] Exit(FR_NO_FILE);
+	brlo	.Lj73
+# [612] Exit(FR_NO_FILE);
 	ldi	r26,3
 	mov	r6,r26
-	rjmp	.Lj86
-.Lj104:
-# [615] dj.clust := clst;
+	rjmp	.Lj55
+.Lj73:
+# [614] dj.clust := clst;
 	mov	r30,r5
 	mov	r31,r2
 	std	Z+8,r22
 	std	Z+9,r23
 	std	Z+10,r24
 	std	Z+11,r25
-# [616] dj.sect := clust2sect(clst);
+# [615] dj.sect := clust2sect(clst);
 	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
 	mov	r30,r5
 	mov	r31,r2
@@ -1108,16 +787,16 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 	std	Z+13,r23
 	std	Z+14,r24
 	std	Z+15,r25
-.Lj92:
+.Lj61:
 # Var i located in register r4
-# [619] dj.index := i;
+# [618] dj.index := i;
 	mov	r30,r5
 	mov	r31,r2
 	st	Z,r4
 	std	Z+1,r3
-# [620] Result := FR_OK;
+# [619] Result := FR_OK;
 	mov	r6,r1
-.Lj86:
+.Lj55:
 	mov	r24,r6
 	pop	r2
 	pop	r3
@@ -1132,7 +811,7 @@ PFF_ss_DIR_NEXTsDIRssFRESULT:
 .section .text.n_pff_ss_dir_findsdirspbytessfresult,"ax"
 PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT:
 .Lc28:
-# [631] begin
+# [630] begin
 	push	r17
 	push	r16
 	push	r7
@@ -1147,19 +826,19 @@ PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT:
 # Var dj located in register r2
 	movw	r4,r22
 # Var dir located in register r4
-# [633] Result := dir_rewind(dj);
+# [632] Result := dir_rewind(dj);
 	movw	r24,r2
 	call	PFF_ss_DIR_REWINDsDIRssFRESULT
 	mov	r6,r24
 # Var $result located in register r6
-# [634] if Result <> FR_OK then
+# [633] if Result <> FR_OK then
 	cp	r6,r1
-	breq	.Lj123
-# [658] end;
-	rjmp	.Lj108
-.Lj123:
-.Lj112:
-# [640] if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> RES_OK then
+	breq	.Lj92
+# [657] end;
+	rjmp	.Lj77
+.Lj92:
+.Lj81:
+# [639] if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> RES_OK then
 	movw	r30,r2
 	ld	r18,Z
 	ldd	r19,Z+1
@@ -1168,13 +847,13 @@ PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT:
 	mov	r21,r1
 	mov	r20,r1
 	ldi	r22,5
-.Lj115:
+.Lj84:
 	lsl	r18
 	rol	r19
 	rol	r21
 	rol	r20
 	dec	r22
-	brne	.Lj115
+	brne	.Lj84
 	movw	r30,r2
 	ldd	r20,Z+12
 	movw	r30,r2
@@ -1188,29 +867,29 @@ PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT:
 	movw	r24,r4
 	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
-	breq	.Lj117
-# [641] Exit(FRESULT.FR_DISK_ERR);
+	breq	.Lj86
+# [640] Exit(FRESULT.FR_DISK_ERR);
 	ldi	r26,1
 	mov	r6,r26
-	rjmp	.Lj108
-.Lj117:
-# [643] c := dir[DIR_Name];
+	rjmp	.Lj77
+.Lj86:
+# [642] c := dir[DIR_Name];
 	movw	r30,r4
 	ld	r7,Z
-# [644] if c = 0 then
+# [643] if c = 0 then
 	cp	r7,r1
-	brne	.Lj119
-# [647] Result := FR_NO_FILE;
+	brne	.Lj88
+# [646] Result := FR_NO_FILE;
 	ldi	r26,3
 	mov	r6,r26
-# [648] break;
-	rjmp	.Lj108
-.Lj119:
-# [652] if ((dir[DIR_Attr] and AM_VOL) = 0) and (mem_cmp(PChar(dir), PChar(dj.fn), 11) = 0) then
+# [647] break;
+	rjmp	.Lj77
+.Lj88:
+# [651] if ((dir[DIR_Attr] and AM_VOL) = 0) and (mem_cmp(PChar(dir), PChar(dj.fn), 11) = 0) then
 	movw	r30,r4
 	ldd	r18,Z+11
 	andi	r18,8
-	brne	.Lj121
+	brne	.Lj90
 	movw	r30,r2
 	ldd	r22,Z+2
 	movw	r30,r2
@@ -1221,18 +900,18 @@ PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT:
 	call	PFF_ss_MEM_CMPsPCHARsPCHARsSMALLINTssSMALLINT
 	cp	r24,r1
 	cpc	r25,r1
-	breq	.Lj108
-.Lj121:
-# [655] Result := dir_next(dj);
+	breq	.Lj77
+.Lj90:
+# [654] Result := dir_next(dj);
 	movw	r24,r2
 	call	PFF_ss_DIR_NEXTsDIRssFRESULT
 	mov	r6,r24
-# [657] until Result <> FR_OK;
+# [656] until Result <> FR_OK;
 	cp	r6,r1
-	brne	.Lj124
-	rjmp	.Lj112
-.Lj124:
-.Lj108:
+	brne	.Lj93
+	rjmp	.Lj81
+.Lj93:
+.Lj77:
 	mov	r24,r6
 	pop	r2
 	pop	r3
@@ -1250,7 +929,7 @@ PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT:
 .section .text.n_pff_ss_dir_readsdirspbytessfresult,"ax"
 PFF_ss_DIR_READsDIRsPBYTEssFRESULT:
 .Lc30:
-# [669] begin
+# [668] begin
 	push	r17
 	push	r16
 	push	r8
@@ -1270,13 +949,13 @@ PFF_ss_DIR_READsDIRsPBYTEssFRESULT:
 	mov	r5,r23
 # Var dir located in register r8
 # Var $result located in register r3
-# [670] Result := FR_NO_FILE;
+# [669] Result := FR_NO_FILE;
 	ldi	r26,3
 	mov	r3,r26
-# [671] while dj.sect <> 0 do
-	rjmp	.Lj128
-.Lj127:
-# [674] if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> DRESULT.RES_OK then
+# [670] while dj.sect <> 0 do
+	rjmp	.Lj97
+.Lj96:
+# [673] if disk_readp(dir, dj.sect, (dj.index mod 16) * 32, 32) <> DRESULT.RES_OK then
 	mov	r30,r4
 	mov	r31,r2
 	ld	r18,Z
@@ -1286,13 +965,13 @@ PFF_ss_DIR_READsDIRsPBYTEssFRESULT:
 	mov	r21,r1
 	mov	r20,r1
 	ldi	r22,5
-.Lj130:
+.Lj99:
 	lsl	r18
 	rol	r19
 	rol	r21
 	rol	r20
 	dec	r22
-	brne	.Lj130
+	brne	.Lj99
 	mov	r30,r4
 	mov	r31,r2
 	ldd	r20,Z+12
@@ -1311,54 +990,54 @@ PFF_ss_DIR_READsDIRsPBYTEssFRESULT:
 	mov	r25,r5
 	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
-	breq	.Lj132
-# [676] Result := FR_DISK_ERR;
+	breq	.Lj101
+# [675] Result := FR_DISK_ERR;
 	ldi	r26,1
 	mov	r3,r26
-# [677] break;
-	rjmp	.Lj129
-.Lj132:
-# [680] Result := FR_OK;
+# [676] break;
+	rjmp	.Lj98
+.Lj101:
+# [679] Result := FR_OK;
 	mov	r3,r1
-# [682] c := dir[DIR_Name];
+# [681] c := dir[DIR_Name];
 	mov	r30,r8
 	mov	r31,r5
 	ld	r6,Z
-# [683] if c = 0 then
+# [682] if c = 0 then
 	cp	r6,r1
-	brne	.Lj135
-# [686] Result := FR_NO_FILE;
+	brne	.Lj104
+# [685] Result := FR_NO_FILE;
 	ldi	r26,3
 	mov	r3,r26
-# [687] break;
-	rjmp	.Lj129
-.Lj135:
-# [689] a := dir[DIR_Attr] and AM_MASK;
+# [686] break;
+	rjmp	.Lj98
+.Lj104:
+# [688] a := dir[DIR_Attr] and AM_MASK;
 	mov	r30,r8
 	mov	r31,r5
 	ldd	r18,Z+11
 	andi	r18,63
 	mov	r7,r18
-# [692] if (c <> $E5) and (c <> Ord('.')) and ((a and AM_VOL) = 0) then
+# [691] if (c <> $E5) and (c <> Ord('.')) and ((a and AM_VOL) = 0) then
 	ldi	r26,-27
 	cp	r6,r26
-	breq	.Lj137
+	breq	.Lj106
 	ldi	r26,46
 	cp	r6,r26
-	breq	.Lj137
+	breq	.Lj106
 	mov	r18,r7
 	andi	r18,8
-	breq	.Lj129
-.Lj137:
-# [695] Result := dir_next(dj);
+	breq	.Lj98
+.Lj106:
+# [694] Result := dir_next(dj);
 	mov	r24,r4
 	mov	r25,r2
 	call	PFF_ss_DIR_NEXTsDIRssFRESULT
 	mov	r3,r24
-# [696] if Result <> FR_OK then
+# [695] if Result <> FR_OK then
 	cp	r3,r1
-	brne	.Lj129
-.Lj128:
+	brne	.Lj98
+.Lj97:
 	mov	r30,r4
 	mov	r31,r2
 	ldd	r18,Z+12
@@ -1369,22 +1048,22 @@ PFF_ss_DIR_READsDIRsPBYTEssFRESULT:
 	cpc	r19,r1
 	cpc	r20,r1
 	cpc	r21,r1
-	breq	.Lj144
-# [702] end;
-	rjmp	.Lj127
-.Lj144:
-.Lj129:
-# [700] if Result <> FR_OK then
+	breq	.Lj113
+# [701] end;
+	rjmp	.Lj96
+.Lj113:
+.Lj98:
+# [699] if Result <> FR_OK then
 	cp	r3,r1
-	breq	.Lj143
-# [701] dj.sect := 0;
+	breq	.Lj112
+# [700] dj.sect := 0;
 	mov	r30,r4
 	mov	r31,r2
 	std	Z+12,r1
 	std	Z+13,r1
 	std	Z+14,r1
 	std	Z+15,r1
-.Lj143:
+.Lj112:
 	mov	r24,r3
 	pop	r2
 	pop	r3
@@ -1403,7 +1082,7 @@ PFF_ss_DIR_READsDIRsPBYTEssFRESULT:
 .section .text.n_pff_ss_create_namesdirspcharssfresult,"ax"
 PFF_ss_CREATE_NAMEsDIRsPCHARssFRESULT:
 .Lc32:
-# [716] begin
+# [715] begin
 	push	r12
 	push	r11
 	push	r10
@@ -1428,11 +1107,11 @@ PFF_ss_CREATE_NAMEsDIRsPCHARssFRESULT:
 	mov	r11,r23
 # Var path located in register r12
 # Var sfn located in register r18
-# [718] sfn := dj.fn;
+# [717] sfn := dj.fn;
 	movw	r30,r24
 	ldd	r18,Z+2
 	ldd	r19,Z+3
-# [719] mem_set(PChar(sfn), ' ', 11);
+# [718] mem_set(PChar(sfn), ' ', 11);
 	ldi	r20,11
 	mov	r21,r1
 	ldi	r22,32
@@ -1441,117 +1120,117 @@ PFF_ss_CREATE_NAMEsDIRsPCHARssFRESULT:
 	movw	r24,r2
 	call	PFF_ss_MEM_SETsPCHARsCHARsSMALLINT
 # Var si located in register r4
-# [720] si := 0;
+# [719] si := 0;
 	mov	r4,r1
 # Var i located in register r5
-# [721] i := 0;
+# [720] i := 0;
 	mov	r5,r1
 # Var ni located in register r6
-# [722] ni := 8;
+# [721] ni := 8;
 	ldi	r26,8
 	mov	r6,r26
 # Var p located in register r7
-# [723] p := PByte(path);
+# [722] p := PByte(path);
 	mov	r30,r12
 	mov	r31,r11
 	ld	r7,Z
 	ldd	r8,Z+1
-.Lj147:
-# [726] c := p[si];
+.Lj116:
+# [725] c := p[si];
 	mov	r30,r7
 	mov	r31,r8
 	add	r30,r4
 	adc	r31,r1
 	ld	r9,Z
-# [727] Inc(si);
+# [726] Inc(si);
 	inc	r4
-# [728] if (c <= Ord(' ')) or (c = Ord('/')) then
+# [727] if (c <= Ord(' ')) or (c = Ord('/')) then
 	ldi	r18,32
 	cp	r18,r9
-	brlo	.Lj167
-# [772] end;
-	rjmp	.Lj149
-.Lj167:
+	brlo	.Lj136
+# [771] end;
+	rjmp	.Lj118
+.Lj136:
 	ldi	r26,47
 	cp	r9,r26
-	brne	.Lj168
-	rjmp	.Lj149
-.Lj168:
-# [732] if (c = Ord('.')) or (i >= ni) then
+	brne	.Lj137
+	rjmp	.Lj118
+.Lj137:
+# [731] if (c = Ord('.')) or (i >= ni) then
 	ldi	r26,46
 	cp	r9,r26
-	breq	.Lj153
+	breq	.Lj122
 	cp	r5,r6
-	brlo	.Lj155
-.Lj153:
-# [734] if (ni <> 8) or (c <> Ord('.')) then
+	brlo	.Lj124
+.Lj122:
+# [733] if (ni <> 8) or (c <> Ord('.')) then
 	ldi	r26,8
 	cp	r6,r26
-	breq	.Lj169
-	rjmp	.Lj149
-.Lj169:
+	breq	.Lj138
+	rjmp	.Lj118
+.Lj138:
 	ldi	r26,46
 	cp	r9,r26
-	breq	.Lj170
-	rjmp	.Lj149
-.Lj170:
-# [736] i := 8;
+	breq	.Lj139
+	rjmp	.Lj118
+.Lj139:
+# [735] i := 8;
 	ldi	r26,8
 	mov	r5,r26
-# [737] ni := 11;
+# [736] ni := 11;
 	ldi	r26,11
 	mov	r6,r26
-# [738] continue;
-	rjmp	.Lj147
-.Lj155:
-# [747] if IsDBCS1(c) and (i < ni - 1) then
+# [737] continue;
+	rjmp	.Lj116
+.Lj124:
+# [746] if IsDBCS1(c) and (i < ni - 1) then
 	mov	r24,r9
 	mov	r25,r1
 	call	PFF_ss_ISDBCS1sSMALLINTssBOOLEAN
 	cp	r24,r1
-	breq	.Lj164
+	breq	.Lj133
 	mov	r20,r6
 	mov	r18,r1
 	subi	r20,1
 	sbc	r18,r1
 	cp	r5,r20
 	cpc	r1,r18
-	brge	.Lj164
-# [750] d := p[si];
+	brge	.Lj133
+# [749] d := p[si];
 	mov	r30,r7
 	mov	r31,r8
 	add	r30,r4
 	adc	r31,r1
 	ld	r10,Z
-# [751] Inc(si);
+# [750] Inc(si);
 	inc	r4
-# [752] sfn[i] := c;
+# [751] sfn[i] := c;
 	movw	r30,r2
 	add	r30,r5
 	adc	r31,r1
 	st	Z,r9
-# [753] Inc(i);
+# [752] Inc(i);
 	inc	r5
-# [754] sfn[i] := d;
+# [753] sfn[i] := d;
 	movw	r30,r2
 	add	r30,r5
 	adc	r31,r1
 	st	Z,r10
-# [755] Inc(i);
+# [754] Inc(i);
 	inc	r5
-	rjmp	.Lj147
-.Lj164:
-# [763] sfn[i] := c;
+	rjmp	.Lj116
+.Lj133:
+# [762] sfn[i] := c;
 	movw	r30,r2
 	add	r30,r5
 	adc	r31,r1
 	st	Z,r9
-# [764] Inc(i);
+# [763] Inc(i);
 	inc	r5
-# [724] while True do
-	rjmp	.Lj147
-.Lj149:
-# [768] path := @p[si];
+# [723] while True do
+	rjmp	.Lj116
+.Lj118:
+# [767] path := @p[si];
 	mov	r20,r7
 	mov	r21,r8
 	add	r20,r4
@@ -1560,17 +1239,17 @@ PFF_ss_CREATE_NAMEsDIRsPCHARssFRESULT:
 	mov	r31,r11
 	st	Z,r20
 	std	Z+1,r21
-# [770] sfn[11] := byte(c <= Ord(' '));
+# [769] sfn[11] := byte(c <= Ord(' '));
 	ldi	r18,32
 	cp	r18,r9
 	ldi	r18,1
-	brsh	.Lj166
+	brsh	.Lj135
 	mov	r18,r1
-.Lj166:
+.Lj135:
 	movw	r30,r2
 	std	Z+11,r18
 # Var $result located in register r24
-# [771] Result := FR_OK;
+# [770] Result := FR_OK;
 	mov	r24,r1
 	pop	r2
 	pop	r3
@@ -1591,7 +1270,7 @@ PFF_ss_CREATE_NAMEsDIRsPCHARssFRESULT:
 .section .text.n_pff_ss_get_fileinfosdirspbytesfilinfo,"ax"
 PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 .Lc34:
-# [784] begin
+# [783] begin
 	push	r7
 	push	r6
 	push	r5
@@ -1607,14 +1286,14 @@ PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 	mov	r7,r20
 	mov	r6,r21
 # Var fno located in register r7
-# [785] p := fno.fname;
+# [784] p := fno.fname;
 	ldi	r18,lo8(9)
 	ldi	r19,hi8(9)
 	add	r18,r7
 	adc	r19,r6
 # Var p located in register r2
 	movw	r2,r18
-# [786] if dj.sect <> 0 then
+# [785] if dj.sect <> 0 then
 	movw	r30,r24
 	ldd	r18,Z+12
 	ldd	r19,Z+13
@@ -1624,74 +1303,74 @@ PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 	cpc	r19,r1
 	cpc	r20,r1
 	cpc	r21,r1
-	brne	.Lj189
-# [823] end;
-	rjmp	.Lj174
-.Lj189:
-# [789] for i := 0 to Pred(8) do
+	brne	.Lj158
+# [822] end;
+	rjmp	.Lj143
+.Lj158:
+# [788] for i := 0 to Pred(8) do
 	ldi	r19,-1
-.Lj175:
+.Lj144:
 	inc	r19
-# [791] c := dir[i];
+# [790] c := dir[i];
 	movw	r30,r4
 	add	r30,r19
 	adc	r31,r1
 	ld	r21,Z
-# [792] if c = Ord(' ') then
+# [791] if c = Ord(' ') then
 	cpi	r21,32
-	breq	.Lj177
-# [794] if c = $05 then
+	breq	.Lj146
+# [793] if c = $05 then
 	cpi	r21,5
-	brne	.Lj181
-# [795] c := $E5;
+	brne	.Lj150
+# [794] c := $E5;
 	ldi	r21,-27
-.Lj181:
-# [796] p^ := char(c);
+.Lj150:
+# [795] p^ := char(c);
 	movw	r30,r2
 	st	Z,r21
-# [797] Inc(p);
+# [796] Inc(p);
 	ldi	r18,1
 	add	r2,r18
 	adc	r3,r1
 	cpi	r19,7
-	brlo	.Lj175
-.Lj177:
-# [799] if dir[8] <> Ord(' ') then
+	brlo	.Lj144
+.Lj146:
+# [798] if dir[8] <> Ord(' ') then
 	movw	r30,r4
 	ldd	r18,Z+8
 	cpi	r18,32
-	breq	.Lj183
-# [802] p^ := '.';
+	breq	.Lj152
+# [801] p^ := '.';
 	ldi	r18,46
 	movw	r30,r2
 	st	Z,r18
-# [803] Inc(p);
+# [802] Inc(p);
 	ldi	r18,1
 	add	r2,r18
 	adc	r3,r1
-# [804] for i := 8 to Pred(11) do
+# [803] for i := 8 to Pred(11) do
 	ldi	r19,7
-.Lj184:
+.Lj153:
 	inc	r19
-# [806] c := dir[i];
+# [805] c := dir[i];
 	movw	r30,r4
 	add	r30,r19
 	adc	r31,r1
 	ld	r21,Z
-# [807] if c = Ord(' ') then
+# [806] if c = Ord(' ') then
 	cpi	r21,32
-	breq	.Lj183
-# [809] p^ := char(c);
+	breq	.Lj152
+# [808] p^ := char(c);
 	movw	r30,r2
 	st	Z,r21
-# [810] Inc(p);
+# [809] Inc(p);
 	ldi	r18,1
 	add	r2,r18
 	adc	r3,r1
 	cpi	r19,10
-	brlo	.Lj184
-.Lj183:
-# [814] fno.fattrib := dir[DIR_Attr];
+	brlo	.Lj153
+.Lj152:
+# [813] fno.fattrib := dir[DIR_Attr];
 	movw	r30,r4
 	adiw	r30,11
 	ldi	r18,lo8(8)
@@ -1701,7 +1380,7 @@ PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 	movw	r26,r18
 	ld	r0,Z
 	st	X,r0
-# [816] fno.fsize := ld_dword(dir + DIR_FileSize);
+# [815] fno.fsize := ld_dword(dir + DIR_FileSize);
 	movw	r24,r4
 	ldi	r18,28
 	add	r24,r18
@@ -1713,7 +1392,7 @@ PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 	std	Z+1,r23
 	std	Z+2,r24
 	std	Z+3,r25
-# [818] fno.fdate := ld_word(dir + DIR_WrtDate);
+# [817] fno.fdate := ld_word(dir + DIR_WrtDate);
 	movw	r24,r4
 	ldi	r18,24
 	add	r24,r18
@@ -1723,7 +1402,7 @@ PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 	mov	r31,r6
 	std	Z+4,r24
 	std	Z+5,r25
-# [820] fno.ftime := ld_word(dir + DIR_WrtTime);
+# [819] fno.ftime := ld_word(dir + DIR_WrtTime);
 	movw	r24,r4
 	ldi	r18,22
 	add	r24,r18
@@ -1733,9 +1412,9 @@ PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 	mov	r31,r6
 	std	Z+6,r24
 	std	Z+7,r25
-.Lj174:
+.Lj143:
 # Var p located in register r2
-# [822] p^ := char(0);
+# [821] p^ := char(0);
 	movw	r30,r2
 	st	Z,r1
 	pop	r2
@@ -1752,7 +1431,7 @@ PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO:
 .section .text.n_pff_ss_follow_pathsdirspbytespcharssfresult,"ax"
 PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT:
 .Lc36:
-# [834] begin
+# [833] begin
 	push	r29
 	push	r28
 	push	r6
@@ -1777,10 +1456,10 @@ PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT:
 # Var dir located in register r4
 	std	Y+2,r20
 	std	Y+3,r21
-# [836] while path^ = ' ' do
-	rjmp	.Lj193
-.Lj192:
-# [837] Inc(path);
+# [835] while path^ = ' ' do
+	rjmp	.Lj162
+.Lj161:
+# [836] Inc(path);
 	ldd	r20,Y+2
 	ldd	r19,Y+3
 	ldi	r18,1
@@ -1788,21 +1467,21 @@ PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT:
 	adc	r19,r1
 	std	Y+2,r20
 	std	Y+3,r19
-.Lj193:
+.Lj162:
 	ldd	r18,Y+2
 	ldd	r19,Y+3
 	movw	r30,r18
 	ld	r18,Z
 	cpi	r18,32
-	breq	.Lj192
-# [839] if path^ = '/' then
+	breq	.Lj161
+# [838] if path^ = '/' then
 	ldd	r18,Y+2
 	ldd	r19,Y+3
 	movw	r30,r18
 	ld	r18,Z
 	cpi	r18,47
-	brne	.Lj196
-# [840] Inc(path);
+	brne	.Lj165
+# [839] Inc(path);
 	ldd	r19,Y+2
 	ldd	r20,Y+3
 	ldi	r18,1
@@ -1810,30 +1489,30 @@ PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT:
 	adc	r20,r1
 	std	Y+2,r19
 	std	Y+3,r20
-.Lj196:
-# [842] dj.sclust := 0;
+.Lj165:
+# [841] dj.sclust := 0;
 	movw	r30,r2
 	std	Z+4,r1
 	std	Z+5,r1
 	std	Z+6,r1
 	std	Z+7,r1
-# [844] if path^ < ' ' then
+# [843] if path^ < ' ' then
 	ldd	r18,Y+2
 	ldd	r19,Y+3
 	movw	r30,r18
 	ld	r18,Z
 	cpi	r18,32
-	brsh	.Lj200
-# [847] Result := dir_rewind(dj);
+	brsh	.Lj169
+# [846] Result := dir_rewind(dj);
 	movw	r24,r2
 	call	PFF_ss_DIR_REWINDsDIRssFRESULT
 	mov	r6,r24
-# [848] dir[0] := 0;
+# [847] dir[0] := 0;
 	movw	r30,r4
 	st	Z,r1
-	rjmp	.Lj199
-.Lj200:
-# [856] Result := create_name(dj, path);
+	rjmp	.Lj168
+.Lj169:
+# [855] Result := create_name(dj, path);
 	ldi	r22,lo8(2)
 	ldi	r23,hi8(2)
 	add	r22,r28
@@ -1841,40 +1520,40 @@ PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT:
 	movw	r24,r2
 	call	PFF_ss_CREATE_NAMEsDIRsPCHARssFRESULT
 	mov	r6,r24
-# [857] if Result <> FR_OK then
+# [856] if Result <> FR_OK then
 	cp	r6,r1
-	breq	.Lj211
-# [877] end;
-	rjmp	.Lj199
-.Lj211:
-# [860] Result := dir_find(dj, dir);
+	breq	.Lj180
+# [876] end;
+	rjmp	.Lj168
+.Lj180:
+# [859] Result := dir_find(dj, dir);
 	movw	r24,r2
 	movw	r22,r4
 	call	PFF_ss_DIR_FINDsDIRsPBYTEssFRESULT
 	mov	r6,r24
-# [861] if Result <> FR_OK then
+# [860] if Result <> FR_OK then
 	cp	r6,r1
-	brne	.Lj199
-# [864] if dj.fn[11] <> 0 then
+	brne	.Lj168
+# [863] if dj.fn[11] <> 0 then
 	movw	r30,r2
 	ldd	r18,Z+2
 	ldd	r19,Z+3
 	movw	r30,r18
 	ldd	r18,Z+11
 	cp	r18,r1
-	brne	.Lj199
-# [867] if (dir[DIR_Attr] = 0) and (AM_DIR <> 0) then
+	brne	.Lj168
+# [866] if (dir[DIR_Attr] = 0) and (AM_DIR <> 0) then
 	movw	r30,r4
 	ldd	r18,Z+11
 	cp	r18,r1
-	brne	.Lj210
-# [870] Result := FR_NO_FILE;
+	brne	.Lj179
+# [869] Result := FR_NO_FILE;
 	ldi	r26,3
 	mov	r6,r26
-# [871] break;
-	rjmp	.Lj199
-.Lj210:
-# [874] dj.sclust := get_clust(dir);
+# [870] break;
+	rjmp	.Lj168
+.Lj179:
+# [873] dj.sclust := get_clust(dir);
 	movw	r24,r4
 	call	PFF_ss_GET_CLUSTsPBYTEssLONGWORD
 	movw	r30,r2
@@ -1882,9 +1561,9 @@ PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT:
 	std	Z+5,r23
 	std	Z+6,r24
 	std	Z+7,r25
-# [853] while True do
-	rjmp	.Lj200
-.Lj199:
+# [852] while True do
+	rjmp	.Lj169
+.Lj168:
 	mov	r24,r6
 	subi	r28,-4
 	sbci	r29,-1
@@ -1908,7 +1587,7 @@ PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT:
 .section .text.n_pff_ss_check_fsspbyteslongwordssbyte,"ax"
 PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE:
 .Lc38:
-# [888] begin
+# [887] begin
 	push	r17
 	push	r16
 	push	r8
@@ -1924,7 +1603,7 @@ PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE:
 	movw	r4,r20
 	movw	r6,r22
 # Var sect located in register r4
-# [890] if disk_readp(buf, sect, 510, 2) <> RES_OK then
+# [889] if disk_readp(buf, sect, 510, 2) <> RES_OK then
 	ldi	r16,2
 	mov	r17,r1
 	ldi	r18,-2
@@ -1934,52 +1613,28 @@ PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE:
 	movw	r24,r2
 	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
-	breq	.Lj215
-# [891] Exit(3);
+	breq	.Lj184
+# [890] Exit(3);
 	ldi	r26,3
 	mov	r8,r26
-	rjmp	.Lj212
-.Lj215:
-# [893] if (buf[0] <> $55) or (buf[1] <> $AA) then
+	rjmp	.Lj181
+.Lj184:
+# [892] if (buf[0] <> $55) or (buf[1] <> $AA) then
 	movw	r30,r2
 	ld	r18,Z
 	cpi	r18,85
-	brne	.Lj216
+	brne	.Lj185
 	movw	r30,r2
 	ldd	r18,Z+1
 	cpi	r18,-86
-	breq	.Lj218
-.Lj216:
-# [894] Exit(2);
+	breq	.Lj189
+.Lj185:
+# [893] Exit(2);
 	ldi	r26,2
 	mov	r8,r26
-	rjmp	.Lj212
-.Lj218:
-# [896] if (not _FS_32ONLY) and (disk_readp(buf, sect, BS_FilSysType, 2) = RES_OK) then
-	ldi	r16,2
-	mov	r17,r1
-	ldi	r18,54
-	mov	r19,r1
-	movw	r20,r4
-	movw	r22,r6
-	movw	r24,r2
-	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
-	cp	r24,r1
-	brne	.Lj220
-# [897] if (buf[0] = $46) and (buf[1] = $41) then
-	movw	r30,r2
-	ld	r18,Z
-	cpi	r18,70
-	brne	.Lj220
-	movw	r30,r2
-	ldd	r18,Z+1
-	cpi	r18,65
-	brne	.Lj220
-# [898] Exit(0);
-	mov	r8,r1
-	rjmp	.Lj212
-.Lj220:
-# [900] if PF_FS_FAT32 and (disk_readp(buf, sect, BS_FilSysType32, 2) = RES_OK) then
+	rjmp	.Lj181
+.Lj189:
+# [899] if PF_FS_FAT32 and (disk_readp(buf, sect, BS_FilSysType32, 2) = RES_OK) then
 	ldi	r16,2
 	mov	r17,r1
 	ldi	r18,82
@@ -1989,25 +1644,25 @@ PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE:
 	movw	r24,r2
 	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
-	brne	.Lj226
-# [901] if (buf[0] = $46) and (buf[1] = $41) then
+	brne	.Lj195
+# [900] if (buf[0] = $46) and (buf[1] = $41) then
 	movw	r30,r2
 	ld	r18,Z
 	cpi	r18,70
-	brne	.Lj226
+	brne	.Lj195
 	movw	r30,r2
 	ldd	r18,Z+1
 	cpi	r18,65
-	brne	.Lj226
-# [902] Exit(0);
+	brne	.Lj195
+# [901] Exit(0);
 	mov	r8,r1
-	rjmp	.Lj212
-.Lj226:
-# [904] Result := 1;
+	rjmp	.Lj181
+.Lj195:
+# [903] Result := 1;
 	ldi	r26,1
 	mov	r8,r26
-.Lj212:
-# [905] end;
+.Lj181:
+# [904] end;
 	mov	r24,r8
 	pop	r2
 	pop	r3
@@ -2028,7 +1683,7 @@ PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE:
 PFF_ss_PF_MOUNTsFATFSssFRESULT:
 .Lc40:
 # Temps allocated between r28+38 and r28+40
-# [912] begin
+# [911] begin
 	push	r29
 	push	r28
 	push	r17
@@ -2065,20 +1720,20 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	std	Y+38,r24
 	std	Y+39,r25
 # Var fs located in register r18
-# [913] iFatFs := nil;
+# [912] iFatFs := nil;
 	sts	(U_sPFF_ss_IFATFS),r1
 	sts	(U_sPFF_ss_IFATFS+1),r1
-# [915] if (disk_initialize() and STA_NOINIT) <> 0 then
+# [914] if (disk_initialize() and STA_NOINIT) <> 0 then
 	call	DISK_IO_ss_DISK_INITIALIZEssBYTE
 	andi	r24,1
-	breq	.Lj234
-# [916] Exit(FR_NOT_READY);
+	breq	.Lj203
+# [915] Exit(FR_NOT_READY);
 	ldi	r26,2
 	mov	r14,r26
-	rjmp	.Lj231
-.Lj234:
+	rjmp	.Lj200
+.Lj203:
 # Var bsect located in register r18
-# [921] fmt := check_fs(@buf, bsect);
+# [920] fmt := check_fs(@buf, bsect);
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2095,14 +1750,14 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	call	PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE
 # Var fmt located in register r2
 	mov	r2,r24
-# [922] if fmt = 1 then
+# [921] if fmt = 1 then
 	ldi	r26,1
 	cp	r2,r26
-	breq	.Lj265
-# [998] end;
-	rjmp	.Lj236
-.Lj265:
-# [926] if disk_readp(@buf, bsect, MBR_Table, 16) <> RES_OK then
+	breq	.Lj227
+# [997] end;
+	rjmp	.Lj205
+.Lj227:
+# [925] if disk_readp(@buf, bsect, MBR_Table, 16) <> RES_OK then
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2117,17 +1772,17 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r23,r6
 	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
-	breq	.Lj238
-# [928] fmt := 3
+	breq	.Lj207
+# [927] fmt := 3
 	ldi	r26,3
 	mov	r2,r26
-	rjmp	.Lj236
-.Lj238:
-# [931] if buf[4] <> 0 then
+	rjmp	.Lj205
+.Lj207:
+# [930] if buf[4] <> 0 then
 	ldd	r18,Y+6
 	cp	r18,r1
-	breq	.Lj236
-# [934] bsect := ld_dword(@buf[8]);
+	breq	.Lj205
+# [933] bsect := ld_dword(@buf[8]);
 	ldi	r24,lo8(10)
 	ldi	r25,hi8(10)
 	add	r24,r28
@@ -2137,7 +1792,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r8,r23
 	mov	r7,r24
 	mov	r6,r25
-# [936] fmt := check_fs(@buf, bsect);
+# [935] fmt := check_fs(@buf, bsect);
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2148,25 +1803,25 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r23,r6
 	call	PFF_ss_CHECK_FSsPBYTEsLONGWORDssBYTE
 	mov	r2,r24
-.Lj236:
-# [939] if fmt = 3 then
+.Lj205:
+# [938] if fmt = 3 then
 	ldi	r26,3
 	cp	r2,r26
-	brne	.Lj243
-# [940] Exit(FR_DISK_ERR);
+	brne	.Lj212
+# [939] Exit(FR_DISK_ERR);
 	ldi	r26,1
 	mov	r14,r26
-	rjmp	.Lj231
-.Lj243:
-# [941] if fmt <> 0 then
+	rjmp	.Lj200
+.Lj212:
+# [940] if fmt <> 0 then
 	cp	r2,r1
-	breq	.Lj245
-# [943] Exit(FR_NO_FILESYSTEM);
+	breq	.Lj214
+# [942] Exit(FR_NO_FILESYSTEM);
 	ldi	r26,6
 	mov	r14,r26
-	rjmp	.Lj231
-.Lj245:
-# [946] if disk_readp(@buf, bsect, 13, sizeof(buf)) <> RES_OK then
+	rjmp	.Lj200
+.Lj214:
+# [945] if disk_readp(@buf, bsect, 13, sizeof(buf)) <> RES_OK then
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2181,13 +1836,13 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r23,r6
 	call	DISK_IO_ss_DISK_READPsPBYTEsLONGWORDsNATIVEUINTsNATIVEUINTssDRESULT
 	cp	r24,r1
-	breq	.Lj247
-# [947] Exit(FR_DISK_ERR);
+	breq	.Lj216
+# [946] Exit(FR_DISK_ERR);
 	ldi	r26,1
 	mov	r14,r26
-	rjmp	.Lj231
-.Lj247:
-# [950] fsize := ld_word(PByte(@buf) + (BPB_FATSz16 - 13));
+	rjmp	.Lj200
+.Lj216:
+# [949] fsize := ld_word(PByte(@buf) + (BPB_FATSz16 - 13));
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2201,13 +1856,13 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r4,r25
 	mov	r3,r1
 	mov	r2,r1
-# [951] if fsize = 0 then
+# [950] if fsize = 0 then
 	cp	r5,r1
 	cpc	r4,r1
 	cpc	r3,r1
 	cpc	r2,r1
-	brne	.Lj249
-# [952] fsize := ld_dword(PByte(@buf) + (BPB_FATSz32 - 13));
+	brne	.Lj218
+# [951] fsize := ld_dword(PByte(@buf) + (BPB_FATSz32 - 13));
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2220,8 +1875,8 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r4,r23
 	mov	r3,r24
 	mov	r2,r25
-.Lj249:
-# [955] fsize := fsize * (buf[BPB_NumFATs - 13]);
+.Lj218:
+# [954] fsize := fsize * (buf[BPB_NumFATs - 13]);
 	ldd	r18,Y+5
 	mov	r19,r1
 	mov	r20,r1
@@ -2237,7 +1892,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r12,r23
 	mov	r11,r24
 	mov	r10,r25
-# [957] fs.fatbase := bsect + ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13));
+# [956] fs.fatbase := bsect + ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13));
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2262,7 +1917,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	std	Z+13,r22
 	std	Z+14,r21
 	std	Z+15,r19
-# [959] fs.csize := buf[BPB_SecPerClus - 13];
+# [958] fs.csize := buf[BPB_SecPerClus - 13];
 	ldd	r18,Y+38
 	mov	r30,r18
 	ldd	r18,Y+39
@@ -2270,7 +1925,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	adiw	r30,2
 	ldd	r0,Y+2
 	st	Z,r0
-# [961] fs.n_rootdir := ld_word(PByte(@buf) + (BPB_RootEntCnt - 13));
+# [960] fs.n_rootdir := ld_word(PByte(@buf) + (BPB_RootEntCnt - 13));
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2285,7 +1940,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r31,r18
 	std	Z+4,r24
 	std	Z+5,r25
-# [963] tsect := ld_word(PByte(@buf) + (BPB_TotSec16 - 13));
+# [962] tsect := ld_word(PByte(@buf) + (BPB_TotSec16 - 13));
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2299,13 +1954,13 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r4,r25
 	mov	r3,r1
 	mov	r2,r1
-# [965] if tsect = 0 then
+# [964] if tsect = 0 then
 	cp	r5,r1
 	cpc	r4,r1
 	cpc	r3,r1
 	cpc	r2,r1
-	brne	.Lj251
-# [966] tsect := ld_dword(PByte(@buf) + (BPB_TotSec32 - 13));
+	brne	.Lj220
+# [965] tsect := ld_dword(PByte(@buf) + (BPB_TotSec32 - 13));
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2318,8 +1973,8 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	mov	r4,r23
 	mov	r3,r24
 	mov	r2,r25
-.Lj251:
-# [969] mclst := (tsect - ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13)) -
+.Lj220:
+# [968] mclst := (tsect - ld_word(PByte(@buf) + (BPB_RsvdSecCnt - 13)) -
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2340,7 +1995,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	sbc	r19,r12
 	sbc	r20,r11
 	sbc	r21,r10
-# [970] fsize - fs.n_rootdir div 16) div fs.csize + 2;
+# [969] fsize - fs.n_rootdir div 16) div fs.csize + 2;
 	ldd	r22,Y+38
 	mov	r30,r22
 	ldd	r22,Y+39
@@ -2348,11 +2003,11 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	ldd	r24,Z+4
 	ldd	r25,Z+5
 	ldi	r22,4
-.Lj252:
+.Lj221:
 	lsr	r25
 	ror	r24
 	dec	r22
-	brne	.Lj252
+	brne	.Lj221
 	sub	r18,r24
 	sbc	r19,r25
 	sbc	r20,r1
@@ -2373,7 +2028,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	adc	r25,r1
 # Var mclst located in register r22
 # Var mclst located in register r22
-# [971] fs.n_fatent := CLUST(mclst);
+# [970] fs.n_fatent := CLUST(mclst);
 	ldd	r18,Y+38
 	mov	r30,r18
 	ldd	r18,Y+39
@@ -2382,73 +2037,35 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	std	Z+9,r23
 	std	Z+10,r24
 	std	Z+11,r25
-# Var fmt located in register r5
-# [973] fmt := 0;
-	mov	r5,r1
-# [976] if PF_FS_FAT12 and (mclst < $FF7) then
+# Var fmt located in register r18
+# [972] fmt := 0;
+	mov	r18,r1
+# [979] if PF_FS_FAT32 and (mclst >= $FFF7) then
 	cpi	r22,-9
-	ldi	r18,15
-	cpc	r23,r18
+	ldi	r19,-1
+	cpc	r23,r19
 	cpc	r24,r1
 	cpc	r25,r1
-	brsh	.Lj254
-# [977] fmt := FS_FAT12;
-	ldi	r26,1
-	mov	r5,r26
-.Lj254:
-# [978] if PF_FS_FAT16 and (mclst >= $FF8) and (mclst < $FFF7) then
-	mov	r2,r22
-	mov	r16,r23
-	mov	r21,r24
-	mov	r20,r25
-	ldi	r26,-8
-	sub	r2,r26
-	sbci	r16,15
-	sbc	r21,r1
-	sbc	r20,r1
-	ldi	r26,-2
-	mov	r3,r26
-	ldi	r26,-17
-	cp	r3,r2
-	cpc	r26,r16
-	cpc	r1,r21
-	cpc	r1,r20
-	brlo	.Lj256
-# [979] fmt := FS_FAT16;
-	ldi	r26,2
-	mov	r5,r26
-.Lj256:
-# [980] if PF_FS_FAT32 and (mclst >= $FFF7) then
-	cpi	r22,-9
-	ldi	r18,-1
-	cpc	r23,r18
-	cpc	r24,r1
-	cpc	r25,r1
-	brlo	.Lj258
-# [981] fmt := FS_FAT32;
-	ldi	r26,3
-	mov	r5,r26
-.Lj258:
-# [982] if fmt = 0 then
-	cp	r5,r1
-	brne	.Lj260
-# [983] Exit(FR_NO_FILESYSTEM);
+	brlo	.Lj223
+# [980] fmt := FS_FAT32;
+	ldi	r18,3
+.Lj223:
+# [981] if fmt = 0 then
+	cp	r18,r1
+	brne	.Lj225
+# [982] Exit(FR_NO_FILESYSTEM);
 	ldi	r26,6
 	mov	r14,r26
-	rjmp	.Lj231
-.Lj260:
-# Var fmt located in register r5
-# [985] fs.fs_type := fmt;
-	ldd	r18,Y+38
-	mov	r30,r18
-	ldd	r18,Y+39
-	mov	r31,r18
-	st	Z,r5
-# [986] if _FS_32ONLY or (PF_FS_FAT32 and (fmt = FS_FAT32)) then
-	ldi	r26,3
-	cp	r5,r26
-	brne	.Lj262
-# [988] fs.dirbase := ld_dword(PByte(@buf) + (BPB_RootClus - 13))
+	rjmp	.Lj200
+.Lj225:
+# Var fmt located in register r18
+# [984] fs.fs_type := fmt;
+	ldd	r19,Y+38
+	mov	r30,r19
+	ldd	r19,Y+39
+	mov	r31,r19
+	st	Z,r18
+# [987] fs.dirbase := ld_dword(PByte(@buf) + (BPB_RootClus - 13))
 	ldi	r24,lo8(2)
 	ldi	r25,hi8(2)
 	add	r24,r28
@@ -2457,6 +2074,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	add	r24,r18
 	adc	r25,r1
 	call	PFF_ss_LD_DWORDsPBYTEssLONGWORD
+# [985] if _FS_32ONLY or (PF_FS_FAT32 and (fmt = FS_FAT32)) then
 	ldd	r18,Y+38
 	mov	r30,r18
 	ldd	r18,Y+39
@@ -2465,47 +2083,19 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	std	Z+17,r23
 	std	Z+18,r24
 	std	Z+19,r25
-	rjmp	.Lj263
-.Lj262:
-# [991] fs.dirbase := fs.fatbase + fsize;
-	ldd	r18,Y+38
-	mov	r30,r18
-	ldd	r18,Y+39
-	mov	r31,r18
-	ldd	r18,Z+12
-	ldd	r19,Z+13
-	ldd	r21,Z+14
-	ldd	r20,Z+15
-	mov	r22,r13
-	mov	r25,r12
-	mov	r23,r11
-	mov	r24,r10
-	add	r22,r18
-	adc	r25,r19
-	adc	r23,r21
-	adc	r24,r20
-	ldd	r18,Y+38
-	mov	r30,r18
-	ldd	r18,Y+39
-	mov	r31,r18
-	std	Z+16,r22
-	std	Z+17,r25
-	std	Z+18,r23
-	std	Z+19,r24
-.Lj263:
-# [993] fs.database := fs.fatbase + fsize + fs.n_rootdir div 16;
+# [992] fs.database := fs.fatbase + fsize + fs.n_rootdir div 16;
 	ldd	r18,Y+38
 	mov	r30,r18
 	ldd	r18,Y+39
 	mov	r31,r18
 	ldd	r19,Z+4
-	ldd	r2,Z+5
+	ldd	r25,Z+5
 	ldi	r18,4
-.Lj264:
-	lsr	r2
+.Lj226:
+	lsr	r25
 	ror	r19
 	dec	r18
-	brne	.Lj264
+	brne	.Lj226
 	ldd	r18,Y+38
 	mov	r30,r18
 	ldd	r18,Y+39
@@ -2513,41 +2103,41 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 	ldd	r20,Z+12
 	ldd	r21,Z+13
 	ldd	r18,Z+14
-	ldd	r24,Z+15
-	mov	r3,r13
-	mov	r4,r12
-	mov	r25,r11
+	ldd	r22,Z+15
+	mov	r2,r13
+	mov	r3,r12
+	mov	r4,r11
 	mov	r5,r10
-	add	r3,r20
-	adc	r4,r21
-	adc	r25,r18
-	adc	r5,r24
-	add	r3,r19
-	adc	r4,r2
-	adc	r25,r1
+	add	r2,r20
+	adc	r3,r21
+	adc	r4,r18
+	adc	r5,r22
+	add	r2,r19
+	adc	r3,r25
+	adc	r4,r1
 	adc	r5,r1
 	ldd	r18,Y+38
 	mov	r30,r18
 	ldd	r18,Y+39
 	mov	r31,r18
-	std	Z+20,r3
-	std	Z+21,r4
-	std	Z+22,r25
+	std	Z+20,r2
+	std	Z+21,r3
+	std	Z+22,r4
 	std	Z+23,r5
-# [995] fs.flag := 0;
+# [994] fs.flag := 0;
 	ldd	r18,Y+38
 	mov	r30,r18
 	ldd	r18,Y+39
 	mov	r31,r18
 	std	Z+1,r1
-# [996] iFatFs := @fs;
+# [995] iFatFs := @fs;
 	ldd	r18,Y+38
 	sts	(U_sPFF_ss_IFATFS),r18
 	ldd	r18,Y+39
 	sts	(U_sPFF_ss_IFATFS+1),r18
-# [997] Result := FR_OK;
+# [996] Result := FR_OK;
 	mov	r14,r1
-.Lj231:
+.Lj200:
 	mov	r24,r14
 	subi	r28,-40
 	sbci	r29,-1
@@ -2582,7 +2172,7 @@ PFF_ss_PF_MOUNTsFATFSssFRESULT:
 .globl	PFF_ss_PF_OPENsPCHARssFRESULT
 PFF_ss_PF_OPENsPCHARssFRESULT:
 .Lc42:
-# [1005] begin
+# [1004] begin
 	push	r29
 	push	r28
 	push	r2
@@ -2601,29 +2191,29 @@ PFF_ss_PF_OPENsPCHARssFRESULT:
 # Var dir located at r28+30, size=OS_NO
 	movw	r20,r24
 # Var path located in register r20
-# [348] {$define CHECK_FS_ENABLED := begin if iFatFs = nil then Exit(FR_NOT_ENABLED); end}
+# [347] {$define CHECK_FS_ENABLED := begin if iFatFs = nil then Exit(FR_NOT_ENABLED); end}
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	cp	r19,r1
 	cpc	r18,r1
-	brne	.Lj269
+	brne	.Lj231
 	ldi	r26,5
 	mov	r2,r26
-	rjmp	.Lj266
-.Lj269:
-# [1009] iFatFs.flag := 0;
+	rjmp	.Lj228
+.Lj231:
+# [1008] iFatFS.flag := 0;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	std	Z+1,r1
-# [1010] dj.fn := sp;
+# [1009] dj.fn := sp;
 	ldi	r19,lo8(18)
 	ldi	r18,hi8(18)
 	add	r19,r28
 	adc	r18,r29
 	std	Y+4,r19
 	std	Y+5,r18
-# [1012] Result := follow_path(dj, dir, path);
+# [1011] Result := follow_path(dj, dir, path);
 	ldi	r22,lo8(30)
 	ldi	r23,hi8(30)
 	add	r22,r28
@@ -2635,26 +2225,26 @@ PFF_ss_PF_OPENsPCHARssFRESULT:
 # Var path located in register r20
 	call	PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT
 	mov	r2,r24
-# [1014] if Result <> FR_OK then
+# [1013] if Result <> FR_OK then
 	cp	r2,r1
-	breq	.Lj275
-# [1028] end;
-	rjmp	.Lj266
-.Lj275:
-# [1017] if (dir[0] = 0) or ((dir[DIR_Attr] and AM_DIR) <> 0) then
+	breq	.Lj237
+# [1027] end;
+	rjmp	.Lj228
+.Lj237:
+# [1016] if (dir[0] = 0) or ((dir[DIR_Attr] and AM_DIR) <> 0) then
 	ldd	r18,Y+30
 	cp	r18,r1
-	breq	.Lj272
+	breq	.Lj234
 	ldd	r18,Y+41
 	andi	r18,16
-	breq	.Lj274
-.Lj272:
-# [1018] Exit(FR_NO_FILE);
+	breq	.Lj236
+.Lj234:
+# [1017] Exit(FR_NO_FILE);
 	ldi	r26,3
 	mov	r2,r26
-	rjmp	.Lj266
-.Lj274:
-# [1021] iFatFs.org_clust := get_clust(dir);
+	rjmp	.Lj228
+.Lj236:
+# [1020] iFatFS.org_clust := get_clust(dir);
 	ldi	r24,lo8(30)
 	ldi	r25,hi8(30)
 	add	r24,r28
@@ -2667,7 +2257,7 @@ PFF_ss_PF_OPENsPCHARssFRESULT:
 	std	Z+33,r23
 	std	Z+34,r24
 	std	Z+35,r25
-# [1023] iFatFs.fsize := ld_dword(PByte(@dir) + DIR_FileSize);
+# [1022] iFatFS.fsize := ld_dword(PByte(@dir) + DIR_FileSize);
 	ldi	r24,lo8(30)
 	ldi	r25,hi8(30)
 	add	r24,r28
@@ -2684,7 +2274,7 @@ PFF_ss_PF_OPENsPCHARssFRESULT:
 	std	Z+29,r23
 	std	Z+30,r24
 	std	Z+31,r25
-# [1025] iFatFs.fptr := 0;
+# [1024] iFatFS.fptr := 0;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r23,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r18
@@ -2693,15 +2283,15 @@ PFF_ss_PF_OPENsPCHARssFRESULT:
 	std	Z+25,r1
 	std	Z+26,r1
 	std	Z+27,r1
-# [1026] iFatFs.flag := FA_OPENED;
+# [1025] iFatFS.flag := FA_OPENED;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	ldi	r20,1
 	movw	r30,r18
 	std	Z+1,r20
-# [1027] Result := FR_OK;
+# [1026] Result := FR_OK;
 	mov	r2,r1
-.Lj266:
+.Lj228:
 	mov	r24,r2
 	subi	r28,-62
 	sbci	r29,-1
@@ -2723,7 +2313,7 @@ PFF_ss_PF_OPENsPCHARssFRESULT:
 PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 .Lc44:
 # Temps allocated between r28+2 and r28+9
-# [1039] begin
+# [1038] begin
 	push	r29
 	push	r28
 	push	r17
@@ -2760,85 +2350,84 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 # Var cs located in register r5
 # Var rbuff located in register r18
 # Var buff located in register r24
-	std	Y+4,r22
-	std	Y+5,r23
+	std	Y+5,r22
+	std	Y+6,r23
 # Var btr located in register r18
-	std	Y+2,r20
-	std	Y+3,r21
+	std	Y+3,r20
+	std	Y+4,r21
 # Var br located in register r18
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	cp	r18,r1
 	cpc	r19,r1
-	brne	.Lj279
+	brne	.Lj241
 	ldi	r26,5
-	std	Y+6,r26
-	rjmp	.Lj276
-.Lj279:
-# Var rbuff located in register r18
-# Var buff located in register r24
-# [1043] rbuff := buff;
-	std	Y+7,r24
-	std	Y+8,r25
-# [1044] br := 0;
-	ldd	r18,Y+2
-	mov	r30,r18
-	ldd	r18,Y+3
-	mov	r31,r18
-	st	Z,r1
-	std	Z+1,r1
-# [1046] if (iFatFs.flag and FA_OPENED) = 0 then
+	std	Y+2,r26
+	rjmp	.Lj238
+.Lj241:
+# [1043] if (iFatFS.flag and FA_OPENED) = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r18,Z+1
 	andi	r18,1
-	brne	.Lj281
-# [1047] Exit(FR_NOT_OPENED);
+	brne	.Lj243
+# [1044] Exit(FR_NOT_OPENED);
 	ldi	r26,4
-	std	Y+6,r26
-	rjmp	.Lj276
-.Lj281:
-# [1049] remain := iFatFs.fsize - iFatFs.fptr;
+	std	Y+2,r26
+	rjmp	.Lj238
+.Lj243:
+# Var rbuff located in register r18
+# Var buff located in register r24
+# [1046] rbuff := buff;
+	std	Y+7,r24
+	std	Y+8,r25
+# [1047] br := 0;
+	ldd	r18,Y+3
+	mov	r30,r18
+	ldd	r18,Y+4
+	mov	r31,r18
+	st	Z,r1
+	std	Z+1,r1
+# [1049] remain := iFatFS.fsize - iFatFS.fptr;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
-	lds	r21,(U_sPFF_ss_IFATFS)
-	lds	r20,(U_sPFF_ss_IFATFS+1)
+	lds	r20,(U_sPFF_ss_IFATFS)
+	lds	r21,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r22,Z+28
-	ldd	r24,Z+29
+	ldd	r25,Z+29
 	ldd	r23,Z+30
-	ldd	r25,Z+31
-	mov	r30,r21
-	mov	r31,r20
-	ldd	r19,Z+24
+	ldd	r24,Z+31
+	movw	r30,r20
+	ldd	r18,Z+24
 	ldd	r21,Z+25
-	ldd	r20,Z+26
-	ldd	r18,Z+27
-	sub	r22,r19
-	sbc	r24,r21
-	sbc	r23,r20
-	sbc	r25,r18
+	ldd	r19,Z+26
+	ldd	r20,Z+27
+	sub	r22,r18
+	sbc	r25,r21
+	sbc	r23,r19
+	sbc	r24,r20
 # Var remain located in register r22
 # [1050] if btr > remain then
-	ldd	r18,Y+4
-	mov	r21,r18
 	ldd	r18,Y+5
+	mov	r21,r18
+	ldd	r18,Y+6
 	cp	r22,r21
-	cpc	r24,r18
+	cpc	r25,r18
 	cpc	r23,r1
-	cpc	r25,r1
-	brlo	.Lj304
-# [1098] end;
-	rjmp	.Lj285
-.Lj304:
+	cpc	r24,r1
+	brlo	.Lj269
+# [1102] end;
+	rjmp	.Lj247
+.Lj269:
 # [1052] btr := UINT(remain);
-	std	Y+4,r22
-	std	Y+5,r24
+	std	Y+5,r22
+	std	Y+6,r25
 # [1055] while btr <> 0 do
-	rjmp	.Lj285
-.Lj284:
-# [1058] if (iFatFs.fptr and (SECTOR_SIZE - 1)) = 0 then
+	rjmp	.Lj247
+.Lj246:
+# [1058] if (iFatFS.fptr and (SECTOR_SIZE - 1)) = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -2855,10 +2444,10 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	cpc	r20,r1
 	cpc	r1,r1
 	cpc	r1,r1
-	breq	.Lj305
-	rjmp	.Lj288
-.Lj305:
-# [1061] cs := byte((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+	breq	.Lj270
+	rjmp	.Lj250
+.Lj270:
+# [1061] cs := byte((iFatFS.fptr shr SECTOR_SIZE_BP) and (iFatFS.csize - 1));
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -2877,14 +2466,15 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	ldd	r18,Z+24
 	ldd	r18,Z+25
 	ldd	r19,Z+26
-	ldd	r24,Z+27
-	mov	r25,r24
-	lsr	r25
+	ldd	r25,Z+27
+	mov	r24,r18
+	mov	r18,r25
+	lsr	r18
 	ror	r19
-	ror	r18
-	mov	r14,r18
+	ror	r24
+	mov	r14,r24
 	mov	r24,r19
-	mov	r19,r25
+	mov	r19,r18
 	mov	r18,r1
 	and	r14,r21
 	and	r24,r22
@@ -2893,23 +2483,23 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r5,r14
 # [1063] if cs = 0 then
 	cp	r5,r1
-	breq	.Lj306
-	rjmp	.Lj290
-.Lj306:
-# [1066] if iFatFs.fptr = 0 then
+	breq	.Lj271
+	rjmp	.Lj252
+.Lj271:
+# [1066] if iFatFS.fptr = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
-	ldd	r21,Z+24
-	ldd	r20,Z+25
+	ldd	r18,Z+24
+	ldd	r21,Z+25
 	ldd	r19,Z+26
-	ldd	r18,Z+27
-	cp	r21,r1
-	cpc	r20,r1
+	ldd	r20,Z+27
+	cp	r18,r1
+	cpc	r21,r1
 	cpc	r19,r1
-	cpc	r18,r1
-	brne	.Lj292
-# [1067] clst := iFatFs.org_clust
+	cpc	r20,r1
+	brne	.Lj254
+# [1067] clst := iFatFS.org_clust
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -2917,9 +2507,9 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	ldd	r12,Z+33
 	ldd	r11,Z+34
 	ldd	r10,Z+35
-	rjmp	.Lj293
-.Lj292:
-# [1069] clst := get_fat(iFatFs.curr_clust);
+	rjmp	.Lj255
+.Lj254:
+# [1069] clst := get_fat(iFatFS.curr_clust);
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r19
@@ -2939,24 +2529,20 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r12,r23
 	mov	r11,r24
 	mov	r10,r25
-.Lj293:
+.Lj255:
 # [1070] if clst <= 1 then
 	ldi	r21,1
 	cp	r21,r13
 	cpc	r1,r12
 	cpc	r1,r11
 	cpc	r1,r10
-	brlo	.Lj295
-# [347] {$define ABORT_DISK_ERR := begin iFatFs.flag := 0; Exit(FR_DISK_ERR); end}
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
+	brlo	.Lj257
+# [346] {$define ABORT_DISK_ERR := begin Result := FR_DISK_ERR; break; end}
 	ldi	r26,1
-	std	Y+6,r26
-	rjmp	.Lj276
-.Lj295:
-# [1073] iFatFs.curr_clust := clst;
+	std	Y+2,r26
+	rjmp	.Lj248
+.Lj257:
+# [1073] iFatFS.curr_clust := clst;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -2964,17 +2550,21 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	std	Z+37,r12
 	std	Z+38,r11
 	std	Z+39,r10
-.Lj290:
-# [1076] sect := clust2sect(iFatFs.curr_clust);
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
+.Lj252:
+# [1076] sect := clust2sect(iFatFS.curr_clust);
+	lds	r19,(U_sPFF_ss_IFATFS)
+	lds	r18,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r19
+	mov	r31,r18
 	ldd	r22,Z+36
-	movw	r30,r18
+	mov	r30,r19
+	mov	r31,r18
 	ldd	r23,Z+37
-	movw	r30,r18
+	mov	r30,r19
+	mov	r31,r18
 	ldd	r24,Z+38
-	movw	r30,r18
+	mov	r30,r19
+	mov	r31,r18
 	ldd	r25,Z+39
 	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
 	mov	r9,r22
@@ -2986,33 +2576,29 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	cpc	r8,r1
 	cpc	r7,r1
 	cpc	r6,r1
-	brne	.Lj297
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
+	brne	.Lj259
 	ldi	r26,1
-	std	Y+6,r26
-	rjmp	.Lj276
-.Lj297:
-# [1079] iFatFs.dsect := sect + cs;
-	mov	r23,r9
-	mov	r24,r8
-	mov	r25,r7
-	mov	r22,r6
-	add	r23,r5
+	std	Y+2,r26
+	rjmp	.Lj248
+.Lj259:
+# [1079] iFatFS.dsect := sect + cs;
+	mov	r22,r9
+	mov	r23,r8
+	mov	r24,r7
+	mov	r25,r6
+	add	r22,r5
+	adc	r23,r1
 	adc	r24,r1
 	adc	r25,r1
-	adc	r22,r1
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
-	std	Z+40,r23
-	std	Z+41,r24
-	std	Z+42,r25
-	std	Z+43,r22
-.Lj288:
-# [1082] rcnt := SECTOR_SIZE - UINT(iFatFs.fptr and (SECTOR_SIZE - 1));
+	std	Z+40,r22
+	std	Z+41,r23
+	std	Z+42,r24
+	std	Z+43,r25
+.Lj250:
+# [1082] rcnt := SECTOR_SIZE - UINT(iFatFS.fptr and (SECTOR_SIZE - 1));
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3020,49 +2606,49 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	ldd	r19,Z+25
 	ldd	r22,Z+26
 	ldd	r23,Z+27
-	movw	r20,r18
+	mov	r21,r18
+	mov	r20,r19
 	mov	r19,r22
 	mov	r18,r23
-	andi	r21,1
-	mov	r23,r20
-	mov	r24,r21
+	andi	r20,1
+	mov	r25,r20
 	ldi	r20,2
 	mov	r19,r1
-	mov	r21,r1
+	mov	r22,r1
 	mov	r18,r1
-	sub	r21,r23
-	sbc	r20,r24
+	sub	r22,r21
+	sbc	r20,r25
 	sbc	r19,r1
 	sbc	r18,r1
-	mov	r3,r21
+	mov	r3,r22
 	mov	r2,r20
 # [1083] if rcnt > btr then
-	ldd	r18,Y+4
+	ldd	r18,Y+5
 	cp	r18,r3
-	ldd	r18,Y+5
+	ldd	r18,Y+6
 	cpc	r18,r2
-	brsh	.Lj299
+	brsh	.Lj261
 # [1084] rcnt := btr;
-	ldd	r18,Y+4
-	mov	r3,r18
 	ldd	r18,Y+5
+	mov	r3,r18
+	ldd	r18,Y+6
 	mov	r2,r18
-.Lj299:
-# [1085] dr := disk_readp(rbuff, iFatFs.dsect, UINT(iFatFs.fptr and (SECTOR_SIZE - 1)), rcnt);
+.Lj261:
+# [1085] dr := disk_readp(rbuff, iFatFS.dsect, UINT(iFatFS.fptr and (SECTOR_SIZE - 1)), rcnt);
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r18,Z+24
 	ldd	r19,Z+25
-	ldd	r20,Z+26
+	ldd	r21,Z+26
 	ldd	r23,Z+27
-	mov	r22,r18
-	mov	r21,r19
-	mov	r19,r20
-	mov	r18,r23
-	andi	r21,1
-	mov	r18,r22
+	mov	r20,r18
+	mov	r22,r19
 	mov	r19,r21
+	mov	r18,r23
+	andi	r22,1
+	mov	r18,r20
+	mov	r19,r22
 	lds	r24,(U_sPFF_ss_IFATFS)
 	lds	r23,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r24
@@ -3087,62 +2673,58 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r4,r24
 # [1086] if dr <> RES_OK then
 	cp	r4,r1
-	breq	.Lj301
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
+	breq	.Lj263
 	ldi	r26,1
-	std	Y+6,r26
-	rjmp	.Lj276
-.Lj301:
-# [1089] iFatFs.fptr := iFatFs.fptr + rcnt;
+	std	Y+2,r26
+	rjmp	.Lj248
+.Lj263:
+# [1089] iFatFS.fptr := iFatFS.fptr + rcnt;
 	lds	r23,(U_sPFF_ss_IFATFS)
 	lds	r22,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r23
 	mov	r31,r22
-	ldd	r19,Z+24
-	ldd	r20,Z+25
-	ldd	r21,Z+26
+	ldd	r20,Z+24
+	ldd	r21,Z+25
+	ldd	r15,Z+26
 	ldd	r18,Z+27
-	add	r19,r3
-	adc	r20,r2
-	adc	r21,r1
+	add	r20,r3
+	adc	r21,r2
+	adc	r15,r1
 	adc	r18,r1
 	mov	r30,r23
 	mov	r31,r22
-	std	Z+24,r19
-	std	Z+25,r20
-	std	Z+26,r21
+	std	Z+24,r20
+	std	Z+25,r21
+	std	Z+26,r15
 	std	Z+27,r18
 # [1091] btr := btr - rcnt;
-	ldd	r18,Y+4
-	sub	r18,r3
-	std	Y+4,r18
 	ldd	r18,Y+5
-	sbc	r18,r2
+	sub	r18,r3
 	std	Y+5,r18
+	ldd	r18,Y+6
+	sbc	r18,r2
+	std	Y+6,r18
 # [1092] br := br + rcnt;
-	ldd	r18,Y+2
-	mov	r30,r18
 	ldd	r18,Y+3
-	mov	r31,r18
-	ld	r19,Z
-	ldd	r20,Z+1
-	add	r19,r3
-	adc	r20,r2
-	ldd	r18,Y+2
 	mov	r30,r18
-	ldd	r18,Y+3
+	ldd	r18,Y+4
 	mov	r31,r18
-	st	Z,r19
-	std	Z+1,r20
+	ld	r20,Z
+	ldd	r19,Z+1
+	add	r20,r3
+	adc	r19,r2
+	ldd	r18,Y+3
+	mov	r30,r18
+	ldd	r18,Y+4
+	mov	r31,r18
+	st	Z,r20
+	std	Z+1,r19
 # [1094] if rbuff <> nil then
 	ldd	r18,Y+7
 	cp	r18,r1
 	ldd	r18,Y+8
 	cpc	r18,r1
-	breq	.Lj285
+	breq	.Lj247
 # [1095] rbuff := rbuff + rcnt;
 	ldd	r18,Y+7
 	add	r18,r3
@@ -3150,18 +2732,30 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	adc	r18,r2
 	std	Y+7,r18
 	std	Y+8,r18
-.Lj285:
-	ldd	r18,Y+4
-	cp	r18,r1
+.Lj247:
 	ldd	r18,Y+5
-	cpc	r18,r1
-	breq	.Lj307
-	rjmp	.Lj284
-.Lj307:
-# [1097] Result := FR_OK;
-	std	Y+6,r1
-.Lj276:
+	cp	r18,r1
 	ldd	r18,Y+6
+	cpc	r18,r1
+	breq	.Lj272
+	rjmp	.Lj246
+.Lj272:
+.Lj248:
+# [1098] if Result = FR_DISK_ERR then
+	ldd	r18,Y+2
+	cpi	r18,1
+	brne	.Lj267
+# [1099] iFatFS.flag := 0
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	rjmp	.Lj238
+.Lj267:
+# [1101] Result := FR_OK;
+	std	Y+2,r1
+.Lj238:
+	ldd	r18,Y+2
 	mov	r24,r18
 	subi	r28,-9
 	sbci	r29,-1
@@ -3198,7 +2792,7 @@ PFF_ss_PF_READsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 .Lc46:
 # Temps allocated between r28+2 and r28+15
-# [1105] begin
+# [1109] begin
 	push	r29
 	push	r28
 	push	r17
@@ -3240,24 +2834,24 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	cp	r18,r1
 	cpc	r19,r1
-	brne	.Lj311
+	brne	.Lj276
 	ldi	r26,5
 	std	Y+2,r26
-	rjmp	.Lj308
-.Lj311:
-# [1109] if (iFatFs.flag and FA_OPENED) = 0 then
+	rjmp	.Lj273
+.Lj276:
+# [1114] if (iFatFS.flag and FA_OPENED) = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r18,Z+1
 	andi	r18,1
-	brne	.Lj313
-# [1110] Exit(FR_NOT_OPENED);
+	brne	.Lj278
+# [1115] Exit(FR_NOT_OPENED);
 	ldi	r26,4
 	std	Y+2,r26
-	rjmp	.Lj308
-.Lj313:
-# [1112] if ofs > iFatFs.fsize then
+	rjmp	.Lj273
+.Lj278:
+# [1117] if ofs > iFatFS.fsize then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3273,8 +2867,8 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	cpc	r21,r18
 	ldd	r18,Y+6
 	cpc	r22,r18
-	brsh	.Lj315
-# [1114] ofs := iFatFs.fsize;
+	brsh	.Lj280
+# [1119] ofs := iFatFS.fsize;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3286,8 +2880,8 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Y+5,r18
 	ldd	r18,Z+31
 	std	Y+6,r18
-.Lj315:
-# [1115] ifptr := iFatFs.fptr;
+.Lj280:
+# [1120] ifptr := iFatFS.fptr;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 # Var ifptr located in register r18
@@ -3300,7 +2894,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Y+12,r18
 	ldd	r18,Z+27
 	std	Y+11,r18
-# [1116] iFatFs.fptr := 0;
+# [1121] iFatFS.fptr := 0;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3308,7 +2902,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Z+25,r1
 	std	Z+26,r1
 	std	Z+27,r1
-# [1117] if ofs > 0 then
+# [1122] if ofs > 0 then
 	ldd	r18,Y+3
 	cp	r1,r18
 	ldd	r18,Y+4
@@ -3317,11 +2911,11 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	cpc	r1,r18
 	ldd	r18,Y+6
 	cpc	r1,r18
-	brlo	.Lj330
-# [1155] end;
-	rjmp	.Lj317
-.Lj330:
-# [1120] bcs := DWORD(iFatFs.csize) shl SECTOR_SIZE_BP;
+	brlo	.Lj295
+# [1160] end;
+	rjmp	.Lj282
+.Lj295:
+# [1125] bcs := DWORD(iFatFS.csize) shl SECTOR_SIZE_BP;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3335,7 +2929,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Y+8,r20
 	std	Y+9,r21
 	std	Y+10,r22
-# [1121] if (ifptr > 0) and (((ofs - 1) div bcs) >= ((ifptr - 1) div bcs)) then
+# [1126] if (ifptr > 0) and (((ofs - 1) div bcs) >= ((ifptr - 1) div bcs)) then
 	ldd	r18,Y+14
 	cp	r1,r18
 	ldd	r18,Y+13
@@ -3344,9 +2938,9 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	cpc	r1,r18
 	ldd	r18,Y+11
 	cpc	r1,r18
-	brlo	.Lj331
-	rjmp	.Lj319
-.Lj331:
+	brlo	.Lj296
+	rjmp	.Lj284
+.Lj296:
 	ldd	r18,Y+3
 	mov	r24,r18
 	ldd	r18,Y+4
@@ -3446,10 +3040,10 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	cpc	r4,r23
 	cpc	r3,r24
 	cpc	r2,r25
-	brge	.Lj332
-	rjmp	.Lj319
-.Lj332:
-# [1125] iFatFs.fptr := (ifptr - 1) and (not (bcs - 1));
+	brge	.Lj297
+	rjmp	.Lj284
+.Lj297:
+# [1130] iFatFS.fptr := (ifptr - 1) and (not (bcs - 1));
 	ldd	r18,Y+7
 	mov	r25,r18
 	ldd	r18,Y+8
@@ -3530,7 +3124,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Z+25,r4
 	std	Z+26,r3
 	std	Z+27,r5
-# [1126] ofs := ofs - iFatFs.fptr;
+# [1131] ofs := ofs - iFatFS.fptr;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3550,7 +3144,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	ldd	r18,Y+6
 	sbc	r18,r22
 	std	Y+6,r18
-# [1127] clst := iFatFs.curr_clust;
+# [1132] clst := iFatFS.curr_clust;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3558,9 +3152,9 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	ldd	r2,Z+37
 	ldd	r4,Z+38
 	ldd	r5,Z+39
-	rjmp	.Lj323
-.Lj319:
-# [1133] clst := iFatFs.org_clust;
+	rjmp	.Lj288
+.Lj284:
+# [1138] clst := iFatFS.org_clust;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3568,7 +3162,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	ldd	r2,Z+33
 	ldd	r4,Z+34
 	ldd	r5,Z+35
-# [1134] iFatFs.curr_clust := clst;
+# [1139] iFatFS.curr_clust := clst;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3576,10 +3170,10 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Z+37,r2
 	std	Z+38,r4
 	std	Z+39,r5
-# [1136] while ofs > bcs do
-	rjmp	.Lj323
-.Lj322:
-# [1140] clst := get_fat(clst);
+# [1141] while ofs > bcs do
+	rjmp	.Lj288
+.Lj287:
+# [1145] clst := get_fat(clst);
 	mov	r22,r3
 	mov	r23,r2
 	movw	r24,r4
@@ -3587,13 +3181,13 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	mov	r3,r22
 	mov	r2,r23
 	movw	r4,r24
-# [1141] if (clst <= 1) or (clst >= iFatFs.n_fatent) then
+# [1146] if (clst <= 1) or (clst >= iFatFS.n_fatent) then
 	ldi	r21,1
 	cp	r21,r3
 	cpc	r1,r2
 	cpc	r1,r4
 	cpc	r1,r5
-	brsh	.Lj325
+	brsh	.Lj290
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3605,17 +3199,18 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	cpc	r2,r18
 	cpc	r4,r19
 	cpc	r5,r21
-	brlo	.Lj327
-.Lj325:
+	brlo	.Lj292
+.Lj290:
+# [1147] begin iFatFS.flag := 0; Exit(FR_DISK_ERR); end;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	std	Z+1,r1
 	ldi	r26,1
 	std	Y+2,r26
-	rjmp	.Lj308
-.Lj327:
-# [1143] iFatFs.curr_clust := clst;
+	rjmp	.Lj273
+.Lj292:
+# [1148] iFatFS.curr_clust := clst;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3623,7 +3218,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Z+37,r2
 	std	Z+38,r4
 	std	Z+39,r5
-# [1144] iFatFs.fptr := iFatFs.fptr + bcs;
+# [1149] iFatFS.fptr := iFatFS.fptr + bcs;
 	lds	r24,(U_sPFF_ss_IFATFS)
 	lds	r20,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r24
@@ -3646,7 +3241,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Z+25,r22
 	std	Z+26,r23
 	std	Z+27,r19
-# [1145] ofs := ofs - bcs;
+# [1150] ofs := ofs - bcs;
 	ldd	r18,Y+3
 	ldd	r19,Y+7
 	sub	r18,r19
@@ -3663,7 +3258,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	ldd	r18,Y+10
 	sbc	r19,r18
 	std	Y+6,r19
-.Lj323:
+.Lj288:
 	ldd	r18,Y+7
 	ldd	r19,Y+3
 	cp	r18,r19
@@ -3676,10 +3271,10 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	ldd	r18,Y+10
 	ldd	r19,Y+6
 	cpc	r18,r19
-	brsh	.Lj333
-	rjmp	.Lj322
-.Lj333:
-# [1147] iFatFs.fptr := iFatFs.fptr + ofs;
+	brsh	.Lj298
+	rjmp	.Lj287
+.Lj298:
+# [1152] iFatFS.fptr := iFatFS.fptr + ofs;
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r23,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r19
@@ -3702,26 +3297,27 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Z+25,r22
 	std	Z+26,r20
 	std	Z+27,r21
-# [1149] sect := clust2sect(clst);
+# [1154] sect := clust2sect(clst);
 	mov	r22,r3
 	mov	r23,r2
 	movw	r24,r4
 	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
-# [1150] if sect = 0 then
+# [1155] if sect = 0 then
 	cp	r22,r1
 	cpc	r23,r1
 	cpc	r24,r1
 	cpc	r25,r1
-	brne	.Lj329
+	brne	.Lj294
+# [1156] begin iFatFS.flag := 0; Exit(FR_DISK_ERR); end;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	std	Z+1,r1
 	ldi	r26,1
 	std	Y+2,r26
-	rjmp	.Lj308
-.Lj329:
-# [1152] iFatFs.dsect := sect + ((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+	rjmp	.Lj273
+.Lj294:
+# [1157] iFatFS.dsect := sect + ((iFatFS.fptr shr SECTOR_SIZE_BP) and (iFatFS.csize - 1));
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3760,10 +3356,10 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 	std	Z+41,r23
 	std	Z+42,r24
 	std	Z+43,r25
-.Lj317:
-# [1154] Result := FR_OK;
+.Lj282:
+# [1159] Result := FR_OK;
 	std	Y+2,r1
-.Lj308:
+.Lj273:
 	ldd	r18,Y+2
 	mov	r24,r18
 	subi	r28,-15
@@ -3801,7 +3397,7 @@ PFF_ss_PF_LSEEKsLONGWORDssFRESULT:
 PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 .Lc48:
 # Temps allocated between r28+2 and r28+6
-# [1168] begin
+# [1173] begin
 	push	r29
 	push	r28
 	push	r17
@@ -3829,67 +3425,68 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	out	62,r29
 	out	63,r0
 	out	61,r28
-# Var $result located in register r17
+# Var $result located in register r18
 # Var p located in register r18
 # Var clst located in register r12
 # Var sect located in register r8
 # Var remain located in register r18
 # Var cs located in register r4
-# Var wcnt located in register r2
+# Var wcnt located in register r3
 # Var buff located in register r24
-	std	Y+4,r22
-	std	Y+5,r23
+	std	Y+5,r22
+	mov	r17,r23
 # Var btw located in register r18
-	std	Y+2,r20
-	std	Y+3,r21
+	std	Y+3,r20
+	std	Y+4,r21
 # Var bw located in register r18
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	cp	r18,r1
 	cpc	r19,r1
-	brne	.Lj337
-	ldi	r17,5
-	rjmp	.Lj334
-.Lj337:
+	brne	.Lj302
+	ldi	r26,5
+	std	Y+2,r26
+	rjmp	.Lj299
+.Lj302:
 # Var p located in register r16
 # Var buff located in register r24
-# [1172] p := buff;
+# [1177] p := buff;
 	mov	r16,r24
 	mov	r13,r25
-# [1173] bw := 0;
-	ldd	r18,Y+2
-	mov	r30,r18
+# [1178] bw := 0;
 	ldd	r18,Y+3
+	mov	r30,r18
+	ldd	r18,Y+4
 	mov	r31,r18
 	st	Z,r1
 	std	Z+1,r1
-# [1175] if (iFatFs.flag and FA_OPENED) = 0 then
+# [1180] if (iFatFS.flag and FA_OPENED) = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r18,Z+1
 	andi	r18,1
-	brne	.Lj339
-# [1176] Exit(FR_NOT_OPENED);
-	ldi	r17,4
-	rjmp	.Lj334
-.Lj339:
-# [1178] if btw = 0 then
-	ldd	r18,Y+4
-	cp	r18,r1
+	brne	.Lj304
+# [1181] Exit(FR_NOT_OPENED);
+	ldi	r26,4
+	std	Y+2,r26
+	rjmp	.Lj299
+.Lj304:
+# [1183] if btw = 0 then
 	ldd	r18,Y+5
-	cpc	r18,r1
-	breq	.Lj374
-# [1254] end;
-	rjmp	.Lj341
-.Lj374:
-# [1181] if ((iFatFs.flag and FA__WIP) <> 0) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
+	cp	r18,r1
+	cpc	r17,r1
+	breq	.Lj342
+# [1262] end;
+	rjmp	.Lj306
+.Lj342:
+# [1186] if ((iFatFS.flag and FA__WIP) <> 0) and (disk_writep(nil, 0) <> DRESULT.RES_OK) then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r18,Z+1
 	andi	r18,64
-	breq	.Lj343
+	breq	.Lj308
 	mov	r20,r1
 	mov	r21,r1
 	mov	r22,r1
@@ -3898,89 +3495,91 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r25,r1
 	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
 	cp	r24,r1
-	breq	.Lj343
+	breq	.Lj308
+# [1187] begin iFatFS.flag := 0; Exit(FR_DISK_ERR); end;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	std	Z+1,r1
-	ldi	r17,1
-	rjmp	.Lj334
-.Lj343:
-# [1183] iFatFs.flag := iFatFs.flag and (not FA__WIP);
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	ldd	r20,Z+1
-	andi	r20,-65
-	movw	r30,r18
-	std	Z+1,r20
-# [1184] Exit(FR_OK);
-	mov	r17,r1
-	rjmp	.Lj334
-.Lj341:
-# [1188] if (iFatFs.flag and FA__WIP) = 0 then
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj299
+.Lj308:
+# [1188] iFatFS.flag := iFatFS.flag and (not FA__WIP);
+	lds	r20,(U_sPFF_ss_IFATFS)
+	lds	r18,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r20
+	mov	r31,r18
+	ldd	r19,Z+1
+	andi	r19,-65
+	mov	r30,r20
+	mov	r31,r18
+	std	Z+1,r19
+# [1189] Exit(FR_OK);
+	std	Y+2,r1
+	rjmp	.Lj299
+.Lj306:
+# [1193] if (iFatFS.flag and FA__WIP) = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r18,Z+1
 	andi	r18,64
-	brne	.Lj347
-# [1190] iFatFs.fptr := iFatFs.fptr and $FFFFFE00;
-	lds	r19,(U_sPFF_ss_IFATFS)
-	lds	r18,(U_sPFF_ss_IFATFS+1)
-	mov	r30,r19
-	mov	r31,r18
-	ldd	r21,Z+24
-	ldd	r22,Z+25
-	ldd	r23,Z+26
-	ldd	r20,Z+27
-	andi	r22,-2
-	mov	r30,r19
-	mov	r31,r18
+	brne	.Lj312
+# [1195] iFatFS.fptr := iFatFS.fptr and $FFFFFE00;
+	lds	r22,(U_sPFF_ss_IFATFS)
+	lds	r21,(U_sPFF_ss_IFATFS+1)
+	mov	r30,r22
+	mov	r31,r21
+	ldd	r23,Z+24
+	ldd	r18,Z+25
+	ldd	r20,Z+26
+	ldd	r19,Z+27
+	andi	r18,-2
+	mov	r30,r22
+	mov	r31,r21
 	std	Z+24,r1
-	std	Z+25,r22
-	std	Z+26,r23
-	std	Z+27,r20
-.Lj347:
-# [1192] remain := iFatFs.fsize - iFatFs.fptr;
+	std	Z+25,r18
+	std	Z+26,r20
+	std	Z+27,r19
+.Lj312:
+# [1197] remain := iFatFS.fsize - iFatFS.fptr;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	lds	r21,(U_sPFF_ss_IFATFS)
 	lds	r20,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	ldd	r22,Z+28
-	ldd	r25,Z+29
-	ldd	r23,Z+30
-	ldd	r24,Z+31
+	ldd	r23,Z+29
+	ldd	r24,Z+30
+	ldd	r25,Z+31
 	mov	r30,r21
 	mov	r31,r20
-	ldd	r21,Z+24
+	ldd	r20,Z+24
 	ldd	r19,Z+25
-	ldd	r20,Z+26
-	ldd	r18,Z+27
-	sub	r22,r21
-	sbc	r25,r19
-	sbc	r23,r20
+	ldd	r18,Z+26
+	ldd	r21,Z+27
+	sub	r22,r20
+	sbc	r23,r19
 	sbc	r24,r18
+	sbc	r25,r21
 # Var remain located in register r22
-# [1193] if btw > remain then
-	ldd	r18,Y+4
-	mov	r21,r18
+# [1198] if btw > remain then
 	ldd	r18,Y+5
-	cp	r22,r21
-	cpc	r25,r18
-	cpc	r23,r1
+	cp	r22,r18
+	cpc	r23,r17
 	cpc	r24,r1
-	brlo	.Lj375
-	rjmp	.Lj351
-.Lj375:
-# [1194] btw := UINT(remain); { Truncate btw by remaining bytes }
-	std	Y+4,r22
-	std	Y+5,r25
-# [1196] while btw <> 0 do
-	rjmp	.Lj351
-.Lj350:
-# [1199] if UINT(iFatFs.fptr) and (SECTOR_SIZE - 1) = 0 then
+	cpc	r25,r1
+	brlo	.Lj343
+	rjmp	.Lj316
+.Lj343:
+# [1199] btw := UINT(remain); { Truncate btw by remaining bytes }
+	std	Y+5,r22
+	mov	r17,r23
+# [1201] while btw <> 0 do
+	rjmp	.Lj316
+.Lj315:
+# [1204] if UINT(iFatFS.fptr) and (SECTOR_SIZE - 1) = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -3989,10 +3588,10 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	andi	r19,1
 	cp	r18,r1
 	cpc	r19,r1
-	breq	.Lj376
-	rjmp	.Lj354
-.Lj376:
-# [1203] cs := byte((iFatFs.fptr shr SECTOR_SIZE_BP) and (iFatFs.csize - 1));
+	breq	.Lj344
+	rjmp	.Lj319
+.Lj344:
+# [1208] cs := byte((iFatFS.fptr shr SECTOR_SIZE_BP) and (iFatFS.csize - 1));
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -4012,38 +3611,38 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	ldd	r18,Z+25
 	ldd	r19,Z+26
 	ldd	r24,Z+27
-	mov	r25,r18
-	mov	r18,r19
+	mov	r15,r19
 	mov	r19,r24
 	lsr	r19
+	ror	r15
 	ror	r18
-	ror	r25
-	mov	r24,r18
+	mov	r14,r18
+	mov	r24,r15
 	mov	r18,r1
-	and	r25,r21
+	and	r14,r21
 	and	r24,r22
 	and	r19,r20
 	and	r18,r20
-	mov	r4,r25
-# [1205] if cs = 0 then
+	mov	r4,r14
+# [1210] if cs = 0 then
 	cp	r4,r1
-	breq	.Lj377
-	rjmp	.Lj356
-.Lj377:
-# [1208] if iFatFs.fptr = 0 then
+	breq	.Lj345
+	rjmp	.Lj321
+.Lj345:
+# [1213] if iFatFS.fptr = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
-	ldd	r18,Z+24
-	ldd	r19,Z+25
-	ldd	r21,Z+26
-	ldd	r20,Z+27
-	cp	r18,r1
-	cpc	r19,r1
-	cpc	r21,r1
+	ldd	r21,Z+24
+	ldd	r20,Z+25
+	ldd	r18,Z+26
+	ldd	r19,Z+27
+	cp	r21,r1
 	cpc	r20,r1
-	brne	.Lj358
-# [1210] clst := iFatFs.org_clust
+	cpc	r18,r1
+	cpc	r19,r1
+	brne	.Lj323
+# [1215] clst := iFatFS.org_clust
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -4051,9 +3650,9 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	ldd	r11,Z+33
 	ldd	r10,Z+34
 	ldd	r9,Z+35
-	rjmp	.Lj359
-.Lj358:
-# [1212] clst := get_fat(iFatFs.curr_clust);
+	rjmp	.Lj324
+.Lj323:
+# [1217] clst := get_fat(iFatFS.curr_clust);
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -4069,22 +3668,19 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r11,r23
 	mov	r10,r24
 	mov	r9,r25
-.Lj359:
-# [1213] if clst <= 1 then
+.Lj324:
+# [1218] if clst <= 1 then
 	ldi	r21,1
 	cp	r21,r12
 	cpc	r1,r11
 	cpc	r1,r10
 	cpc	r1,r9
-	brlo	.Lj361
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
-	ldi	r17,1
-	rjmp	.Lj334
-.Lj361:
-# [1216] iFatFs.curr_clust := clst;
+	brlo	.Lj326
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj317
+.Lj326:
+# [1221] iFatFS.curr_clust := clst;
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -4092,57 +3688,50 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	std	Z+37,r11
 	std	Z+38,r10
 	std	Z+39,r9
-.Lj356:
-# [1219] sect := clust2sect(iFatFs.curr_clust);
-	lds	r19,(U_sPFF_ss_IFATFS)
-	lds	r18,(U_sPFF_ss_IFATFS+1)
-	mov	r30,r19
-	mov	r31,r18
+.Lj321:
+# [1224] sect := clust2sect(iFatFS.curr_clust);
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
 	ldd	r22,Z+36
-	mov	r30,r19
-	mov	r31,r18
+	movw	r30,r18
 	ldd	r23,Z+37
-	mov	r30,r19
-	mov	r31,r18
+	movw	r30,r18
 	ldd	r24,Z+38
-	mov	r30,r19
-	mov	r31,r18
+	movw	r30,r18
 	ldd	r25,Z+39
 	call	PFF_ss_CLUST2SECTsLONGWORDssLONGWORD
 	mov	r8,r22
 	mov	r7,r23
 	mov	r6,r24
 	mov	r5,r25
-# [1220] if sect = 0 then
+# [1225] if sect = 0 then
 	cp	r8,r1
 	cpc	r7,r1
 	cpc	r6,r1
 	cpc	r5,r1
-	brne	.Lj363
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
-	ldi	r17,1
-	rjmp	.Lj334
-.Lj363:
-# [1222] iFatFs.dsect := sect + cs;
+	brne	.Lj328
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj317
+.Lj328:
+# [1227] iFatFS.dsect := sect + cs;
 	mov	r22,r8
-	mov	r21,r7
-	mov	r23,r6
-	mov	r20,r5
+	mov	r23,r7
+	mov	r20,r6
+	mov	r21,r5
 	add	r22,r4
-	adc	r21,r1
 	adc	r23,r1
 	adc	r20,r1
+	adc	r21,r1
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
 	std	Z+40,r22
-	std	Z+41,r21
-	std	Z+42,r23
-	std	Z+43,r20
-# [1225] if disk_writep(nil, iFatFs.dsect) <> DRESULT.RES_OK then
+	std	Z+41,r23
+	std	Z+42,r20
+	std	Z+43,r21
+# [1230] if disk_writep(nil, iFatFS.dsect) <> DRESULT.RES_OK then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -4157,15 +3746,12 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r25,r1
 	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
 	cp	r24,r1
-	breq	.Lj365
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
-	ldi	r17,1
-	rjmp	.Lj334
-.Lj365:
-# [1227] iFatFs.flag := iFatFs.flag or FA__WIP;
+	breq	.Lj330
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj317
+.Lj330:
+# [1232] iFatFS.flag := iFatFS.flag or FA__WIP;
 	lds	r19,(U_sPFF_ss_IFATFS)
 	lds	r20,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r19
@@ -4175,8 +3761,8 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r30,r19
 	mov	r31,r20
 	std	Z+1,r18
-.Lj354:
-# [1230] wcnt := SECTOR_SIZE - (UINT(iFatFs.fptr) and (SECTOR_SIZE - 1));
+.Lj319:
+# [1235] wcnt := SECTOR_SIZE - (UINT(iFatFS.fptr) and (SECTOR_SIZE - 1));
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -4184,46 +3770,42 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	ldd	r19,Z+25
 	andi	r19,1
 	mov	r21,r18
-	mov	r20,r19
-	mov	r14,r1
-	ldi	r24,2
+	mov	r22,r19
+	ldi	r25,2
 	mov	r19,r1
+	mov	r14,r1
 	mov	r18,r1
 	sub	r14,r21
-	sbc	r24,r20
+	sbc	r25,r22
 	sbc	r19,r1
 	sbc	r18,r1
-	mov	r2,r14
-	mov	r3,r24
-# [1231] if wcnt > btw then
-	ldd	r18,Y+4
-	cp	r18,r2
+	mov	r3,r14
+	mov	r2,r25
+# [1236] if wcnt > btw then
 	ldd	r18,Y+5
-	cpc	r18,r3
-	brsh	.Lj367
-# [1232] wcnt := btw;
-	ldd	r18,Y+4
-	mov	r2,r18
+	cp	r18,r3
+	cpc	r17,r2
+	brsh	.Lj332
+# [1237] wcnt := btw;
 	ldd	r18,Y+5
 	mov	r3,r18
-.Lj367:
-# [1235] if disk_writep(p, wcnt) <> DRESULT.RES_OK then
-	mov	r22,r1
+	mov	r2,r17
+.Lj332:
+# [1240] if disk_writep(p, wcnt) <> DRESULT.RES_OK then
+	mov	r20,r3
 	mov	r23,r1
-	movw	r20,r2
+	mov	r21,r2
+	mov	r22,r1
 	mov	r24,r16
 	mov	r25,r13
 	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
 	cp	r24,r1
-	breq	.Lj369
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
-	ldi	r17,1
-	rjmp	.Lj334
-.Lj369:
-# [1239] iFatFs.fptr := iFatFs.fptr + wcnt;
+	breq	.Lj334
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj317
+.Lj334:
+# [1244] iFatFS.fptr := iFatFS.fptr + wcnt;
 	lds	r15,(U_sPFF_ss_IFATFS)
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r15
@@ -4232,8 +3814,8 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	ldd	r24,Z+25
 	ldd	r25,Z+26
 	ldd	r14,Z+27
-	add	r23,r2
-	adc	r24,r3
+	add	r23,r3
+	adc	r24,r2
 	adc	r25,r1
 	adc	r14,r1
 	mov	r30,r15
@@ -4242,32 +3824,30 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	std	Z+25,r24
 	std	Z+26,r25
 	std	Z+27,r14
-# [1240] p := p + wcnt;
-	add	r16,r2
-	adc	r13,r3
-# [1241] btw := btw - wcnt;
-	ldd	r18,Y+4
-	sub	r18,r2
-	std	Y+4,r18
+# [1245] p := p + wcnt;
+	add	r16,r3
+	adc	r13,r2
+# [1246] btw := btw - wcnt;
 	ldd	r18,Y+5
-	sbc	r18,r3
+	sub	r18,r3
 	std	Y+5,r18
-# [1242] bw := bw + wcnt;
-	ldd	r18,Y+2
-	mov	r30,r18
+	sbc	r17,r2
+# [1247] bw := bw + wcnt;
 	ldd	r18,Y+3
+	mov	r30,r18
+	ldd	r18,Y+4
 	mov	r31,r18
 	ld	r20,Z
 	ldd	r19,Z+1
-	add	r20,r2
-	adc	r19,r3
-	ldd	r18,Y+2
-	mov	r30,r18
+	add	r20,r3
+	adc	r19,r2
 	ldd	r18,Y+3
+	mov	r30,r18
+	ldd	r18,Y+4
 	mov	r31,r18
 	st	Z,r20
 	std	Z+1,r19
-# [1244] if UINT(iFatFs.fptr) and (SECTOR_SIZE - 1) = 0 then
+# [1249] if UINT(iFatFS.fptr) and (SECTOR_SIZE - 1) = 0 then
 	lds	r18,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	movw	r30,r18
@@ -4276,10 +3856,8 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	andi	r19,1
 	cp	r18,r1
 	cpc	r19,r1
-	breq	.Lj378
-	rjmp	.Lj351
-.Lj378:
-# [1247] if disk_writep(nil, 0) <> DRESULT.RES_OK then
+	brne	.Lj316
+# [1252] if disk_writep(nil, 0) <> DRESULT.RES_OK then
 	mov	r20,r1
 	mov	r21,r1
 	mov	r22,r1
@@ -4288,15 +3866,12 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r25,r1
 	call	DISK_IO_ss_DISK_WRITEPsPOINTERsLONGWORDssDRESULT
 	cp	r24,r1
-	breq	.Lj373
-	lds	r18,(U_sPFF_ss_IFATFS)
-	lds	r19,(U_sPFF_ss_IFATFS+1)
-	movw	r30,r18
-	std	Z+1,r1
-	ldi	r17,1
-	rjmp	.Lj334
-.Lj373:
-# [1249] iFatFs.flag := iFatFs.flag and (not FA__WIP);
+	breq	.Lj338
+	ldi	r26,1
+	std	Y+2,r26
+	rjmp	.Lj317
+.Lj338:
+# [1254] iFatFS.flag := iFatFS.flag and (not FA__WIP);
 	lds	r20,(U_sPFF_ss_IFATFS)
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	mov	r30,r20
@@ -4306,18 +3881,30 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 	mov	r30,r20
 	mov	r31,r19
 	std	Z+1,r18
-.Lj351:
-	ldd	r18,Y+4
-	cp	r18,r1
+.Lj316:
 	ldd	r18,Y+5
-	cpc	r18,r1
-	breq	.Lj379
-	rjmp	.Lj350
-.Lj379:
-# [1253] Result := FR_OK;
-	mov	r17,r1
-.Lj334:
-	mov	r24,r17
+	cp	r18,r1
+	cpc	r17,r1
+	breq	.Lj346
+	rjmp	.Lj315
+.Lj346:
+.Lj317:
+# [1258] if Result = FR_DISK_ERR then
+	ldd	r18,Y+2
+	cpi	r18,1
+	brne	.Lj340
+# [1259] iFatFS.flag := 0
+	lds	r18,(U_sPFF_ss_IFATFS)
+	lds	r19,(U_sPFF_ss_IFATFS+1)
+	movw	r30,r18
+	std	Z+1,r1
+	rjmp	.Lj299
+.Lj340:
+# [1261] Result := FR_OK;
+	std	Y+2,r1
+.Lj299:
+	ldd	r18,Y+2
+	mov	r24,r18
 	subi	r28,-6
 	sbci	r29,-1
 	in	r0,63
@@ -4352,7 +3939,7 @@ PFF_ss_PF_WRITEsPOINTERsNATIVEUINTsNATIVEUINTssFRESULT:
 .globl	PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT
 PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 .Lc50:
-# [1263] begin
+# [1271] begin
 	push	r29
 	push	r28
 	push	r4
@@ -4378,12 +3965,12 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 	lds	r19,(U_sPFF_ss_IFATFS+1)
 	cp	r18,r1
 	cpc	r19,r1
-	brne	.Lj383
+	brne	.Lj350
 	ldi	r26,5
 	mov	r4,r26
-	rjmp	.Lj380
-.Lj383:
-# [1267] dj.fn := sp;
+	rjmp	.Lj347
+.Lj350:
+# [1275] dj.fn := sp;
 	ldi	r19,lo8(2)
 	ldi	r18,hi8(2)
 	add	r19,r28
@@ -4391,7 +3978,7 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 	movw	r30,r2
 	std	Z+2,r19
 	std	Z+3,r18
-# [1269] Result := follow_path(dj, dir, path);
+# [1277] Result := follow_path(dj, dir, path);
 	ldi	r22,lo8(14)
 	ldi	r23,hi8(14)
 	add	r22,r28
@@ -4400,18 +3987,18 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 # Var path located in register r20
 	call	PFF_ss_FOLLOW_PATHsDIRsPBYTEsPCHARssFRESULT
 	mov	r4,r24
-# [1270] if Result = FR_OK then
+# [1278] if Result = FR_OK then
 	cp	r4,r1
-	brne	.Lj380
-# [1273] if dir[0] <> 0 then
+	brne	.Lj347
+# [1281] if dir[0] <> 0 then
 	ldd	r18,Y+14
 	cp	r18,r1
-	breq	.Lj387
-# [1275] if (dir[DIR_Attr] and AM_DIR) <> 0 then
+	breq	.Lj354
+# [1283] if (dir[DIR_Attr] and AM_DIR) <> 0 then
 	ldd	r18,Y+25
 	andi	r18,16
-	breq	.Lj389
-# [1277] dj.sclust := get_clust(dir)
+	breq	.Lj356
+# [1285] dj.sclust := get_clust(dir)
 	ldi	r24,lo8(14)
 	ldi	r25,hi8(14)
 	add	r24,r28
@@ -4422,21 +4009,21 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 	std	Z+5,r23
 	std	Z+6,r24
 	std	Z+7,r25
-	rjmp	.Lj387
-.Lj389:
-# [1280] Result := FR_NO_FILE;
+	rjmp	.Lj354
+.Lj356:
+# [1288] Result := FR_NO_FILE;
 	ldi	r26,3
 	mov	r4,r26
-.Lj387:
-# [1281] if Result = FR_OK then
+.Lj354:
+# [1289] if Result = FR_OK then
 	cp	r4,r1
-	brne	.Lj380
-# [1283] Result := dir_rewind(dj);
+	brne	.Lj347
+# [1291] Result := dir_rewind(dj);
 	movw	r24,r2
 	call	PFF_ss_DIR_REWINDsDIRssFRESULT
 	mov	r4,r24
-.Lj380:
-# [1285] end;
+.Lj347:
+# [1293] end;
 	mov	r24,r4
 	subi	r28,-46
 	sbci	r29,-1
@@ -4459,7 +4046,7 @@ PFF_ss_PF_OPENDIRsDIRsPCHARssFRESULT:
 .globl	PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT
 PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 .Lc52:
-# [1291] begin
+# [1299] begin
 	push	r29
 	push	r28
 	push	r6
@@ -4487,12 +4074,12 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	cp	r19,r1
 	cpc	r18,r1
-	brne	.Lj396
+	brne	.Lj363
 	ldi	r26,5
 	mov	r6,r26
-	rjmp	.Lj393
-.Lj396:
-# [1295] dj.fn := sp;
+	rjmp	.Lj360
+.Lj363:
+# [1303] dj.fn := sp;
 	ldi	r19,lo8(2)
 	ldi	r18,hi8(2)
 	add	r19,r28
@@ -4500,7 +4087,7 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 	movw	r30,r2
 	std	Z+2,r19
 	std	Z+3,r18
-# [1297] Result := dir_read(dj, dir);
+# [1305] Result := dir_read(dj, dir);
 	ldi	r22,lo8(14)
 	ldi	r23,hi8(14)
 	add	r22,r28
@@ -4508,17 +4095,17 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 	movw	r24,r2
 	call	PFF_ss_DIR_READsDIRsPBYTEssFRESULT
 	mov	r6,r24
-# [1298] if Result = FR_NO_FILE then
+# [1306] if Result = FR_NO_FILE then
 	ldi	r26,3
 	cp	r6,r26
-	brne	.Lj398
-# [1299] Result := FR_OK;
+	brne	.Lj365
+# [1307] Result := FR_OK;
 	mov	r6,r1
-.Lj398:
-# [1300] if Result = FR_OK then
+.Lj365:
+# [1308] if Result = FR_OK then
 	cp	r6,r1
-	brne	.Lj393
-# [1304] get_fileinfo(dj, dir, fno);
+	brne	.Lj360
+# [1312] get_fileinfo(dj, dir, fno);
 	ldi	r22,lo8(14)
 	ldi	r23,hi8(14)
 	add	r22,r28
@@ -4526,18 +4113,18 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 	movw	r20,r4
 	movw	r24,r2
 	call	PFF_ss_GET_FILEINFOsDIRsPBYTEsFILINFO
-# [1306] Result := dir_next(dj);
+# [1314] Result := dir_next(dj);
 	movw	r24,r2
 	call	PFF_ss_DIR_NEXTsDIRssFRESULT
 	mov	r6,r24
-# [1307] if Result = FR_NO_FILE then
+# [1315] if Result = FR_NO_FILE then
 	ldi	r26,3
 	cp	r6,r26
-	brne	.Lj393
-# [1308] Result := FR_OK;
+	brne	.Lj360
+# [1316] Result := FR_OK;
 	mov	r6,r1
-.Lj393:
-# [1310] end;
+.Lj360:
+# [1318] end;
 	mov	r24,r6
 	subi	r28,-46
 	sbci	r29,-1
@@ -4562,7 +4149,7 @@ PFF_ss_PF_READDIRsDIRsFILINFOssFRESULT:
 .globl	PFF_ss_PF_REWINDDIRsDIRssFRESULT
 PFF_ss_PF_REWINDDIRsDIRssFRESULT:
 .Lc54:
-# [1315] begin
+# [1323] begin
 	push	r29
 	push	r28
 	push	r2
@@ -4582,12 +4169,12 @@ PFF_ss_PF_REWINDDIRsDIRssFRESULT:
 	lds	r18,(U_sPFF_ss_IFATFS+1)
 	cp	r19,r1
 	cpc	r18,r1
-	brne	.Lj406
+	brne	.Lj373
 	ldi	r26,5
 	mov	r2,r26
-	rjmp	.Lj403
-.Lj406:
-# [1319] dj.fn := sp;
+	rjmp	.Lj370
+.Lj373:
+# [1327] dj.fn := sp;
 	ldi	r19,lo8(2)
 	ldi	r18,hi8(2)
 	add	r19,r28
@@ -4595,11 +4182,11 @@ PFF_ss_PF_REWINDDIRsDIRssFRESULT:
 	movw	r30,r24
 	std	Z+2,r19
 	std	Z+3,r18
-# [1320] Result := dir_rewind(dj);
+# [1328] Result := dir_rewind(dj);
 	call	PFF_ss_DIR_REWINDsDIRssFRESULT
 	mov	r2,r24
-.Lj403:
-# [1321] end;
+.Lj370:
+# [1329] end;
 	mov	r24,r2
 	subi	r28,-14
 	sbci	r29,-1
@@ -4619,7 +4206,7 @@ PFF_ss_PF_REWINDDIRsDIRssFRESULT:
 # Begin asmlist al_globals
 
 .section .bss.n_u_spff_ss_ifatfs,"aw",%nobits
-# [344] iFatFS: PFATFS;
+# [343] iFatFS: PFATFS;
 	.size U_sPFF_ss_IFATFS,2
 U_sPFF_ss_IFATFS:
 	.zero 2
@@ -4630,7 +4217,7 @@ U_sPFF_ss_IFATFS:
 .globl	RTTI_sPFF_ss_PUINT
 RTTI_sPFF_ss_PUINT:
 	.byte	29,5
-# [1326] 
+# [1334] 
 	.ascii	"PUINT"
 	.short	0
 	.short	RTTI_sSYSTEM_ss_NATIVEUINTsindirect
