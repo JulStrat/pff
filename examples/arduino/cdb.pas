@@ -1,4 +1,4 @@
-{ CDB - Constant DataBase
+{ Petit CDB - Constant DataBase
   https://cr.yp.to/cdb.html
 }
 unit cdb;
@@ -11,6 +11,7 @@ function cdb_find_key(key: PByte; keyLen: Integer; var valLen: Integer): boolean
 function cdb_get_val(val: PByte; valLen: Integer); boolean;
 
 implementation
+uses pff;
 
 function hash(key: PByte; keyLen: Integer): DWORD;
 begin

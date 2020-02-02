@@ -104,40 +104,9 @@ $ /E/Arduino/hardware/tools/avr/bin/avrdude.exe -C/E/Arduino/hardware/tools/avr/
 ```
 
 #### Connect putty to COM5 (your Arduino COM port)
-```pff-ard``` output - 
 
-```
-<<< PetitFS TEST >>>
-DIR list -
-> SYSTEM~1
-> TEST.TXT
-> RASPI
-> 00README.TXT
-> LICENSE.TXT
-> RW.TXT
-> RW2.TXT
-> RW4.TXT
-> ROOTDNS.CDB
->
-DIR - OK
-DIR list - RASPI
-> MKSDIMG.SH
->
-DIR - OK
-...
-READ file - RW.TXT
-READ - OK
-READ file - RW2.TXT
-READ - OK
-READ file - RW4.TXT
-READ - OK
-WRITE file - RW.TXT
-WRITE - OK
-WRITE file - RW2.TXT
-WRITE - OK
-WRITE file - RW4.TXT
-WRITE - OK
-``` 
+```pff-ard``` output - 
+<img src="https://github.com/JulStrat/pff/blob/devop/examples/arduino/arduino.jpg">
 
 ### RASPI
 
